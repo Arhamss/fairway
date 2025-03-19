@@ -15,7 +15,7 @@ class FairwayButton extends StatelessWidget {
     this.borderRadius = 100,
     this.padding = const EdgeInsets.symmetric(vertical: 12.5, horizontal: 16),
     this.fontWeight = FontWeight.w500,
-    this.borderColor = AppColors.black,
+    this.borderColor = AppColors.primaryButton,
     this.splashColor = Colors.black12,
     this.fontSize = 16,
     this.prefixIcon,

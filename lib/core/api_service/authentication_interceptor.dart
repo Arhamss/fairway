@@ -2,17 +2,18 @@ import 'package:dio/dio.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 
 class AuthInterceptor extends Interceptor {
+  AuthInterceptor(this._appPreferences, this._dio);
   final AppPreferences _appPreferences;
   final Dio _dio;
   bool _isRefreshing = false;
   Future<String?>? _refreshTokenFuture;
 
-  AuthInterceptor(this._appPreferences, this._dio);
-
   @override
-  void onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
-    String? token = _appPreferences.getToken();
+ Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    final token = _appPreferences.getToken();
 
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
@@ -22,7 +23,8 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+      DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
       final newToken = await _handleTokenRefresh();
 

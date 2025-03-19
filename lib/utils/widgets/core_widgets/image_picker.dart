@@ -26,7 +26,7 @@ class FairwayImagePicker extends StatelessWidget {
                   child: _getImageWidget(imagePath!),
                 ),
           padding: EdgeInsets.all(
-              imagePath == null || (imagePath ?? '').isEmpty ? 50 : 0),
+              imagePath == null || (imagePath ?? '').isEmpty ? 50 : 0,),
           style: IconButton.styleFrom(
             backgroundColor: Colors.transparent,
             shape: const CircleBorder(),

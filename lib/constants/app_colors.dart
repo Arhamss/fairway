@@ -3,6 +3,9 @@ import 'dart:ui';
 abstract class AppColors {
   ///new
 
+  static const primaryButton = Color.fromRGBO(36, 187, 196, 1);
+  static const activeDotColor = Color.fromRGBO(54, 90, 153, 1);
+
   static const amberPrimary = Color(0xFFFFBF00);
   static const amberSecondary = Color(0xFFFFFFEA);
   static const amberTertiary = Color(0xFFFFFBC5);
@@ -41,12 +44,15 @@ abstract class AppColors {
   static const messageBorder = Color(0xFFD1D1D1);
   static const messageTimeStamp = Color(0xFF757575);
   static const onGoingClassColor = Color(0x9914B82C);
-  static const greyShade1 = Color(0xFFB0B0B0);
   static const greenShade1 = Color(0xFF042F0C);
   static const yellowShade1 = Color(0xFFFFED46);
   static const yellowShade2 = Color(0xFFFFFFEA);
+
+  static const greyShade1 = Color(0xFFB0B0B0);
   static const greyShade2 = Color(0xFF2a2d38);
   static const greyShade3 = Color(0xFFF6F6F6);
   static const greyShade4 = Color(0xFFB0B0B0);
+  static const greyShade5 = Color.fromRGBO(244, 245, 247, 1);
+
   static const redShade1 = Color(0xFFF04438);
 }

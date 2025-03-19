@@ -40,7 +40,34 @@ class AppRouter {
         path: AppRoutes.splash,
         name: AppRouteNames.splash,
         builder: (context, state) => const SplashScreen(),
-      )
+      ),
+      GoRoute(
+        path: AppRoutes.introScreens,
+        name: AppRouteNames.introScreens,
+        builder: (context, state) => const IntroScreens(),
+      ),
+      GoRoute(
+        path: AppRoutes.signIn,
+        name: AppRouteNames.signIn,
+        builder: (context, state) => const SignInScreen(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.forgotPassword,
+            name: AppRouteNames.forgotPassword,
+            builder: (context, state) => const ForgotPasswordScreen(),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: AppRoutes.passwordRecovered,
+        name: AppRouteNames.passwordRecovered,
+        builder: (context, state) => const PasswordRecoveredScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.signUp,
+        name: AppRouteNames.signUp,
+        builder: (context, state) => const SignUpScreen(),
+      ),
     ],
   );
 }
