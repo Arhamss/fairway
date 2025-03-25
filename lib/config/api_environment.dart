@@ -3,15 +3,15 @@ import 'package:fairway/config/flavor_config.dart';
 /// API Environments & Configurations
 enum ApiEnvironment {
   production(
-    baseUrl: 'https://fairways-backend.onrender.com/api/',
+    baseUrl: 'https://fairways-backend.onrender.com/',
     apiVersion: 'v1',
   ),
   staging(
-    baseUrl: 'https://fairways-backend.onrender.com/api/',
+    baseUrl: 'https://fairways-backend.onrender.com/',
     apiVersion: 'v1',
   ),
   development(
-    baseUrl: 'https://fairways-backend.onrender.com/api/',
+    baseUrl: 'https://fairways-backend.onrender.com/',
     apiVersion: 'v1',
   ),
   qa(
