@@ -1,7 +1,10 @@
 import 'package:fairway/app/view/splash_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/forgot_password_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/introduction_screen_one.dart';
+import 'package:fairway/fairway/features/onboarding_flow/presentation/view/password_code_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/password_recovered.dart';
+import 'package:fairway/fairway/features/onboarding_flow/presentation/view/reset_password_screen.dart';
+import 'package:fairway/fairway/features/onboarding_flow/presentation/view/select_location.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/sign_in_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/sign_up_screen.dart';
 import 'package:flutter/cupertino.dart';

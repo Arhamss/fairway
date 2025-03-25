@@ -35,7 +35,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               'Password recovery email sent',
             );
             context.goNamed(
-              AppRouteNames.passwordRecovered,
+              AppRouteNames.resetPasswordCode,
             );
           }
         },

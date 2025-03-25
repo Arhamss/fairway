@@ -36,6 +36,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ToastHelper.showInfoToast(
               'Signed up User',
             );
+
+            context.goNamed(AppRouteNames.selectLocation);
           }
         },
         child: LayoutBuilder(

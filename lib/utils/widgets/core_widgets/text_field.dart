@@ -9,6 +9,7 @@ enum FairwayTextFieldType {
   description,
   number,
   text,
+  location, // Add this
 }
 
 class FairwayTextFieldState extends Equatable {
@@ -101,10 +102,12 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final isPassword = widget.type == FairwayTextFieldType.password;
+    final isPassword = widget.type == FairwayTextFieldType.password ||
+        widget.type == FairwayTextFieldType.confirmPassword;
     final isEmail = widget.type == FairwayTextFieldType.email;
     final isNumber = widget.type == FairwayTextFieldType.number;
     final isDescription = widget.type == FairwayTextFieldType.description;
+    final isLocation = widget.type == FairwayTextFieldType.location; // Add this
     final baseBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(
         isDescription ? 24 : 15,
@@ -126,8 +129,14 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
         }
       } else if (widget.type == FairwayTextFieldType.password ||
           widget.type == FairwayTextFieldType.confirmPassword) {
-        if (value.trim().length < 6) {
-          return 'Password must be at least 6 characters';
+        if (value.trim().length < 8) {
+          return 'Password must be at least 8 characters';
+        }
+        if (!value.contains(RegExp('[A-Z]'))) {
+          return 'Password must contain at least one uppercase letter';
+        }
+        if (!value.contains(RegExp('[a-z]'))) {
+          return 'Password must contain at least one lowercase letter';
         }
       }
 
@@ -136,6 +145,42 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
         if (passwordValue != null && value != passwordValue) {
           return 'Passwords do not match';
         }
+      }
+      return null;
+    }
+
+    Widget? buildSuffixIcon(
+      bool isPassword,
+      bool isLocation,
+      FairwayTextFieldState state,
+    ) {
+      if (isPassword) {
+        return IconButton(
+          icon: Icon(
+            state.obscureText
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
+          ),
+          onPressed: () {
+            _cubit.toggleObscureText();
+          },
+        );
+      } else if (isLocation && widget.controller.text.isNotEmpty) {
+        return GestureDetector(
+          onTap: () => widget.controller.clear(),
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            decoration: const BoxDecoration(
+              color: AppColors.greyShade5,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.close_outlined,
+              color: AppColors.black,
+              size: 18,
+            ),
+          ),
+        );
       }
       return null;
     }
@@ -190,45 +235,10 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
                 suffixIconConstraints: const BoxConstraints(
                   minWidth: 40,
                 ),
-                suffixIcon: isPassword
-                    ? IconButton(
-                        icon: Icon(
-                          state.obscureText
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                        ),
-                        onPressed: () {
-                          _cubit.toggleObscureText();
-                        },
-                      )
+                suffixIcon: buildSuffixIcon(isPassword, isLocation, state),
+                prefixIcon: isLocation
+                    ? const Icon(Icons.location_on, color: AppColors.disabled)
                     : null,
-                // prefixIcon: widget.prefixPath != null
-                //     ? SvgPicture.asset(
-                //         widget.prefixPath!,
-                //         colorFilter: ColorFilter.mode(
-                //           iconColor,
-                //           BlendMode.srcIn,
-                //         ),
-                //       )
-                //     : (isPassword
-                //         ? SvgPicture.asset(
-                //             AssetPaths.lockIcon,
-                //             height: 20,
-                //             colorFilter: ColorFilter.mode(
-                //               iconColor,
-                //               BlendMode.srcIn,
-                //             ),
-                //           )
-                //         : (isEmail
-                //             ? SvgPicture.asset(
-                //                 AssetPaths.smsIcon,
-                //                 height: 20,
-                //                 colorFilter: ColorFilter.mode(
-                //                   iconColor,
-                //                   BlendMode.srcIn,
-                //                 ),
-                //               )
-                //             : null)),
                 border: baseBorder,
                 focusedBorder: baseBorder,
                 errorBorder: baseBorder,

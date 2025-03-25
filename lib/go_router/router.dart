@@ -55,6 +55,20 @@ class AppRouter {
             path: AppRoutes.forgotPassword,
             name: AppRouteNames.forgotPassword,
             builder: (context, state) => const ForgotPasswordScreen(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.resetPasswordCode,
+                name: AppRouteNames.resetPasswordCode,
+                builder: (context, state) => const PasswordCode(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.resetPassword,
+                    name: AppRouteNames.resetPassword,
+                    builder: (context, state) => const ResetPasswordScreen(),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
@@ -67,6 +81,11 @@ class AppRouter {
         path: AppRoutes.signUp,
         name: AppRouteNames.signUp,
         builder: (context, state) => const SignUpScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.SelectLocation,
+        name: AppRouteNames.selectLocation,
+        builder: (context, state) => const SelectLocationScreen(),
       ),
     ],
   );
