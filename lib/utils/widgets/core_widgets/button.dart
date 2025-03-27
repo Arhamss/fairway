@@ -1,4 +1,5 @@
 import 'package:fairway/export.dart';
+import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FairwayButton extends StatelessWidget {
@@ -67,15 +68,10 @@ class FairwayButton extends StatelessWidget {
       child: Padding(
         padding: padding,
         child: isLoading
-            ? SizedBox(
+            ? const SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 1,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    loadingColor,
-                  ),
-                ),
+                child: LoadingWidget(),
               )
             : Row(
                 mainAxisSize: MainAxisSize.min,

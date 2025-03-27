@@ -171,7 +171,7 @@ class BammbuuBottomSheet extends StatelessWidget {
             Text(
               subtitle!,
               textAlign: TextAlign.center,
-              style: context.b2.secondary.copyWith(
+              style: context.b2.copyWith(
                 fontSize: 13,
               ),
             ),
@@ -179,7 +179,7 @@ class BammbuuBottomSheet extends StatelessWidget {
             Text(
               noteText!,
               textAlign: TextAlign.center,
-              style: context.h1.secondary.copyWith(
+              style: context.h1.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: Colors.black,
@@ -228,7 +228,7 @@ class BammbuuBottomSheet extends StatelessWidget {
               onTap: onTapTextBelowButton,
               child: Text(
                 textBelowButton ?? '',
-                style: context.b2.secondary,
+                style: context.b2,
               ),
             ),
             const SizedBox(height: 16),

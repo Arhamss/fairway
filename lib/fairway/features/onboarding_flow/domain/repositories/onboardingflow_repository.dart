@@ -22,7 +22,14 @@ abstract class OnboardingFlowRepository {
     String location,
   );
 
-  Future<RepositoryResponse<ApiResponse<LocationData>>> getAirports();
+  Future<RepositoryResponse<ApiResponse<LocationData>>> getAirports({
+    String? query,
+    String? code,
+    double? lat,
+    double? long,
+    int page = 1,
+    int limit = 10,
+  });
 
   Future<RepositoryResponse<ApiResponse<dynamic>>> resetPassword(
     String code,

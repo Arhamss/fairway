@@ -42,7 +42,9 @@ class OnboardingFlowRepositoryImplementation
       );
 
       if (apiResponse.isSuccess && apiResponse.data != null) {
-        _cache.setToken(apiResponse.data!.token);
+        _cache
+          ..setToken(apiResponse.data!.token)
+          ..setUserId(apiResponse.data!.id);
         AppLogger.info('Login successful: ${apiResponse.data!.name}');
         return RepositoryResponse(
           isSuccess: true,
@@ -57,7 +59,7 @@ class OnboardingFlowRepositoryImplementation
         );
       }
     } catch (e) {
-      AppLogger.info('Login exception: $e');
+      AppLogger.error('Login exception: $e');
       return RepositoryResponse(
         isSuccess: false,
         message: 'Sign in failed: $e',
@@ -87,7 +89,9 @@ class OnboardingFlowRepositoryImplementation
       );
 
       if (apiResponse.isSuccess && apiResponse.data != null) {
-        _cache.setToken(apiResponse.data!.token);
+        _cache
+          ..setToken(apiResponse.data!.token)
+          ..setUserId(apiResponse.data!.id);
         AppLogger.info('Signup successful: ${apiResponse.data!.name}');
         return RepositoryResponse(
           isSuccess: true,
@@ -199,9 +203,9 @@ class OnboardingFlowRepositoryImplementation
     try {
       AppLogger.info('Updating location to: $location');
       final response = await _apiService.put(
-        Endpoints.profile,
+        Endpoints.customerLocation,
         {
-          'location': location,
+          'airportCode': location,
         },
       );
 
@@ -237,10 +241,36 @@ class OnboardingFlowRepositoryImplementation
   }
 
   @override
-  Future<RepositoryResponse<ApiResponse<LocationData>>> getAirports() async {
+  Future<RepositoryResponse<ApiResponse<LocationData>>> getAirports({
+    String? query,
+    String? code,
+    double? lat,
+    double? long,
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
+      final queryParams = {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      };
+
+      if (query != null && query.isNotEmpty) {
+        queryParams['airportName'] = query;
+      }
+
+      if (code != null && code.isNotEmpty) {
+        queryParams['code'] = code;
+      }
+
+      if (lat != null && long != null) {
+        queryParams['lat'] = lat.toString();
+        queryParams['long'] = long.toString();
+      }
+
       final response = await _apiService.get(
-        Endpoints.airports,
+        Endpoints.customerAirportSearch,
+        queryParams: queryParams,
       );
 
       final apiResponse = ApiResponse.fromJson(

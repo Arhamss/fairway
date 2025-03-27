@@ -88,7 +88,7 @@ class NotificationTile extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     subtitle,
-                    style: context.b2.secondary,
+                    style: context.b2,
                   ),
                 ],
               ),

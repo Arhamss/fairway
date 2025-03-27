@@ -9,7 +9,9 @@ class AppRoutes {
   static const String resetPassword = '/reset-password';
   static const String resetPasswordCode = '/reset-password-code';
   static const String passwordRecovered = '/password-recovered';
-  static const String SelectLocation = '/select-location';
+  static const String selectLocation = '/select-location';
+  static const String homeScreen = '/home-screen';
+  static const String searchScreen = '/search-screen';
 }
 
 class AppRouteNames {
@@ -22,4 +24,6 @@ class AppRouteNames {
   static const String resetPasswordCode = 'reset-password-code';
   static const String passwordRecovered = 'password-recovered';
   static const String selectLocation = 'select-location';
+  static const String homeScreen = 'home-screen';
+  static const String searchScreen = 'search-screen';
 }

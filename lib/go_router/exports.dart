@@ -1,4 +1,6 @@
 import 'package:fairway/app/view/splash_screen.dart';
+import 'package:fairway/fairway/features/home/presentation/view/home_screen.dart';
+import 'package:fairway/fairway/features/home/presentation/view/search_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/forgot_password_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/introduction_screen_one.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/password_code_screen.dart';
