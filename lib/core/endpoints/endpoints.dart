@@ -13,6 +13,7 @@ class Endpoints {
   static const String resetPassword = 'auth/reset-password';
   static const String changePassword = 'auth/change-password';
   static const String profile = 'auth/profile';
+  static const String deleteAccount = 'auth/delete-account';
 
   /// Concierge Endpoints
   static const String conciergeOrderHistory = 'concierge/orders/history';

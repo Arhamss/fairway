@@ -5,6 +5,7 @@ import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/best_partners_section.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/category_section.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/delivery_info_row.dart';
+import 'package:fairway/fairway/features/home/presentation/widgets/drawer.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/flight_alert_banner.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/nearby_restaurants_section.dart';
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.darkWhiteBackground,
       appBar: const HomeAppBar(),
+      drawer: const HomeDrawer(),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           final isLoading = state.userProfile?.isLoading ?? false;

@@ -50,6 +50,7 @@ class AppPreferences extends BaseStorage {
   void clearAuthData() {
     remove(_authTokenKey);
     remove(_refreshTokenKey);
+    remove(_userIdKey);
   }
 
   void clearAll() {

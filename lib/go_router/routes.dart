@@ -12,6 +12,9 @@ class AppRoutes {
   static const String selectLocation = '/select-location';
   static const String homeScreen = '/home-screen';
   static const String searchScreen = '/search-screen';
+  static const String profileScreen = '/profile-screen';
+  static const String accountInformation = '/account-information';
+  static const String changePassword = '/change-password';
 }
 
 class AppRouteNames {
@@ -26,4 +29,7 @@ class AppRouteNames {
   static const String selectLocation = 'select-location';
   static const String homeScreen = 'home-screen';
   static const String searchScreen = 'search-screen';
+  static const String profileScreen = 'profile-screen';
+  static const String accountInformation = 'account-information';
+  static const String changePassword = 'change-password';
 }

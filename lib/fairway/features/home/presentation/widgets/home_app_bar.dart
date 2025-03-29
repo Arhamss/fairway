@@ -14,10 +14,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: AppColors.white,
       elevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.menu, color: AppColors.black),
-        onPressed: () {},
-      ),
       title: FairwayTextField(
         onTap: () => context.goNamed(AppRouteNames.searchScreen),
         controller: TextEditingController(),

@@ -97,6 +97,23 @@ class AppRouter {
             name: AppRouteNames.searchScreen,
             builder: (context, state) => const SearchScreen(),
           ),
+          GoRoute(
+            path: AppRoutes.profileScreen,
+            name: AppRouteNames.profileScreen,
+            builder: (context, state) => const ProfileScreen(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.accountInformation,
+                name: AppRouteNames.accountInformation,
+                builder: (context, state) => const AccountInformationScreen(),
+              ),
+              GoRoute(
+                path: AppRoutes.changePassword,
+                name: AppRouteNames.changePassword,
+                builder: (context, state) => const ChangePasswordScreen(),
+              ),
+            ],
+          ),
         ],
       ),
     ],
