@@ -83,9 +83,38 @@ class AppRouter {
         builder: (context, state) => const SignUpScreen(),
       ),
       GoRoute(
-        path: AppRoutes.SelectLocation,
+        path: AppRoutes.selectLocation,
         name: AppRouteNames.selectLocation,
         builder: (context, state) => const SelectLocationScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.homeScreen,
+        name: AppRouteNames.homeScreen,
+        builder: (context, state) => const HomeScreen(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.searchScreen,
+            name: AppRouteNames.searchScreen,
+            builder: (context, state) => const SearchScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.profileScreen,
+            name: AppRouteNames.profileScreen,
+            builder: (context, state) => const ProfileScreen(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.accountInformation,
+                name: AppRouteNames.accountInformation,
+                builder: (context, state) => const AccountInformationScreen(),
+              ),
+              GoRoute(
+                path: AppRoutes.changePassword,
+                name: AppRouteNames.changePassword,
+                builder: (context, state) => const ChangePasswordScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

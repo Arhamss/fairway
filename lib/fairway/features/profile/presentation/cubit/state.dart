@@ -1,0 +1,36 @@
+import 'package:equatable/equatable.dart';
+import 'package:fairway/fairway/models/api_response_model.dart';
+import 'package:fairway/fairway/models/user_data_model.dart';
+import 'package:fairway/utils/helpers/data_state.dart';
+
+class ProfileState extends Equatable {
+  const ProfileState({
+    this.updateProfile = const DataState.initial(),
+    this.updatePassword = const DataState.initial(),
+    this.logoutStatus = const DataState.initial(),
+    this.deleteAccountStatus = const DataState.initial(),
+  });
+
+  final DataState<ApiResponse<UserData>>? updateProfile;
+  final DataState<dynamic>? updatePassword;
+  final DataState<void> logoutStatus;
+  final DataState<void> deleteAccountStatus;
+
+  @override
+  List<Object?> get props =>
+      [updateProfile, updatePassword, logoutStatus, deleteAccountStatus];
+
+  ProfileState copyWith({
+    DataState<ApiResponse<UserData>>? updateProfile,
+    DataState<dynamic>? updatePassword,
+    DataState<void>? logoutStatus,
+    DataState<void>? deleteAccountStatus,
+  }) {
+    return ProfileState(
+      updateProfile: updateProfile ?? this.updateProfile,
+      updatePassword: updatePassword ?? this.updatePassword,
+      logoutStatus: logoutStatus ?? this.logoutStatus,
+      deleteAccountStatus: deleteAccountStatus ?? this.deleteAccountStatus,
+    );
+  }
+}

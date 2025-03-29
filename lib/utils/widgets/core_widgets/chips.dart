@@ -1,4 +1,5 @@
 import 'package:fairway/export.dart';
+import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 
 class FairwayChip extends StatelessWidget {
   const FairwayChip({
@@ -79,10 +80,7 @@ class FairwayChip extends StatelessWidget {
               child: SizedBox(
                 height: 18,
                 width: 18,
-                child: CircularProgressIndicator(
-                  strokeWidth: 1,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.black),
-                ),
+                child: LoadingWidget(),
               ),
             )
           : Row(

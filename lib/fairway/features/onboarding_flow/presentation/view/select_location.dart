@@ -14,26 +14,26 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
   final TextEditingController locationController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    context.read<OnboardingFlowCubit>().loadAirports();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.white,
       ),
       body: BlocConsumer<OnboardingFlowCubit, OnboardingFlowState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state.location?.isFailure ?? false) {
             ToastHelper.showInfoToast(
               state.location?.errorMessage ?? 'Failed to get location',
             );
           } else if (state.location?.isLoaded ?? false) {
-            locationController.text = state.location!.data!;
-            ToastHelper.showInfoToast('Location set successfully');
+            // Clear the search field when loading airports by location
+            locationController.clear();
+
+            await context.read<OnboardingFlowCubit>().loadAirports(
+                  lat: state.location?.data!.latitude,
+                  long: state.location?.data?.longitude,
+                );
+            ToastHelper.showInfoToast('Found nearby airports');
           }
 
           if (state.updateLocation?.isLoaded ?? false) {
@@ -46,7 +46,6 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
         },
         builder: (context, state) {
           final isLoading = state.location?.isLoading ?? false;
-          final isLoadingAirports = state.airports?.isLoading ?? false;
 
           return LayoutBuilder(
             builder: (context, constraints) {
@@ -78,9 +77,11 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                     FairwayButton(
                       borderRadius: 15,
                       backgroundColor: AppColors.greyShade5,
-                      onPressed: () => context
-                          .read<OnboardingFlowCubit>()
-                          .getCurrentLocation(),
+                      onPressed: () async {
+                        await context
+                            .read<OnboardingFlowCubit>()
+                            .getCurrentLocation();
+                      },
                       text: 'Use current location',
                       isLoading: isLoading,
                       borderColor: AppColors.greyShade5,
@@ -95,44 +96,76 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                           .read<OnboardingFlowCubit>()
                           .onLocationInput(value),
                     ),
-                    if (isLoadingAirports)
-                      const Center(child: CircularProgressIndicator())
+                    if (state.airports!.isLoading)
+                      const Center(child: LoadingWidget())
                     else if (state.filteredAirports.isNotEmpty)
                       Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: const ClampingScrollPhysics(),
-                          itemCount: state.filteredAirports.length,
-                          itemBuilder: (context, index) {
-                            final airport = state.filteredAirports[index];
-                            return ListTile(
-                              dense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 4,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 16,
+                                top: 8,
+                                bottom: 8,
                               ),
-                              title: Text(
-                                airport.name,
+                              child: Text(
+                                state.location?.isLoaded ?? false
+                                    ? 'Nearby Airports'
+                                    : 'Search Results',
                                 style: context.b1.copyWith(
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primaryButton,
                                 ),
                               ),
-                              subtitle: Text(
-                                '${airport.name} ${airport.code}',
-                                style: context.b2,
+                            ),
+                            Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const ClampingScrollPhysics(),
+                                itemCount: state.filteredAirports.length,
+                                itemBuilder: (context, index) {
+                                  final airport = state.filteredAirports[index];
+                                  return ListTile(
+                                    dense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 4,
+                                    ),
+                                    title: Text(
+                                      airport.name,
+                                      style: context.b1.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    subtitle: Row(
+                                      children: [
+                                        Text(
+                                          airport.code,
+                                          style: context.b2,
+                                        ),
+                                        if (state.location?.isLoaded ?? false)
+                                          Text(
+                                            ' • Nearby',
+                                            style: context.b2.copyWith(
+                                              color: AppColors.primaryButton,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    onTap: () {
+                                      locationController.text =
+                                          '${airport.name}, ${airport.code}';
+                                      context
+                                          .read<OnboardingFlowCubit>()
+                                          .selectAirport(airport);
+                                      FocusScope.of(context).unfocus();
+                                    },
+                                  );
+                                },
                               ),
-                              onTap: () {
-                                // Update text field and select airport in one go
-                                locationController.text =
-                                    '${airport.name}, ${airport.code}';
-                                context
-                                    .read<OnboardingFlowCubit>()
-                                    .selectAirport(airport);
-                                FocusScope.of(context)
-                                    .unfocus(); // Hide keyboard
-                              },
-                            );
-                          },
+                            ),
+                          ],
                         ),
                       ),
                   ],
@@ -151,7 +184,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
             BlocConsumer<OnboardingFlowCubit, OnboardingFlowState>(
               listener: (context, state) {
                 if (state.updateLocation?.isLoaded ?? false) {
-                  // context.goNamed(AppRouteNames.home);
+                  context.goNamed(AppRouteNames.homeScreen);
                 } else if (state.updateLocation?.isFailure ?? false) {
                   ToastHelper.showErrorToast(
                     state.updateLocation?.errorMessage ??

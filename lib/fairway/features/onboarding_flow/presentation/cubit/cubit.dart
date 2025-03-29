@@ -1,3 +1,4 @@
+import 'package:fairway/app/app.dart';
 import 'package:fairway/core/permissions/permission_manager.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/onboarding_flow/domain/repositories/onboardingflow_repository.dart';
@@ -97,6 +98,7 @@ class OnboardingFlowCubit extends Cubit<OnboardingFlowState> {
       state.copyWith(
         location: const DataState.loading(),
         hasSelectedLocation: false,
+        filteredAirports: [], // Clear any previous search results
       ),
     );
 
@@ -107,34 +109,15 @@ class OnboardingFlowCubit extends Cubit<OnboardingFlowState> {
             desiredAccuracy: LocationAccuracy.high,
           );
 
-          final placemarks = await placemarkFromCoordinates(
-            position.latitude,
-            position.longitude,
+          AppLogger.info('Current location: $position');
+          emit(
+            state.copyWith(
+              location: DataState.loaded(data: position),
+              hasSelectedLocation: true,
+            ),
           );
-
-          if (placemarks.isNotEmpty) {
-            final place = placemarks[0];
-            final city = place.locality ?? place.subAdministrativeArea ?? '';
-
-            // Find matching airport
-            final airports = state.airports?.data?.data?.airports ?? [];
-            final matchingAirport = airports.firstWhere(
-              (airport) =>
-                  airport.name.toLowerCase().contains(city.toLowerCase()),
-              orElse: () => airports.first,
-            );
-
-            emit(
-              state.copyWith(
-                location: DataState.loaded(
-                  data: '${matchingAirport.name}, ${matchingAirport.code}',
-                ),
-                selectedAirport: matchingAirport,
-                hasSelectedLocation: true,
-              ),
-            );
-          }
         } catch (e) {
+          AppLogger.error('Error getting location: $e');
           emit(
             state.copyWith(
               location: DataState.failure(error: e.toString()),
@@ -157,7 +140,7 @@ class OnboardingFlowCubit extends Cubit<OnboardingFlowState> {
   }
 
   Future<void> updateLocation() async {
-    if (state.location?.data == null) return;
+    if (state.selectedAirport!.code.isEmpty) return;
 
     emit(
       state.copyWith(
@@ -165,7 +148,8 @@ class OnboardingFlowCubit extends Cubit<OnboardingFlowState> {
       ),
     );
 
-    final response = await repository.updateUserLocation(state.location!.data!);
+    final response =
+        await repository.updateUserLocation(state.selectedAirport!.code);
 
     if (response.isSuccess) {
       emit(
@@ -182,17 +166,32 @@ class OnboardingFlowCubit extends Cubit<OnboardingFlowState> {
     }
   }
 
-  Future<void> loadAirports() async {
+  Future<void> loadAirports({
+    String? query,
+    String? code,
+    double? lat,
+    double? long,
+    int page = 1,
+    int limit = 10,
+  }) async {
     emit(state.copyWith(airports: const DataState.loading()));
 
     try {
-      final response = await repository.getAirports();
+      final response = await repository.getAirports(
+        query: query,
+        code: code,
+        lat: lat,
+        long: long,
+        page: page,
+        limit: limit,
+      );
 
       if (response.isSuccess && response.data?.data != null) {
         emit(
           state.copyWith(
             airports: DataState.loaded(data: response.data),
             filteredAirports: response.data?.data?.airports ?? [],
+            location: const DataState.initial(),
           ),
         );
       } else {
@@ -215,25 +214,31 @@ class OnboardingFlowCubit extends Cubit<OnboardingFlowState> {
     if (value.isEmpty) {
       emit(
         state.copyWith(
-          filteredAirports: [], // Show no airports when search is empty
+          filteredAirports: [],
           hasSelectedLocation: false,
         ),
       );
       return;
     }
 
+    // If the query is longer than 2 characters, let's fetch from API
+    if (value.length > 2) {
+      loadAirports(query: value, limit: 5);
+      return;
+    }
+
+    // Otherwise filter locally
     final lowercaseQuery = value.toLowerCase();
     final airports = state.airports?.data?.data?.airports ?? [];
 
-    // Filter airports that match the search query
     final filtered = airports
-        .where((airport) {
-          return airport.name.toLowerCase().contains(lowercaseQuery) ||
-              airport.code.toLowerCase().contains(lowercaseQuery) ||
-              airport.name.toLowerCase().contains(lowercaseQuery) == true;
-        })
+        .where(
+          (airport) =>
+              airport.name.toLowerCase().contains(lowercaseQuery) ||
+              airport.code.toLowerCase().contains(lowercaseQuery),
+        )
         .take(5)
-        .toList(); // Limit to top 5 matches for better performance
+        .toList();
 
     emit(
       state.copyWith(

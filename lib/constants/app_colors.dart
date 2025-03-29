@@ -55,4 +55,8 @@ abstract class AppColors {
   static const greyShade5 = Color.fromRGBO(244, 245, 247, 1);
 
   static const redShade1 = Color(0xFFF04438);
+
+  static const darkWhiteBackground = Color(0xFFF2F3F6);
+
+  static const drawerBackground = Color.fromRGBO(54, 90, 153, 1);
 }

@@ -7,6 +7,7 @@ class AppPreferences extends BaseStorage {
   }
 
   final String _authTokenKey = 'auth_token';
+  final String _userIdKey = 'user_id';
   final String _refreshTokenKey = 'refresh_token';
   final String _appLocale = 'app_locale';
 
@@ -30,6 +31,14 @@ class AppPreferences extends BaseStorage {
     return retrieve<String>(_authTokenKey);
   }
 
+  void setUserId(String userId) {
+    store<String>(_userIdKey, userId);
+  }
+
+  String? getUserId() {
+    return retrieve<String>(_userIdKey);
+  }
+
   void setRefreshToken(String token) {
     store<String>(_refreshTokenKey, token);
   }
@@ -41,6 +50,7 @@ class AppPreferences extends BaseStorage {
   void clearAuthData() {
     remove(_authTokenKey);
     remove(_refreshTokenKey);
+    remove(_userIdKey);
   }
 
   void clearAll() {

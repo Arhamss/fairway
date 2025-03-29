@@ -25,4 +25,9 @@ class AssetPaths {
   static const intro3 = 'assets/images/intro3.png';
   static const passwordRecovery = 'assets/images/password_recovery.png';
   static const location = 'assets/images/location.png';
+
+
+  static const sandwiches= 'assets/svgs/sandwiches.svg';
+  static const burgers= 'assets/svgs/burgers.svg';
+  static const pizza= 'assets/svgs/pizza.svg';
 }

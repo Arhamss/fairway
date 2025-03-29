@@ -4,6 +4,7 @@ import 'package:fairway/fairway/models/auth_data_model.dart';
 import 'package:fairway/fairway/models/location_data_model.dart';
 import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
+import 'package:geolocator/geolocator.dart';
 
 class OnboardingFlowState extends Equatable {
   const OnboardingFlowState({
@@ -25,7 +26,7 @@ class OnboardingFlowState extends Equatable {
   final DataState<ApiResponse<dynamic>>? forgotPassword;
   final String? resetCode;
   final DataState<ApiResponse<dynamic>>? resetPassword;
-  final DataState<String>? location;
+  final DataState<Position>? location;
   final bool hasSelectedLocation;
   final DataState<ApiResponse<UserData>>? updateLocation;
   final DataState<ApiResponse<LocationData>>? airports;
@@ -38,7 +39,7 @@ class OnboardingFlowState extends Equatable {
     DataState<ApiResponse<dynamic>>? forgotPassword,
     String? resetCode,
     DataState<ApiResponse<dynamic>>? resetPassword,
-    DataState<String>? location,
+    DataState<Position>? location,
     bool? hasSelectedLocation,
     DataState<ApiResponse<UserData>>? updateLocation,
     DataState<ApiResponse<LocationData>>? airports,

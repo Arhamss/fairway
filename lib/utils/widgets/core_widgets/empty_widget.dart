@@ -54,7 +54,7 @@ class EmptyWidget extends StatelessWidget {
             ),
             Text(
               text,
-              style: context.b3.secondary.copyWith(
+              style: context.b3.copyWith(
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,

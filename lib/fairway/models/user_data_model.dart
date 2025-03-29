@@ -5,26 +5,26 @@ class UserData extends Equatable {
     required this.id,
     required this.name,
     required this.email,
-    required this.phone,
+    // required this.phone,
     required this.location,
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     final userData = json['user'] as Map<String, dynamic>? ?? json;
     return UserData(
-      id: userData['_id'] as String,
+      id: userData['id'] as String,
       name: userData['name'] as String,
       email: userData['email'] as String,
-      phone: userData['phone'] as String,
+      // phone: userData['phone'] as String,
       location: userData['location'] as String,
     );
   }
   final String id;
   final String name;
   final String email;
-  final String phone;
+  // final String phone;
   final String location;
 
   @override
-  List<Object?> get props => [id, name, email, phone, location];
+  List<Object?> get props => [id, name, email, location];
 }

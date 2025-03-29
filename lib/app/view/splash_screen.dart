@@ -1,4 +1,7 @@
+import 'package:fairway/app/view/app_page.dart';
+import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/export.dart';
+import 'package:fairway/core/di/injector.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,10 +13,19 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 3), () {
-      context.goNamed(AppRouteNames.introScreens);
-    });
     super.initState();
+
+    Future.delayed(const Duration(seconds: 2), () async {
+      if (!mounted) return;
+
+      final token = Injector.resolve<AppPreferences>().getToken();
+
+      if (token != null) {
+        context.goNamed(AppRouteNames.homeScreen);
+      } else {
+        context.goNamed(AppRouteNames.signUp);
+      }
+    });
   }
 
   @override

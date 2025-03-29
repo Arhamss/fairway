@@ -13,17 +13,20 @@ class Endpoints {
   static const String resetPassword = 'auth/reset-password';
   static const String changePassword = 'auth/change-password';
   static const String profile = 'auth/profile';
+  static const String deleteAccount = 'auth/delete-account';
 
   /// Concierge Endpoints
   static const String conciergeOrderHistory = 'concierge/orders/history';
   static const String conciergeActiveOrders = 'concierge/orders/active';
 
   /// Customer Endpoints
-  static const String restaurants = 'customers/restaurant';
+  static const String restaurants = 'customers/restaurants';
   static const String airports = 'customers/airports';
   static const String customerLocation = 'customers/location';
   static const String restaurantSearch = 'customers/restaurants/search';
   static const String customerOrderHistory = 'customers/orders/history';
+  static const String customerAirportSearch = 'customers/search';
+  static const String customerProfile = 'customers/profile';
 
   /// Order Endpoints
   static const String bookOrder = 'orders';
