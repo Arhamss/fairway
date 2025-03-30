@@ -1,7 +1,6 @@
-import 'package:fairway/app/view/app_page.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
-import 'package:fairway/export.dart';
 import 'package:fairway/core/di/injector.dart';
+import 'package:fairway/export.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -23,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (token != null) {
         context.goNamed(AppRouteNames.homeScreen);
       } else {
-        context.goNamed(AppRouteNames.signUp);
+        context.goNamed(AppRouteNames.introScreens);
       }
     });
   }

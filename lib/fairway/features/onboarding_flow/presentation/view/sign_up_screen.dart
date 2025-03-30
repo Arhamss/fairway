@@ -24,7 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: BlocListener<OnboardingFlowCubit, OnboardingFlowState>(
           listener: (context, state) {
             if (state.signUp.isFailure) {
-              ToastHelper.showInfoToast(
+              ToastHelper.showErrorToast(
                 state.signUp.errorMessage ?? 'Something went wrong',
               );
             } else if (state.signUp.isLoaded) {
