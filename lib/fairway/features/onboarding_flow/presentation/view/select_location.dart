@@ -115,7 +115,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                                     : 'Search Results',
                                 style: context.b1.copyWith(
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.primaryButton,
+                                  color: AppColors.primary,
                                 ),
                               ),
                             ),
@@ -148,7 +148,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                                           Text(
                                             ' • Nearby',
                                             style: context.b2.copyWith(
-                                              color: AppColors.primaryButton,
+                                              color: AppColors.primary,
                                             ),
                                           ),
                                       ],
@@ -195,7 +195,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
               builder: (context, state) {
                 return FairwayButton(
                   borderRadius: 15,
-                  backgroundColor: AppColors.primaryButton,
+                  backgroundColor: AppColors.primary,
                   onPressed: state.hasSelectedLocation
                       ? () =>
                           context.read<OnboardingFlowCubit>().updateLocation()

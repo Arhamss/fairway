@@ -64,5 +64,43 @@ flutter:
   fonts:
     - family: Gothic
       fonts:
-        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-bold.ttf
-        
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-book.otf
+          weight: 400
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-bookoblique.otf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-medium.otf
+          weight: 500
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-mediumoblique.otf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-semi.otf
+          weight: 600
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-semioblique.otf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-bold.otf
+          weight: 700
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-boldoblique.otf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-lig.otf
+          weight: 300
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-ligoblique.otf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-text.otf
+          weight: 400
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-textoblique.otf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-thick.otf
+          weight: 800
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-thickoblique.otf
+          weight: 800
+          style: italic
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-xlig.otf
+          weight: 200
+        - asset: assets/fonts/Fontspring-DEMO-allroundgothic-xligoblique.otf
+          weight: 200
+          style: italic

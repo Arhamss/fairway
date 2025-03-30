@@ -1,11 +1,7 @@
-import 'package:fairway/constants/app_colors.dart';
-import 'package:fairway/constants/app_text_style.dart';
-import 'package:fairway/constants/asset_paths.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/state.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
-import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -76,7 +72,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         return FairwayButton(
                           textColor: AppColors.white,
                           borderRadius: 15,
-                          backgroundColor: AppColors.primaryButton,
+                          backgroundColor: AppColors.primary,
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               context

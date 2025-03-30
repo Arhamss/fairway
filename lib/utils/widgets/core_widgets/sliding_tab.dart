@@ -70,7 +70,7 @@ class _FairwaySlidingTabState extends State<FairwaySlidingTab> {
               width: widget.shortenWidth ? width / 2.2 : width / 2,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: widget.selectedColor ?? AppColors.amberPrimary,
+                color: widget.selectedColor ?? AppColors.primary,
                 borderRadius: BorderRadius.circular(25),
                 border: Border.all(
                   color: AppColors.greenSecondary,

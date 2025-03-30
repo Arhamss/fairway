@@ -1,9 +1,5 @@
-import 'package:fairway/constants/app_colors.dart';
-import 'package:fairway/constants/app_text_style.dart';
-import 'package:fairway/constants/asset_paths.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
-import 'package:flutter/material.dart';
 
 class PasswordRecoveredScreen extends StatelessWidget {
   const PasswordRecoveredScreen({super.key});
@@ -44,7 +40,7 @@ class PasswordRecoveredScreen extends StatelessWidget {
                 FairwayButton(
                   textColor: AppColors.white,
                   borderRadius: 15,
-                  backgroundColor: AppColors.primaryButton,
+                  backgroundColor: AppColors.primary,
                   onPressed: () {
                     context.goNamed(AppRouteNames.signIn);
                   },

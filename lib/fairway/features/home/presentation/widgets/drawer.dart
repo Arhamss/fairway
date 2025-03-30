@@ -1,8 +1,6 @@
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
-import 'package:flutter/material.dart';
-import 'package:fairway/constants/app_colors.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -231,7 +229,7 @@ class DrawerTile extends StatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios,
                   size: 14,
-                  color: iconColor ?? AppColors.primaryButton,
+                  color: iconColor ?? AppColors.primary,
                 ),
             ],
           ),

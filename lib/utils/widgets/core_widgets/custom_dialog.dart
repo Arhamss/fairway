@@ -200,7 +200,7 @@ class CustomDialog {
                   onPressed: isLoading ? null : onConfirm,
                   isLoading: isLoading,
                   backgroundColor:
-                      isDanger ? AppColors.error : AppColors.primaryButton,
+                      isDanger ? AppColors.error : AppColors.primary,
                   textColor: Colors.white,
                   borderRadius: 8,
                 ),

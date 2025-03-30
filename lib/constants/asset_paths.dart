@@ -17,8 +17,7 @@ class AssetPaths {
   static const importGalleryIcon = 'assets/vectors/import_gallery.svg';
   static const menuIcon = 'assets/vectors/menu.svg';
   static const rightArrowIcon = 'assets/vectors/right_arrow_icon.svg';
-  static const closeCircleIcon = 'assets/vectors/close_circle.svg';
-
+  static const fairwaySignupLogo = 'assets/svgs/fairway_signup_logo.svg';
   static const logo = 'assets/images/logo.png';
   static const intro1 = 'assets/images/intro1.png';
   static const intro2 = 'assets/images/intro2.png';
@@ -26,8 +25,7 @@ class AssetPaths {
   static const passwordRecovery = 'assets/images/password_recovery.png';
   static const location = 'assets/images/location.png';
 
-
-  static const sandwiches= 'assets/svgs/sandwiches.svg';
-  static const burgers= 'assets/svgs/burgers.svg';
-  static const pizza= 'assets/svgs/pizza.svg';
+  static const sandwiches = 'assets/svgs/sandwiches.svg';
+  static const burgers = 'assets/svgs/burgers.svg';
+  static const pizza = 'assets/svgs/pizza.svg';
 }

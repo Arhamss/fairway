@@ -1,14 +1,10 @@
-import 'package:fairway/utils/helpers/url_helper.dart';
-import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
-import 'package:fairway/utils/widgets/core_widgets/search_field.dart';
-import 'package:fairway/utils/widgets/core_widgets/text_field.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fairway/constants/app_colors.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/models/restaurant_model.dart';
+import 'package:fairway/utils/helpers/url_helper.dart';
+import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
+import 'package:fairway/utils/widgets/core_widgets/search_field.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -104,7 +100,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   'CLEAR ALL',
                   style: context.b2.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primaryButton,
+                    color: AppColors.primary,
                   ),
                 ),
               ),

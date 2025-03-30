@@ -44,7 +44,7 @@ class ToastHelper {
       pauseOnHover: true,
       dragToClose: true,
       progressBarTheme: const ProgressIndicatorThemeData(
-        color: AppColors.amberPrimary,
+        color: AppColors.primary,
         linearMinHeight: 1,
       ),
     );
@@ -54,7 +54,7 @@ class ToastHelper {
     toastification.show(
       icon: const Icon(
         Icons.info_outline,
-        color: AppColors.amberPrimary,
+        color: AppColors.primary,
       ),
       description: Center(
         child: Text(
@@ -71,7 +71,7 @@ class ToastHelper {
       pauseOnHover: true,
       dragToClose: true,
       progressBarTheme: const ProgressIndicatorThemeData(
-        color: AppColors.amberPrimary,
+        color: AppColors.primary,
         linearMinHeight: 1,
       ),
     );

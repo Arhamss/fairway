@@ -1,11 +1,7 @@
-import 'package:fairway/constants/app_colors.dart';
-import 'package:fairway/constants/app_text_style.dart';
-import 'package:fairway/constants/asset_paths.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/state.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
-import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -23,39 +19,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-      ),
-      body: BlocListener<OnboardingFlowCubit, OnboardingFlowState>(
-        listener: (context, state) {
-          if (state.signUp!.isFailure) {
-            ToastHelper.showInfoToast(
-              'Failed to Sign up User',
-            );
-          } else if (state.signUp!.isLoaded) {
-            ToastHelper.showInfoToast(
-              'Signed up User',
-            );
-
-            context.goNamed(AppRouteNames.selectLocation);
-          }
-        },
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Form(
-                key: _formKey,
+      backgroundColor: AppColors.white,
+      body: SafeArea(
+        child: BlocListener<OnboardingFlowCubit, OnboardingFlowState>(
+          listener: (context, state) {
+            if (state.signUp.isFailure) {
+              ToastHelper.showInfoToast(
+                state.signUp.errorMessage ?? 'Something went wrong',
+              );
+            } else if (state.signUp.isLoaded) {
+              context.goNamed(AppRouteNames.selectLocation);
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: constraints.maxHeight * 0.05),
-                    Image.asset(AssetPaths.logo, height: 160),
-                    SizedBox(height: constraints.maxHeight * 0.08),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.05,
+                    ),
+                    SvgPicture.asset(
+                      AssetPaths.fairwaySignupLogo,
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.05,
+                    ),
                     Text(
-                      'Hello, Create Account',
-                      style: context.h1.copyWith(
+                      'Hello, create your account',
+                      style: context.h3.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -63,23 +60,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       children: [
                         Text(
                           'Already have an account? ',
-                          style: context.b2,
+                          style: context.b2.copyWith(
+                            color: AppColors.textGrey,
+                          ),
                         ),
                         GestureDetector(
                           onTap: () {
                             context.goNamed(AppRouteNames.signIn);
                           },
                           child: Text(
-                            ' Sign in',
+                            'Sign in',
                             style: context.b2.copyWith(
-                              color: AppColors.greenPrimary,
+                              color: AppColors.primary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 30),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.05,
+                    ),
                     FairwayTextField(
                       hintText: 'Your Name',
                       labelText: 'Your Name',
@@ -99,40 +100,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       labelText: 'Password',
                       controller: _passwordcontroller,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                    ),
+                    BlocBuilder<OnboardingFlowCubit, OnboardingFlowState>(
+                      builder: (context, state) {
+                        return FairwayButton(
+                          textColor: AppColors.white,
+                          borderRadius: 15,
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              context.read<OnboardingFlowCubit>().signUp(
+                                    _namecontroller.text,
+                                    _emailcontroller.text,
+                                    _passwordcontroller.text,
+                                  );
+                            } else {
+                              ToastHelper.showInfoToast(
+                                'Please fill in all fields',
+                              );
+                            }
+                          },
+                          text: 'Sign up',
+                          isLoading: state.signUp!.isLoading,
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
-            );
-          },
-        ),
-      ),
-      bottomNavigationBar: Container(
-        color: Colors.transparent,
-        padding: const EdgeInsets.fromLTRB(40, 0, 40, 180),
-        child: BlocBuilder<OnboardingFlowCubit, OnboardingFlowState>(
-          builder: (context, state) {
-            return FairwayButton(
-              textColor: AppColors.white,
-              borderRadius: 15,
-              backgroundColor: AppColors.primaryButton,
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  context.read<OnboardingFlowCubit>().signUp(
-                        _namecontroller.text,
-                        _emailcontroller.text,
-                        _passwordcontroller.text,
-                      );
-                } else {
-                  ToastHelper.showInfoToast(
-                    'Please fill in all fields',
-                  );
-                }
-              },
-              text: 'Sign up',
-              isLoading: state.signUp!.isLoading,
-            );
-          },
+            ),
+          ),
         ),
       ),
     );

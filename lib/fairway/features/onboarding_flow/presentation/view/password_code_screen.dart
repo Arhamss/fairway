@@ -1,11 +1,7 @@
-import 'package:fairway/constants/app_colors.dart';
-import 'package:fairway/constants/app_text_style.dart';
-import 'package:fairway/constants/asset_paths.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/state.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
-import 'package:flutter/material.dart';
 
 class PasswordCode extends StatefulWidget {
   const PasswordCode({super.key});
@@ -61,10 +57,12 @@ class _PasswordCodeState extends State<PasswordCode> {
                       return FairwayButton(
                         textColor: AppColors.white,
                         borderRadius: 15,
-                        backgroundColor: AppColors.primaryButton,
+                        backgroundColor: AppColors.primary,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            await context.read<OnboardingFlowCubit>().setResetCode(
+                            await context
+                                .read<OnboardingFlowCubit>()
+                                .setResetCode(
                                   _codeController.text,
                                 );
 

@@ -66,7 +66,7 @@ class _IntroScreensState extends State<IntroScreens> {
         child: FairwayButton(
           textColor: AppColors.white,
           borderRadius: 15,
-          backgroundColor: AppColors.primaryButton,
+          backgroundColor: AppColors.primary,
           onPressed: () {
             final currentPage = _controller.page?.round() ?? 0;
             if (currentPage < 2) {
@@ -82,7 +82,7 @@ class _IntroScreensState extends State<IntroScreens> {
           },
           text: 'Get started',
           isLoading: false,
-          borderColor: AppColors.primaryButton,
+          borderColor: AppColors.primary,
         ),
       ),
     );

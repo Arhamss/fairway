@@ -3,11 +3,10 @@ import 'dart:ui';
 abstract class AppColors {
   ///new
 
-  static const primaryButton = Color.fromRGBO(36, 187, 196, 1);
+  static const primary = Color(0xFF24BBC4);
   static const activeDotColor = Color.fromRGBO(54, 90, 153, 1);
 
-  static const amberPrimary = Color(0xFFFFBF00);
-  static const amberSecondary = Color(0xFFFFFFEA);
+  static const textGrey = Color(0xFF7A869A);
   static const amberTertiary = Color(0xFFFFFBC5);
   static const black = Color(0xFF000000);
   static const white = Color(0xFFFFFFFF);

@@ -21,8 +21,8 @@ class OnboardingFlowState extends Equatable {
     this.selectedAirport,
   });
 
-  final DataState<ApiResponse<AuthData>>? signIn;
-  final DataState<ApiResponse<AuthData>>? signUp;
+  final DataState<ApiResponse<AuthData>> signIn;
+  final DataState<ApiResponse<AuthData>> signUp;
   final DataState<ApiResponse<dynamic>>? forgotPassword;
   final String? resetCode;
   final DataState<ApiResponse<dynamic>>? resetPassword;
