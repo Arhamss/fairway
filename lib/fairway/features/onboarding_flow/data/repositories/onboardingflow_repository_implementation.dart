@@ -1,5 +1,3 @@
-import 'dart:math' as LoggerHelper;
-
 import 'package:fairway/core/api_service/api_service.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
@@ -58,8 +56,8 @@ class OnboardingFlowRepositoryImplementation
           data: apiResponse,
         );
       }
-    } catch (e) {
-      AppLogger.error('Login exception: $e');
+    } catch (e, s) {
+      AppLogger.error('Login exception:', e, s);
       return RepositoryResponse(
         isSuccess: false,
         message: 'Sign in failed: $e',
@@ -80,6 +78,7 @@ class OnboardingFlowRepositoryImplementation
           'name': name,
           'email': email,
           'password': password,
+          'role': 'user',
         },
       );
 
@@ -98,15 +97,15 @@ class OnboardingFlowRepositoryImplementation
           data: apiResponse,
         );
       } else {
-        AppLogger.info('Signup failed: ${apiResponse.errorMessage}');
+        AppLogger.error('Signup failed: ${apiResponse.errorMessage}');
         return RepositoryResponse(
           isSuccess: false,
           message: apiResponse.errorMessage ?? 'Sign up failed',
           data: apiResponse,
         );
       }
-    } catch (e) {
-      AppLogger.info('Signup exception: $e');
+    } catch (e, s) {
+      AppLogger.error('Signup exception:', e, s);
       return RepositoryResponse(
         isSuccess: false,
         message: 'Sign up failed: $e',

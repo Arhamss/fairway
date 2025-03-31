@@ -193,7 +193,6 @@ class BammbuuBottomSheet extends StatelessWidget {
               children: [
                 Expanded(
                   child: FairwayButton(
-                    borderColor: AppColors.disabled,
                     prefixIcon: buttonOnePrefix,
                     text: buttonOneText ?? '',
                     onPressed: buttonOneOnTap,
@@ -204,7 +203,6 @@ class BammbuuBottomSheet extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: FairwayButton(
-                    borderColor: AppColors.disabled,
                     prefixIcon: buttonTwoPrefix,
                     text: buttonTwoText ?? '',
                     onPressed: buttonTwoOnTap,

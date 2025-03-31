@@ -16,41 +16,42 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: Colors.transparent,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        forceMaterialTransparency: true,
       ),
       body: BlocConsumer<OnboardingFlowCubit, OnboardingFlowState>(
         listener: (context, state) async {
-          if (state.location?.isFailure ?? false) {
-            ToastHelper.showInfoToast(
-              state.location?.errorMessage ?? 'Failed to get location',
+          if (state.location.isFailure) {
+            ToastHelper.showErrorToast(
+              state.location.errorMessage ?? 'Failed to get location',
             );
-          } else if (state.location?.isLoaded ?? false) {
-            // Clear the search field when loading airports by location
+          } else if (state.location.isLoaded) {
             locationController.clear();
 
             await context.read<OnboardingFlowCubit>().loadAirports(
-                  lat: state.location?.data!.latitude,
-                  long: state.location?.data?.longitude,
+                  lat: state.location.data!.latitude,
+                  long: state.location.data?.longitude,
                 );
             ToastHelper.showInfoToast('Found nearby airports');
           }
-
-          if (state.updateLocation?.isLoaded ?? false) {
+          if (state.updateLocation.isLoaded) {
             // context.goNamed(AppRouteNames.home);
-          } else if (state.updateLocation?.isFailure ?? false) {
+          } else if (state.updateLocation.isFailure) {
             ToastHelper.showErrorToast(
-              state.updateLocation?.errorMessage ?? 'Failed to update location',
+              state.updateLocation.errorMessage ?? 'Failed to update location',
             );
           }
         },
         builder: (context, state) {
-          final isLoading = state.location?.isLoading ?? false;
+          final isLoading = state.location.isLoading;
 
           return LayoutBuilder(
             builder: (context, constraints) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -61,10 +62,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                     SizedBox(height: constraints.maxHeight * 0.08),
                     Text(
                       'Nearby terminal Restaurants',
-                      style: context.h1.copyWith(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: context.t1,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
@@ -82,9 +80,11 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                             .read<OnboardingFlowCubit>()
                             .getCurrentLocation();
                       },
+                      prefixIcon: const Icon(
+                        Icons.location_searching,
+                      ),
                       text: 'Use current location',
                       isLoading: isLoading,
-                      borderColor: AppColors.greyShade5,
                       splashColor: Colors.transparent,
                     ),
                     const SizedBox(height: 16),
@@ -96,7 +96,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                           .read<OnboardingFlowCubit>()
                           .onLocationInput(value),
                     ),
-                    if (state.airports!.isLoading)
+                    if (state.airports.isLoading)
                       const Center(child: LoadingWidget())
                     else if (state.filteredAirports.isNotEmpty)
                       Expanded(
@@ -110,7 +110,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                                 bottom: 8,
                               ),
                               child: Text(
-                                state.location?.isLoaded ?? false
+                                state.location.isLoaded
                                     ? 'Nearby Airports'
                                     : 'Search Results',
                                 style: context.b1.copyWith(
@@ -144,7 +144,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                                           airport.code,
                                           style: context.b2,
                                         ),
-                                        if (state.location?.isLoaded ?? false)
+                                        if (state.location.isLoaded)
                                           Text(
                                             ' • Nearby',
                                             style: context.b2.copyWith(
@@ -177,34 +177,32 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
       ),
       bottomNavigationBar: Container(
         color: Colors.transparent,
-        padding: const EdgeInsets.fromLTRB(40, 0, 40, 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             BlocConsumer<OnboardingFlowCubit, OnboardingFlowState>(
               listener: (context, state) {
-                if (state.updateLocation?.isLoaded ?? false) {
+                if (state.updateLocation.isLoaded) {
                   context.goNamed(AppRouteNames.homeScreen);
-                } else if (state.updateLocation?.isFailure ?? false) {
+                } else if (state.updateLocation.isFailure) {
                   ToastHelper.showErrorToast(
-                    state.updateLocation?.errorMessage ??
+                    state.updateLocation.errorMessage ??
                         'Failed to update location',
                   );
                 }
               },
               builder: (context, state) {
                 return FairwayButton(
-                  borderRadius: 15,
-                  backgroundColor: AppColors.primary,
+                  borderRadius: 16,
                   onPressed: state.hasSelectedLocation
                       ? () =>
                           context.read<OnboardingFlowCubit>().updateLocation()
                       : null,
                   text: 'Next',
                   textColor: AppColors.white,
-                  borderColor: Colors.transparent,
                   disabled: !state.hasSelectedLocation,
-                  isLoading: state.updateLocation?.isLoading ?? false,
+                  isLoading: state.updateLocation.isLoading,
                 );
               },
             ),

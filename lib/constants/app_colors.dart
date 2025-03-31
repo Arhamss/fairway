@@ -4,6 +4,7 @@ abstract class AppColors {
   ///new
 
   static const primary = Color(0xFF24BBC4);
+  static Color primaryDisabled = const Color(0xFF24BBC4).withValues(alpha: 0.5);
   static const activeDotColor = Color.fromRGBO(54, 90, 153, 1);
 
   static const textGrey = Color(0xFF7A869A);

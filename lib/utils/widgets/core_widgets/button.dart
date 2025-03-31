@@ -10,13 +10,11 @@ class FairwayButton extends StatelessWidget {
     super.key,
     this.backgroundColor = AppColors.primary,
     this.textColor = AppColors.black,
-    this.disabledTextColor = AppColors.disabled,
-    this.disabledBorderColor = AppColors.disabled,
-    this.disabledBackgroundColor = AppColors.greenChipColor,
+    this.disabledTextColor = AppColors.white,
+    this.disabledBackgroundColor = AppColors.primary,
     this.borderRadius = 100,
     this.padding = const EdgeInsets.symmetric(vertical: 12.5, horizontal: 16),
     this.fontWeight = FontWeight.w500,
-    this.borderColor = AppColors.primary,
     this.splashColor = Colors.black12,
     this.fontSize = 16,
     this.prefixIcon,
@@ -36,7 +34,6 @@ class FairwayButton extends StatelessWidget {
   final double borderRadius;
   final EdgeInsets padding;
   final FontWeight fontWeight;
-  final Color borderColor;
   final Color splashColor;
   final double fontSize;
   final Widget? prefixIcon;
@@ -46,7 +43,6 @@ class FairwayButton extends StatelessWidget {
   final double? iconSpacing;
   final bool disabled;
   final Color disabledTextColor;
-  final Color disabledBorderColor;
   final Color disabledBackgroundColor;
   final Color loadingColor;
 
@@ -57,10 +53,11 @@ class FairwayButton extends StatelessWidget {
       style: TextButton.styleFrom(
         minimumSize: Size.zero,
         padding: EdgeInsets.zero,
-        backgroundColor: disabled ? disabledBackgroundColor : backgroundColor,
+        backgroundColor: disabled
+            ? disabledBackgroundColor.withValues(alpha: 0.5)
+            : backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),
-          side: BorderSide(color: disabled ? disabledBorderColor : borderColor),
         ),
         splashFactory: InkRipple.splashFactory,
         overlayColor: splashColor,

@@ -221,23 +221,29 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
               inputFormatters:
                   isNumber ? [FilteringTextInputFormatter.digitsOnly] : null,
               decoration: InputDecoration(
-                filled: true, // Add this
+                filled: true,
                 fillColor: AppColors.greyShade5,
                 counterText: '',
                 hintText: widget.hintText,
                 hintStyle: GoogleFonts.urbanist(
                   color: AppColors.disabled,
                 ),
-                prefixIconConstraints: const BoxConstraints(
-                  minWidth: 40,
-                ),
                 suffixIconConstraints: const BoxConstraints(
                   minWidth: 40,
                 ),
                 suffixIcon: buildSuffixIcon(isPassword, isLocation, state),
                 prefixIcon: isLocation
-                    ? const Icon(Icons.location_on, color: AppColors.disabled)
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 8),
+                        child: SizedBox(
+                          child: SvgPicture.asset(
+                            AssetPaths.locationIcon,
+                            height: 18,
+                          ),
+                        ),
+                      )
                     : null,
+                prefixIconConstraints: const BoxConstraints(),
                 border: baseBorder,
                 focusedBorder: baseBorder,
                 errorBorder: baseBorder,

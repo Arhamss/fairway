@@ -5,7 +5,6 @@ class UserData extends Equatable {
     required this.id,
     required this.name,
     required this.email,
-    // required this.phone,
     required this.location,
   });
 
@@ -15,15 +14,13 @@ class UserData extends Equatable {
       id: userData['id'] as String,
       name: userData['name'] as String,
       email: userData['email'] as String,
-      // phone: userData['phone'] as String,
-      location: userData['location'] as String,
+      location: userData['location'] as String?,
     );
   }
   final String id;
   final String name;
   final String email;
-  // final String phone;
-  final String location;
+  final String? location;
 
   @override
   List<Object?> get props => [id, name, email, location];

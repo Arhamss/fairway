@@ -1,11 +1,9 @@
-import 'package:fairway/app/app.dart';
 import 'package:fairway/core/permissions/permission_manager.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/onboarding_flow/domain/repositories/onboardingflow_repository.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/state.dart';
 import 'package:fairway/fairway/models/location_data_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class OnboardingFlowCubit extends Cubit<OnboardingFlowState> {
@@ -98,7 +96,7 @@ class OnboardingFlowCubit extends Cubit<OnboardingFlowState> {
       state.copyWith(
         location: const DataState.loading(),
         hasSelectedLocation: false,
-        filteredAirports: [], // Clear any previous search results
+        filteredAirports: [],
       ),
     );
 

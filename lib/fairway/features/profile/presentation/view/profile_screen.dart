@@ -193,7 +193,6 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       backgroundColor: Colors.white,
                       textColor: AppColors.error,
-                      borderColor: AppColors.error,
                       isLoading: profileState.deleteAccountStatus.isLoading,
                     ),
                   ],

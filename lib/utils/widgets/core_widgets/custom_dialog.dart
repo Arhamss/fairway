@@ -205,13 +205,11 @@ class CustomDialog {
                   borderRadius: 8,
                 ),
                 const SizedBox(height: 16),
-                // Cancel Button
                 FairwayButton(
                   text: cancelText,
                   onPressed: isLoading ? null : () => Navigator.pop(context),
                   backgroundColor: Colors.transparent,
                   textColor: AppColors.textSecondary,
-                  borderColor: AppColors.greyShade3,
                   borderRadius: 8,
                   isLoading: isLoading,
                 ),

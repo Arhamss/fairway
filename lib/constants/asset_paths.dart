@@ -28,4 +28,5 @@ class AssetPaths {
   static const sandwiches = 'assets/svgs/sandwiches.svg';
   static const burgers = 'assets/svgs/burgers.svg';
   static const pizza = 'assets/svgs/pizza.svg';
+  static const locationIcon = 'assets/svgs/location_icon.svg';
 }
