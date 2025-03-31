@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (token != null) {
         context.goNamed(AppRouteNames.homeScreen);
       } else {
-        context.goNamed(AppRouteNames.introScreens);
+        context.goNamed(AppRouteNames.introScreen);
       }
     });
   }

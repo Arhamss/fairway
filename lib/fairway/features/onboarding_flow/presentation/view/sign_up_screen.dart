@@ -20,6 +20,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+      ),
       body: SafeArea(
         child: BlocListener<OnboardingFlowCubit, OnboardingFlowState>(
           listener: (context, state) {
@@ -38,9 +41,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.05,
-                    ),
                     SvgPicture.asset(
                       AssetPaths.fairwaySignupLogo,
                     ),

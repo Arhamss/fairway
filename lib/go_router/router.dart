@@ -42,9 +42,9 @@ class AppRouter {
         builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
-        path: AppRoutes.introScreens,
-        name: AppRouteNames.introScreens,
-        builder: (context, state) => const IntroScreens(),
+        path: AppRoutes.introScreen,
+        name: AppRouteNames.introScreen,
+        builder: (context, state) => const IntroScreen(),
       ),
       GoRoute(
         path: AppRoutes.signIn,

@@ -3,21 +3,22 @@ import 'package:fairway/fairway/features/onboarding_flow/presentation/widgets/in
 import 'package:fairway/utils/widgets/core_widgets/button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class IntroScreens extends StatefulWidget {
-  const IntroScreens({super.key});
+class IntroScreen extends StatefulWidget {
+  const IntroScreen({super.key});
 
   @override
-  _IntroScreensState createState() => _IntroScreensState();
+  State<IntroScreen> createState() => _IntroScreenState();
 }
 
-class _IntroScreensState extends State<IntroScreens> {
+class _IntroScreenState extends State<IntroScreen> {
   final PageController _controller = PageController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: Colors.transparent,
       ),
       body: Column(
         children: [
@@ -62,11 +63,15 @@ class _IntroScreensState extends State<IntroScreens> {
         ],
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 50, 24, 100),
+        padding: EdgeInsets.fromLTRB(
+          24,
+          0,
+          24,
+          MediaQuery.of(context).size.height * 0.1,
+        ),
         child: FairwayButton(
           textColor: AppColors.white,
           borderRadius: 15,
-          backgroundColor: AppColors.primary,
           onPressed: () {
             final currentPage = _controller.page?.round() ?? 0;
             if (currentPage < 2) {
@@ -82,7 +87,6 @@ class _IntroScreensState extends State<IntroScreens> {
           },
           text: 'Get started',
           isLoading: false,
-          borderColor: AppColors.primary,
         ),
       ),
     );
