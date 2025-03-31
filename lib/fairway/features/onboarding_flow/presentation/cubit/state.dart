@@ -23,7 +23,7 @@ class OnboardingFlowState extends Equatable {
 
   final DataState<ApiResponse<AuthData>> signIn;
   final DataState<ApiResponse<AuthData>> signUp;
-  final DataState<ApiResponse<dynamic>>? forgotPassword;
+  final DataState<ApiResponse<dynamic>> forgotPassword;
   final String? resetCode;
   final DataState<ApiResponse<dynamic>>? resetPassword;
   final DataState<Position>? location;

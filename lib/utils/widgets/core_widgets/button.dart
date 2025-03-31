@@ -68,10 +68,12 @@ class FairwayButton extends StatelessWidget {
       child: Padding(
         padding: padding,
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 20,
                 width: 20,
-                child: LoadingWidget(),
+                child: LoadingWidget(
+                  color: textColor,
+                ),
               )
             : Row(
                 mainAxisSize: MainAxisSize.min,

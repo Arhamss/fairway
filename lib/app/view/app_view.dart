@@ -12,8 +12,9 @@ class AppView extends StatelessWidget {
       child: MaterialApp.router(
         routerConfig: AppRouter.router,
         theme: ThemeData(
-          appBarTheme: AppBarTheme(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
           ),
           useMaterial3: true,
         ),

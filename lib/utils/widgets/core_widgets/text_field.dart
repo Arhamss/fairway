@@ -96,7 +96,7 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
   @override
   void dispose() {
     _focusNode.dispose();
-    _cubit.close(); // Don't forget to close the cubit
+    _cubit.close();
     super.dispose();
   }
 
@@ -192,9 +192,8 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
           return Padding(
             padding: widget.padding,
             child: TextFormField(
-              style: GoogleFonts.urbanist(
+              style: context.b2.copyWith(
                 color: AppColors.textDark,
-                fontSize: 16,
               ),
               onChanged: widget.onChanged,
               onTap: widget.onTap,

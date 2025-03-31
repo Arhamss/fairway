@@ -12,6 +12,27 @@ class IntroScreen extends StatefulWidget {
 
 class _IntroScreenState extends State<IntroScreen> {
   final PageController _controller = PageController();
+  int _currentPageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    FocusManager.instance.primaryFocus?.unfocus();
+    _controller.addListener(() {
+      final page = _controller.page?.round() ?? 0;
+      if (_currentPageIndex != page) {
+        setState(() {
+          _currentPageIndex = page;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,19 +94,16 @@ class _IntroScreenState extends State<IntroScreen> {
           textColor: AppColors.white,
           borderRadius: 15,
           onPressed: () {
-            final currentPage = _controller.page?.round() ?? 0;
-            if (currentPage < 2) {
+            if (_currentPageIndex < 2) {
               _controller.nextPage(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeIn,
               );
             } else {
-              context.goNamed(
-                AppRouteNames.signIn,
-              );
+              context.goNamed(AppRouteNames.signIn);
             }
           },
-          text: 'Get started',
+          text: (_currentPageIndex < 2) ? 'Next' : 'Get Started',
           isLoading: false,
         ),
       ),
