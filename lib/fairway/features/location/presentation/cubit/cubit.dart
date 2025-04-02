@@ -142,12 +142,8 @@ class LocationCubit extends Cubit<LocationState> {
       return;
     }
 
-    if (value.length > 2) {
-      loadAirports(query: value, limit: 5);
-      return;
-    }
+    loadAirports(query: value, limit: 5);
 
-    // Otherwise filter locally
     final lowercaseQuery = value.toLowerCase();
     final airports = state.airports.data?.airports ?? [];
 
