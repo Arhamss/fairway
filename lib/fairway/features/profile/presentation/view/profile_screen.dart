@@ -49,13 +49,13 @@ class ProfileScreen extends StatelessWidget {
           ),
           body: BlocBuilder<HomeCubit, HomeState>(
             builder: (context, homeState) {
-              final userProfile = homeState.userProfile?.data?.data;
+              final userProfile = homeState.userProfile.data;
 
-              if (homeState.userProfile?.isLoading ?? false) {
+              if (homeState.userProfile.isLoading) {
                 return const Center(child: LoadingWidget());
               }
 
-              if (homeState.userProfile?.isFailure ?? false) {
+              if (homeState.userProfile.isFailure) {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

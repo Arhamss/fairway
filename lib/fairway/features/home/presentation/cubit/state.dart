@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:fairway/fairway/models/api_response_model.dart';
 import 'package:fairway/fairway/models/restaurant_model.dart';
 import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
@@ -14,19 +13,19 @@ class HomeState extends Equatable {
     this.recentSearches = const [],
   });
 
-  final DataState<ApiResponse<UserData>>? userProfile;
-  final DataState<ApiResponse<RestaurantList>>? restaurants;
-  final DataState<ApiResponse<RestaurantList>>? featuredRestaurants;
-  final DataState<ApiResponse<RestaurantList>>? nearbyRestaurants;
-  final DataState<ApiResponse<RestaurantList>>? searchResults;
+  final DataState<UserData> userProfile;
+  final DataState<RestaurantList> restaurants;
+  final DataState<RestaurantList> featuredRestaurants;
+  final DataState<RestaurantList> nearbyRestaurants;
+  final DataState<RestaurantList> searchResults;
   final List<String> recentSearches;
 
   HomeState copyWith({
-    DataState<ApiResponse<UserData>>? userProfile,
-    DataState<ApiResponse<RestaurantList>>? restaurants,
-    DataState<ApiResponse<RestaurantList>>? featuredRestaurants,
-    DataState<ApiResponse<RestaurantList>>? nearbyRestaurants,
-    DataState<ApiResponse<RestaurantList>>? searchResults,
+    DataState<UserData>? userProfile,
+    DataState<RestaurantList>? restaurants,
+    DataState<RestaurantList>? featuredRestaurants,
+    DataState<RestaurantList>? nearbyRestaurants,
+    DataState<RestaurantList>? searchResults,
     List<String>? recentSearches,
   }) {
     return HomeState(

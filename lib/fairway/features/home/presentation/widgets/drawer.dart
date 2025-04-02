@@ -33,8 +33,6 @@ class HomeDrawer extends StatelessWidget {
                     ],
                   ),
                 ),
-
-                // Profile section - more compact
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 20,
@@ -44,9 +42,8 @@ class HomeDrawer extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      // Larger profile image
                       const CircleAvatar(
-                        radius: 40, // Increased size
+                        radius: 40,
                         backgroundImage: NetworkImage(
                           'https://placehold.co/600x400',
                         ),
@@ -58,7 +55,7 @@ class HomeDrawer extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              state.userProfile?.data?.data?.name ??
+                              state.userProfile.data?.name ??
                                   'Daniel Jones',
                               style: context.b1.copyWith(
                                 color: AppColors.white,
@@ -69,7 +66,7 @@ class HomeDrawer extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              state.userProfile?.data?.data?.email ??
+                              state.userProfile.data?.email ??
                                   'example@email.com',
                               style: context.b1.copyWith(
                                 color: AppColors.white,
@@ -96,7 +93,7 @@ class HomeDrawer extends StatelessWidget {
                         label: 'My Account',
                         onTap: () {
                           context.goNamed(AppRouteNames
-                              .profileScreen); // Navigate to account page
+                              .profileScreen,);
                         },
                       ),
                       DrawerTile(

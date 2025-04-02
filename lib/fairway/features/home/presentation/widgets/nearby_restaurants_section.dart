@@ -14,7 +14,7 @@ class NearbyRestaurantsSection extends StatefulWidget {
 }
 
 class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
-  String selectedFilter = 'Nearby'; // Default selected filter
+  String selectedFilter = 'Nearby';
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +81,9 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
   Widget _buildNearbyRestaurants(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        final isLoading = state.nearbyRestaurants?.isLoading ?? false;
-        final hasError = state.nearbyRestaurants?.isFailure ?? false;
-        final restaurants =
-            state.nearbyRestaurants?.data?.data?.restaurants ?? [];
+        final isLoading = state.nearbyRestaurants.isLoading;
+        final hasError = state.nearbyRestaurants.isFailure;
+        final restaurants = state.nearbyRestaurants.data?.restaurants ?? [];
 
         if (isLoading) {
           return const SizedBox(
@@ -98,7 +97,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
             height: 200,
             child: Center(
               child: Text(
-                state.nearbyRestaurants?.errorMessage ??
+                state.nearbyRestaurants.errorMessage ??
                     'Failed to load restaurants',
                 style: context.b2.copyWith(color: AppColors.error),
               ),

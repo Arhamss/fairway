@@ -1,9 +1,8 @@
-import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/cubit.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fairway/fairway/features/home/domain/repositories/home_repository.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit({required this.repository}) : super(const HomeState());
@@ -19,7 +18,7 @@ class HomeCubit extends Cubit<HomeState> {
       if (response.isSuccess && response.data?.data != null) {
         emit(
           state.copyWith(
-            userProfile: DataState.loaded(data: response.data),
+            userProfile: DataState.loaded(data: response.data?.data),
           ),
         );
         AppLogger.info('User profile loaded in cubit');
@@ -60,10 +59,9 @@ class HomeCubit extends Cubit<HomeState> {
       if (response.isSuccess && response.data?.data != null) {
         emit(
           state.copyWith(
-            restaurants: DataState.loaded(data: response.data),
+            restaurants: DataState.loaded(data: response.data?.data),
           ),
         );
-        AppLogger.info('Restaurants loaded in cubit');
       } else {
         emit(
           state.copyWith(
@@ -71,9 +69,6 @@ class HomeCubit extends Cubit<HomeState> {
               error: response.message ?? 'Failed to load restaurants',
             ),
           ),
-        );
-        AppLogger.error(
-          'Failed to load restaurants in cubit: ${response.message}',
         );
       }
     } catch (e) {
@@ -96,7 +91,7 @@ class HomeCubit extends Cubit<HomeState> {
       if (response.isSuccess && response.data?.data != null) {
         emit(
           state.copyWith(
-            featuredRestaurants: DataState.loaded(data: response.data),
+            featuredRestaurants: DataState.loaded(data: response.data?.data),
           ),
         );
       } else {
@@ -122,16 +117,14 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(nearbyRestaurants: const DataState.loading()));
 
     try {
-      // Get user's airport from profile if not provided
-      final userAirport =
-          airport ?? state.userProfile?.data?.data?.location ?? '';
+      final userAirport = airport ?? state.userProfile.data?.location ?? '';
 
       final response = await repository.getRestaurants();
 
       if (response.isSuccess && response.data?.data != null) {
         emit(
           state.copyWith(
-            nearbyRestaurants: DataState.loaded(data: response.data),
+            nearbyRestaurants: DataState.loaded(data: response.data?.data),
           ),
         );
       } else {
@@ -152,7 +145,6 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  // Load both featured and nearby restaurants at once
   Future<void> loadAllRestaurantsData() async {
     await loadFeaturedRestaurants();
     await loadNearbyRestaurants();
@@ -170,7 +162,7 @@ class HomeCubit extends Cubit<HomeState> {
 
         emit(
           state.copyWith(
-            searchResults: DataState.loaded(data: response.data),
+            searchResults: DataState.loaded(data: response.data?.data),
           ),
         );
       } else {
@@ -191,16 +183,14 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  // Add a query to recent searches
   void _addToRecentSearches(String query) {
     final updatedSearches = List<String>.from(state.recentSearches);
     if (!updatedSearches.contains(query)) {
-      updatedSearches.insert(0, query); // Add to the top
+      updatedSearches.insert(0, query);
     }
     emit(state.copyWith(recentSearches: updatedSearches));
   }
 
-  // Clear all recent searches
   void clearRecentSearches() {
     emit(state.copyWith(recentSearches: []));
   }

@@ -1,6 +1,6 @@
 import 'package:fairway/export.dart';
-import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/cubit.dart';
-import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/location/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/location/presentation/cubit/state.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
 
 class SelectLocationScreen extends StatefulWidget {
@@ -22,24 +22,27 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         forceMaterialTransparency: true,
       ),
-      body: BlocConsumer<OnboardingFlowCubit, OnboardingFlowState>(
-        listener: (context, state) async {
+      body: BlocConsumer<LocationCubit, LocationState>(
+        listenWhen: (previous, current) =>
+            previous.location != current.location ||
+            previous.updateLocation != current.updateLocation ||
+            previous.airports != current.airports,
+        listener: (context, state) {
+          if (state.updateLocation.isLoaded) {
+            context.goNamed(AppRouteNames.homeScreen);
+          }
+
           if (state.location.isFailure) {
             ToastHelper.showErrorToast(
               state.location.errorMessage ?? 'Failed to get location',
             );
-          } else if (state.location.isLoaded) {
-            locationController.clear();
-
-            await context.read<OnboardingFlowCubit>().loadAirports(
-                  lat: state.location.data!.latitude,
-                  long: state.location.data?.longitude,
-                );
-            ToastHelper.showInfoToast('Found nearby airports');
           }
-          if (state.updateLocation.isLoaded) {
-            // context.goNamed(AppRouteNames.home);
-          } else if (state.updateLocation.isFailure) {
+          if (state.airports.isFailure) {
+            ToastHelper.showErrorToast(
+              state.airports.errorMessage ?? 'Failed to load airports',
+            );
+          }
+          if (state.updateLocation.isFailure) {
             ToastHelper.showErrorToast(
               state.updateLocation.errorMessage ?? 'Failed to update location',
             );
@@ -77,7 +80,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                       backgroundColor: AppColors.greyShade5,
                       onPressed: () async {
                         await context
-                            .read<OnboardingFlowCubit>()
+                            .read<LocationCubit>()
                             .getCurrentLocation();
                       },
                       prefixIcon: const Icon(
@@ -92,13 +95,10 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                       type: FairwayTextFieldType.location,
                       hintText: 'Search for airport',
                       controller: locationController,
-                      onChanged: (value) => context
-                          .read<OnboardingFlowCubit>()
-                          .onLocationInput(value),
+                      onChanged: (value) =>
+                          context.read<LocationCubit>().onLocationInput(value),
                     ),
-                    if (state.airports.isLoading)
-                      const Center(child: LoadingWidget())
-                    else if (state.filteredAirports.isNotEmpty)
+                    if (state.filteredAirports.isNotEmpty)
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +157,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                                       locationController.text =
                                           '${airport.name}, ${airport.code}';
                                       context
-                                          .read<OnboardingFlowCubit>()
+                                          .read<LocationCubit>()
                                           .selectAirport(airport);
                                       FocusScope.of(context).unfocus();
                                     },
@@ -181,7 +181,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            BlocConsumer<OnboardingFlowCubit, OnboardingFlowState>(
+            BlocConsumer<LocationCubit, LocationState>(
               listener: (context, state) {
                 if (state.updateLocation.isLoaded) {
                   context.goNamed(AppRouteNames.homeScreen);
@@ -196,8 +196,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                 return FairwayButton(
                   borderRadius: 16,
                   onPressed: state.hasSelectedLocation
-                      ? () =>
-                          context.read<OnboardingFlowCubit>().updateLocation()
+                      ? () => context.read<LocationCubit>().updateLocation()
                       : null,
                   text: 'Next',
                   textColor: AppColors.white,

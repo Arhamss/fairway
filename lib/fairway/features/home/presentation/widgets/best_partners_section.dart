@@ -1,12 +1,9 @@
-import 'package:fairway/constants/app_colors.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/models/restaurant_model.dart';
 import 'package:fairway/utils/helpers/url_helper.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class BestPartnersSection extends StatelessWidget {
   const BestPartnersSection({super.key});
@@ -37,10 +34,10 @@ class BestPartnersSection extends StatelessWidget {
         const SizedBox(height: 12),
         BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
-            final isLoading = state.featuredRestaurants?.isLoading ?? false;
-            final hasError = state.featuredRestaurants?.isFailure ?? false;
+            final isLoading = state.featuredRestaurants.isLoading;
+            final hasError = state.featuredRestaurants.isFailure;
             final restaurants =
-                state.featuredRestaurants?.data?.data?.restaurants ?? [];
+                state.featuredRestaurants.data?.restaurants ?? [];
 
             if (isLoading) {
               return const Center(
@@ -56,7 +53,7 @@ class BestPartnersSection extends StatelessWidget {
                 height: 150,
                 child: Center(
                   child: Text(
-                    state.featuredRestaurants?.errorMessage ??
+                    state.featuredRestaurants.errorMessage ??
                         'Failed to load partners',
                     style: context.b2.copyWith(color: AppColors.error),
                   ),

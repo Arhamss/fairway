@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:fairway/fairway/features/location/data/models/airport_model.dart';
 
 class LocationData extends Equatable {
   const LocationData({
@@ -9,7 +10,6 @@ class LocationData extends Equatable {
   });
 
   factory LocationData.fromJson(Map<String, dynamic> json) {
-    // Get data from top level structure
     final data = json['data'] as Map<String, dynamic>? ?? json;
 
     final airportsJson = data['airports'] as List<dynamic>;
@@ -33,42 +33,4 @@ class LocationData extends Equatable {
 
   @override
   List<Object?> get props => [airports, totalResults, totalPages, currentPage];
-}
-
-class Airport extends Equatable {
-  const Airport({
-    required this.id,
-    required this.name,
-    required this.code,
-    // this.createdAt,
-    this.terminals = const [],
-    // this.version = 0,
-  });
-
-  factory Airport.fromJson(Map<String, dynamic> json) {
-    return Airport(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      code: json['code'] as String,
-      // createdAt: DateTime.parse(json['createdAt'] as String),
-      terminals:
-          (json['terminals'] as List<dynamic>?)?.cast<String>() ?? const [],
-      // version: json['__v'] as int? ?? 0,
-    );
-  }
-
-  final String id;
-  final String name;
-  final String code;
-  //final DateTime createdAt;
-  final List<String> terminals;
-  // final int version;
-
-  @override
-  List<Object?> get props => [
-        id,
-        name,
-        code,
-        terminals,
-      ];
 }

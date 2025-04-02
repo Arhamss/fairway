@@ -34,13 +34,13 @@ class ChangePasswordScreen extends StatelessWidget {
         ),
         body: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
-            final userProfile = state.userProfile?.data?.data;
+            final userProfile = state.userProfile.data;
 
-            if (state.userProfile?.isLoading ?? false) {
+            if (state.userProfile.isLoading) {
               return const Center(child: LoadingWidget());
             }
 
-            if (state.userProfile?.isFailure ?? false) {
+            if (state.userProfile.isFailure) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

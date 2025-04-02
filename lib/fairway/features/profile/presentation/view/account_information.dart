@@ -32,13 +32,13 @@ class AccountInformationScreen extends StatelessWidget {
         ),
         body: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
-            final userProfile = state.userProfile?.data?.data;
+            final userProfile = state.userProfile;
 
-            if (state.userProfile?.isLoading ?? false) {
+            if (state.userProfile.isLoading) {
               return const Center(child: LoadingWidget());
             }
 
-            if (state.userProfile?.isFailure ?? false) {
+            if (state.userProfile.isFailure) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -59,16 +59,16 @@ class AccountInformationScreen extends StatelessWidget {
               );
             }
 
-            if (userProfile == null) {
+            if (userProfile.data == null) {
               return const EmptyWidget(
                 text: 'No account information available',
               );
             }
 
             final nameController =
-                TextEditingController(text: userProfile.name);
+                TextEditingController(text: userProfile.data?.name);
             final emailController =
-                TextEditingController(text: userProfile.email);
+                TextEditingController(text: userProfile.data?.email);
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -102,8 +102,6 @@ class AccountInformationScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 60),
-
-                  // Email Address Field
                   Text(
                     'Email Address',
                     style: context.b2.copyWith(
@@ -122,8 +120,6 @@ class AccountInformationScreen extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-
-                  // Change Settings Button
                   BlocBuilder<ProfileCubit, ProfileState>(
                     builder: (context, state) {
                       return FairwayButton(

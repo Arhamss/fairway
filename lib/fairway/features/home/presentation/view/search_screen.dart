@@ -35,10 +35,9 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
-          final isLoading = state.searchResults?.isLoading ?? false;
-          final hasError = state.searchResults?.isFailure ?? false;
-          final restaurants =
-              state.searchResults?.data?.data?.restaurants ?? [];
+          final isLoading = state.searchResults.isLoading;
+          final hasError = state.searchResults.isFailure;
+          final restaurants = state.searchResults.data?.restaurants ?? [];
 
           if (_searchController.text.isEmpty) {
             return _buildRecentSearches(context, state.recentSearches);
@@ -51,7 +50,7 @@ class _SearchScreenState extends State<SearchScreen> {
           if (hasError) {
             return Center(
               child: Text(
-                state.searchResults?.errorMessage ?? 'No results found',
+                state.searchResults.errorMessage ?? 'No results found',
                 style: context.b2.copyWith(color: AppColors.error),
               ),
             );

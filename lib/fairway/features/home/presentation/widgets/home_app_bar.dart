@@ -1,9 +1,7 @@
+import 'package:fairway/constants/app_colors.dart';
 import 'package:fairway/go_router/exports.dart';
 import 'package:fairway/utils/widgets/core_widgets/text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:fairway/constants/app_colors.dart';
-import 'package:fairway/constants/asset_paths.dart';
-import 'package:fairway/fairway/features/home/presentation/view/search_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -23,7 +21,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           horizontal: 8,
           vertical: 8,
         ),
-        readOnly: true, // Disable input to make it tappable
+        readOnly: true,
       ),
       actions: [
         IconButton(

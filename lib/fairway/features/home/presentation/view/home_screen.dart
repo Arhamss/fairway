@@ -1,4 +1,3 @@
-import 'package:fairway/constants/app_colors.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
@@ -9,9 +8,7 @@ import 'package:fairway/fairway/features/home/presentation/widgets/drawer.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/flight_alert_banner.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/nearby_restaurants_section.dart';
-import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
-import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,9 +25,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadHomeData() async {
-    await context.read<HomeCubit>().loadUserProfile();
-    // Load restaurant data after profile is loaded
-    await context.read<HomeCubit>().loadAllRestaurantsData();
+    final homeCubit = context.read<HomeCubit>();
+    await homeCubit.loadUserProfile();
+    final user = homeCubit.state.userProfile;
+    if ((user.data?.location ?? '').isEmpty) {
+      context.goNamed(AppRouteNames.selectLocation);
+    }
+    await homeCubit.loadAllRestaurantsData();
   }
 
   @override
@@ -41,15 +42,13 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: const HomeDrawer(),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
-          final isLoading = state.userProfile?.isLoading ?? false;
-          final hasError = state.userProfile?.isFailure ?? false;
-          final userData = state.userProfile?.data?.data;
+          final userData = state.userProfile.data;
 
-          if (isLoading) {
+          if (state.userProfile.isLoading) {
             return const Center(child: LoadingWidget());
           }
 
-          if (hasError) {
+          if (state.userProfile.isFailure) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -76,7 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  // Pass user data to DeliveryInfoRow
                   DeliveryInfoRow(userData: userData),
                   const SizedBox(height: 16),
                   const FlightAlertBanner(),

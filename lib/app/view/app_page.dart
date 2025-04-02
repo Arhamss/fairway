@@ -1,7 +1,9 @@
 import 'package:fairway/app/view/app_view.dart';
 import 'package:fairway/fairway/features/home/data/repositories/home_repository_implementation.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
-import 'package:fairway/fairway/features/onboarding_flow/data/repositories/onboardingflow_repository_implementation.dart';
+import 'package:fairway/fairway/features/location/data/repositories/location_repository_impl.dart';
+import 'package:fairway/fairway/features/location/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/onboarding_flow/data/repositories/onboarding_flow_repository_impl.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/profile/data/repositories/profile_repository_implementation.dart';
 import 'package:fairway/fairway/features/profile/presentation/cubit/cubit.dart';
@@ -21,7 +23,12 @@ class App extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => OnboardingFlowCubit(
-            repository: OnboardingFlowRepositoryImplementation(),
+            repository: OnboardingFlowRepositoryImpl(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => LocationCubit(
+            repository: LocationRepositoryImpl(),
           ),
         ),
         BlocProvider(
