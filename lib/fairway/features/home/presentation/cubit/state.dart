@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/fairway/models/restaurant_model.dart';
 import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
@@ -13,6 +14,7 @@ class HomeState extends Equatable {
     this.recentSearches = const [],
     this.isFilterExpanded = false,
     this.selectedTabIndex = 0,
+    this.selectedSortOption = SortByOption.mostPopular,
   });
 
   final DataState<UserData> userProfile;
@@ -23,7 +25,7 @@ class HomeState extends Equatable {
   final List<String> recentSearches;
   final bool isFilterExpanded;
   final int selectedTabIndex;
-
+  final SortByOption selectedSortOption;
   HomeState copyWith({
     DataState<UserData>? userProfile,
     DataState<RestaurantList>? restaurants,
@@ -33,6 +35,7 @@ class HomeState extends Equatable {
     List<String>? recentSearches,
     bool? isFilterExpanded,
     int? selectedTabIndex,
+    SortByOption? selectedSortOption,
   }) {
     return HomeState(
       userProfile: userProfile ?? this.userProfile,
@@ -43,6 +46,7 @@ class HomeState extends Equatable {
       recentSearches: recentSearches ?? this.recentSearches,
       isFilterExpanded: isFilterExpanded ?? this.isFilterExpanded,
       selectedTabIndex: selectedTabIndex ?? this.selectedTabIndex,
+      selectedSortOption: selectedSortOption ?? this.selectedSortOption,
     );
   }
 
@@ -56,5 +60,6 @@ class HomeState extends Equatable {
         recentSearches,
         isFilterExpanded,
         selectedTabIndex,
+        selectedSortOption,
       ];
 }

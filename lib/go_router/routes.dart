@@ -15,6 +15,7 @@ class AppRoutes {
   static const String profileScreen = '/profile-screen';
   static const String accountInformation = '/account-information';
   static const String changePassword = '/change-password';
+  static const String userLocation = '/user-location';
 }
 
 class AppRouteNames {
@@ -32,4 +33,5 @@ class AppRouteNames {
   static const String profileScreen = 'profile-screen';
   static const String accountInformation = 'account-information';
   static const String changePassword = 'change-password';
+  static const String userLocation = 'user-location';
 }

@@ -1,3 +1,4 @@
+import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/fairway/features/home/domain/repositories/home_repository.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
@@ -196,14 +197,31 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void setFilterExpanded(bool isExpanded) {
+    if (!isExpanded) {
+      emit(
+        state.copyWith(
+          isFilterExpanded: isExpanded,
+          selectedTabIndex: 0,
+        ),
+      );
+      return;
+    }
     emit(
-      state.copyWith(isFilterExpanded: isExpanded),
+      state.copyWith(
+        isFilterExpanded: isExpanded,
+      ),
     );
   }
 
   void setSelectedTabIndex(int index) {
     emit(
       state.copyWith(selectedTabIndex: index),
+    );
+  }
+
+  void setSelectedSortOption(SortByOption option) {
+    emit(
+      state.copyWith(selectedSortOption: option),
     );
   }
 }

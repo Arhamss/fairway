@@ -1,6 +1,5 @@
 export 'package:fairway/constants/constants.dart';
 export 'package:fairway/constants/export.dart';
-export 'package:fairway/core/enums/export.dart';
 export 'package:fairway/go_router/exports.dart';
 export 'package:fairway/utils/helpers/logger_helper.dart';
 export 'package:fairway/utils/helpers/toast_helper.dart';

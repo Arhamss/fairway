@@ -88,6 +88,11 @@ class AppRouter {
         builder: (context, state) => const SelectLocationScreen(),
       ),
       GoRoute(
+        path: AppRoutes.userLocation,
+        name: AppRouteNames.userLocation,
+        builder: (context, state) => const UserLocationScreen(),
+      ),
+      GoRoute(
         path: AppRoutes.homeScreen,
         name: AppRouteNames.homeScreen,
         builder: (context, state) => const HomeScreen(),

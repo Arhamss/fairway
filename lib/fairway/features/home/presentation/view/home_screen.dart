@@ -2,9 +2,9 @@ import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/best_partners_section.dart';
-import 'package:fairway/fairway/features/home/presentation/widgets/category_section.dart';
+import 'package:fairway/fairway/features/home/presentation/widgets/drawer/drawer.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/flight_alert_banner.dart';
-import 'package:fairway/fairway/features/home/presentation/widgets/home_header.dart';
+import 'package:fairway/fairway/features/home/presentation/widgets/home_header/home_header.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/nearby_restaurants_section.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 
@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
@@ -36,6 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkWhiteBackground,
+      key: _scaffoldKey,
+      drawer: const HomeDrawer(),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           final userData = state.userProfile.data;
@@ -67,18 +70,17 @@ class _HomeScreenState extends State<HomeScreen> {
           return SingleChildScrollView(
             child: Column(
               children: [
-                HomeHeader(userData: userData),
-
-                /// Main content
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                HomeHeader(
+                  userData: userData,
+                  scaffoldKey: _scaffoldKey,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       SizedBox(height: 16),
-                      FlightAlertBanner(),
-                      SizedBox(height: 16),
-                      CategorySection(),
+                      FlightAlertNegativeBanner(),
                       SizedBox(height: 16),
                       BestPartnersSection(),
                       SizedBox(height: 16),
