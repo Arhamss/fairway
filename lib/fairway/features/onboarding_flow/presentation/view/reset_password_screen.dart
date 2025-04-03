@@ -94,7 +94,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             return FairwayButton(
               textColor: AppColors.white,
               borderRadius: 15,
-              backgroundColor: AppColors.primary,
+              backgroundColor: AppColors.primaryBlue,
               onPressed: state.resetPassword!.isLoading
                   ? null
                   : () async {

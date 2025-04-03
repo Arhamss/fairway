@@ -81,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   child: Text(
                                     'Sign in',
                                     style: context.b2.copyWith(
-                                      color: AppColors.primary,
+                                      color: AppColors.primaryBlue,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -121,7 +121,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           .read<OnboardingFlowCubit>()
                                           .signUp(
                                             nameController.text.trim(),
-                                            emailController.text.trim().toLowerCase(),
+                                            emailController.text
+                                                .trim()
+                                                .toLowerCase(),
                                             passwordController.text.trim(),
                                           );
                                     } else {

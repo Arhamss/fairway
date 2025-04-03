@@ -57,7 +57,7 @@ class _PasswordCodeState extends State<PasswordCode> {
                       return FairwayButton(
                         textColor: AppColors.white,
                         borderRadius: 15,
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColors.primaryBlue,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             await context

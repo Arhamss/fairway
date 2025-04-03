@@ -99,7 +99,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   'CLEAR ALL',
                   style: context.b2.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
+                    color: AppColors.primaryBlue,
                   ),
                 ),
               ),

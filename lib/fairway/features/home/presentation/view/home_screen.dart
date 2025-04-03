@@ -3,10 +3,8 @@ import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/best_partners_section.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/category_section.dart';
-import 'package:fairway/fairway/features/home/presentation/widgets/delivery_info_row.dart';
-import 'package:fairway/fairway/features/home/presentation/widgets/drawer.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/flight_alert_banner.dart';
-import 'package:fairway/fairway/features/home/presentation/widgets/home_app_bar.dart';
+import 'package:fairway/fairway/features/home/presentation/widgets/home_header.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/nearby_restaurants_section.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 
@@ -38,8 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkWhiteBackground,
-      appBar: const HomeAppBar(),
-      drawer: const HomeDrawer(),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           final userData = state.userProfile.data;
@@ -69,24 +65,29 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  DeliveryInfoRow(userData: userData),
-                  const SizedBox(height: 16),
-                  const FlightAlertBanner(),
-                  const SizedBox(height: 16),
-                  const CategorySection(),
-                  const SizedBox(height: 16),
-                  const BestPartnersSection(),
-                  const SizedBox(height: 16),
-                  const NearbyRestaurantsSection(),
-                  const SizedBox(height: 32),
-                ],
-              ),
+            child: Column(
+              children: [
+                HomeHeader(userData: userData),
+
+                /// Main content
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      SizedBox(height: 16),
+                      FlightAlertBanner(),
+                      SizedBox(height: 16),
+                      CategorySection(),
+                      SizedBox(height: 16),
+                      BestPartnersSection(),
+                      SizedBox(height: 16),
+                      NearbyRestaurantsSection(),
+                      SizedBox(height: 32),
+                    ],
+                  ),
+                ),
+              ],
             ),
           );
         },

@@ -4,7 +4,7 @@ class LoadingWidget extends StatelessWidget {
   const LoadingWidget({
     super.key,
     this.size = 24,
-    this.color = AppColors.primary,
+    this.color = AppColors.primaryBlue,
   });
 
   final double size;

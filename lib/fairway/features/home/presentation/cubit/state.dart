@@ -11,6 +11,8 @@ class HomeState extends Equatable {
     this.nearbyRestaurants = const DataState.initial(),
     this.searchResults = const DataState.initial(),
     this.recentSearches = const [],
+    this.isFilterExpanded = false,
+    this.selectedTabIndex = 0,
   });
 
   final DataState<UserData> userProfile;
@@ -19,6 +21,8 @@ class HomeState extends Equatable {
   final DataState<RestaurantList> nearbyRestaurants;
   final DataState<RestaurantList> searchResults;
   final List<String> recentSearches;
+  final bool isFilterExpanded;
+  final int selectedTabIndex;
 
   HomeState copyWith({
     DataState<UserData>? userProfile,
@@ -27,6 +31,8 @@ class HomeState extends Equatable {
     DataState<RestaurantList>? nearbyRestaurants,
     DataState<RestaurantList>? searchResults,
     List<String>? recentSearches,
+    bool? isFilterExpanded,
+    int? selectedTabIndex,
   }) {
     return HomeState(
       userProfile: userProfile ?? this.userProfile,
@@ -35,6 +41,8 @@ class HomeState extends Equatable {
       nearbyRestaurants: nearbyRestaurants ?? this.nearbyRestaurants,
       searchResults: searchResults ?? this.searchResults,
       recentSearches: recentSearches ?? this.recentSearches,
+      isFilterExpanded: isFilterExpanded ?? this.isFilterExpanded,
+      selectedTabIndex: selectedTabIndex ?? this.selectedTabIndex,
     );
   }
 
@@ -46,5 +54,7 @@ class HomeState extends Equatable {
         nearbyRestaurants,
         searchResults,
         recentSearches,
+        isFilterExpanded,
+        selectedTabIndex,
       ];
 }

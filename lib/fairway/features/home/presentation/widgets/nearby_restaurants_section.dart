@@ -62,7 +62,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
             style: context.b1.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 14,
-              color: isSelected ? AppColors.activeDotColor : AppColors.black,
+              color: isSelected ? AppColors.secondaryBlue : AppColors.black,
             ),
           ),
           const SizedBox(height: 20),

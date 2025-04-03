@@ -194,4 +194,16 @@ class HomeCubit extends Cubit<HomeState> {
   void clearRecentSearches() {
     emit(state.copyWith(recentSearches: []));
   }
+
+  void setFilterExpanded(bool isExpanded) {
+    emit(
+      state.copyWith(isFilterExpanded: isExpanded),
+    );
+  }
+
+  void setSelectedTabIndex(int index) {
+    emit(
+      state.copyWith(selectedTabIndex: index),
+    );
+  }
 }

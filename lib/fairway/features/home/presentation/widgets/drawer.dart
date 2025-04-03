@@ -55,8 +55,7 @@ class HomeDrawer extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              state.userProfile.data?.name ??
-                                  'Daniel Jones',
+                              state.userProfile.data?.name ?? 'Daniel Jones',
                               style: context.b1.copyWith(
                                 color: AppColors.white,
                                 fontWeight: FontWeight.bold,
@@ -92,8 +91,9 @@ class HomeDrawer extends StatelessWidget {
                         icon: Icons.person_outline,
                         label: 'My Account',
                         onTap: () {
-                          context.goNamed(AppRouteNames
-                              .profileScreen,);
+                          context.goNamed(
+                            AppRouteNames.profileScreen,
+                          );
                         },
                       ),
                       DrawerTile(
@@ -226,7 +226,7 @@ class DrawerTile extends StatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios,
                   size: 14,
-                  color: iconColor ?? AppColors.primary,
+                  color: iconColor ?? AppColors.primaryBlue,
                 ),
             ],
           ),

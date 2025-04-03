@@ -3,13 +3,15 @@ import 'dart:ui';
 abstract class AppColors {
   ///new
 
-  static const primary = Color(0xFF24BBC4);
+  static const primaryBlue = Color(0xFF24BBC4);
   static Color primaryDisabled = const Color(0xFF24BBC4).withValues(alpha: 0.5);
-  static const activeDotColor = Color.fromRGBO(54, 90, 153, 1);
-
+  static const secondaryBlue = Color(0xFF2C599D);
+  static const tertiaryBlue = Color(0xFF172B4D);
+  static const primaryAmber = Color(0xFFEF9F27);
   static const textGrey = Color(0xFF7A869A);
   static const amberTertiary = Color(0xFFFFFBC5);
   static const black = Color(0xFF000000);
+  static const grey = Color(0xFF979797);
   static const white = Color(0xFFFFFFFF);
   static const greenPrimary = Color(0xFF14B82C);
   static const greenSecondary = Color(0xFF042F0C);

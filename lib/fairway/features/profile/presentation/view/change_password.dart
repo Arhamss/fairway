@@ -159,7 +159,7 @@ class ChangePasswordScreen extends StatelessWidget {
                               );
                         },
                         isLoading: state.updatePassword?.isLoading ?? false,
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColors.primaryBlue,
                         textColor: AppColors.white,
                       );
                     },

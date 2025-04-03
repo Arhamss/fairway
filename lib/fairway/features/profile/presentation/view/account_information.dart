@@ -131,7 +131,7 @@ class AccountInformationScreen extends StatelessWidget {
                               );
                         },
                         isLoading: state.updateProfile?.isLoading ?? false,
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColors.primaryBlue,
                         textColor: AppColors.white,
                       );
                     },

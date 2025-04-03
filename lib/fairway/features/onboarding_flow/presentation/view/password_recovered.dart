@@ -40,7 +40,7 @@ class PasswordRecoveredScreen extends StatelessWidget {
                 FairwayButton(
                   textColor: AppColors.white,
                   borderRadius: 15,
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColors.primaryBlue,
                   onPressed: () {
                     context.goNamed(AppRouteNames.signIn);
                   },

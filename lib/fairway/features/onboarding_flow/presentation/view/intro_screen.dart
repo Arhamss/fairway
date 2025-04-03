@@ -74,7 +74,7 @@ class _IntroScreenState extends State<IntroScreen> {
             effect: const ExpandingDotsEffect(
               dotWidth: 5,
               dotHeight: 5,
-              activeDotColor: AppColors.activeDotColor,
+              activeDotColor: AppColors.secondaryBlue,
               dotColor: AppColors.greyShade4,
               strokeWidth: 80,
               expansionFactor: 6.3,

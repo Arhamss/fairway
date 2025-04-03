@@ -34,7 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 state.signIn.errorMessage ?? 'Failed to sign in user',
               );
             } else if (state.signIn.isLoaded) {
-              context.goNamed(AppRouteNames.selectLocation);
+              context.goNamed(AppRouteNames.homeScreen);
             }
           },
           child: LayoutBuilder(
@@ -77,7 +77,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 child: Text(
                                   'new account',
                                   style: context.b2.copyWith(
-                                    color: AppColors.primary,
+                                    color: AppColors.primaryBlue,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -124,7 +124,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Text(
                               'Forgot Password?',
                               style: context.b2.copyWith(
-                                color: AppColors.primary,
+                                color: AppColors.primaryBlue,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),

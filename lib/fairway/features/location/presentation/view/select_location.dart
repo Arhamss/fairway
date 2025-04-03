@@ -115,7 +115,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                                     : 'Search Results',
                                 style: context.b1.copyWith(
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.primary,
+                                  color: AppColors.primaryBlue,
                                 ),
                               ),
                             ),
@@ -148,7 +148,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                                           Text(
                                             ' • Nearby',
                                             style: context.b2.copyWith(
-                                              color: AppColors.primary,
+                                              color: AppColors.primaryBlue,
                                             ),
                                           ),
                                       ],
