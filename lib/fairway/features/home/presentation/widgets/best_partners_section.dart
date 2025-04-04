@@ -4,6 +4,7 @@ import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/models/restaurant_model.dart';
 import 'package:fairway/utils/helpers/url_helper.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
+import 'package:fairway/utils/widgets/core_widgets/retry_widget.dart';
 
 class BestPartnersSection extends StatelessWidget {
   const BestPartnersSection({super.key});
@@ -34,12 +35,10 @@ class BestPartnersSection extends StatelessWidget {
         const SizedBox(height: 12),
         BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
-            final isLoading = state.featuredRestaurants.isLoading;
-            final hasError = state.featuredRestaurants.isFailure;
             final restaurants =
                 state.featuredRestaurants.data?.restaurants ?? [];
 
-            if (isLoading) {
+            if (state.featuredRestaurants.isLoading) {
               return const Center(
                 child: SizedBox(
                   height: 150,
@@ -48,16 +47,13 @@ class BestPartnersSection extends StatelessWidget {
               );
             }
 
-            if (hasError) {
-              return SizedBox(
-                height: 150,
-                child: Center(
-                  child: Text(
-                    state.featuredRestaurants.errorMessage ??
-                        'Failed to load partners',
-                    style: context.b2.copyWith(color: AppColors.error),
-                  ),
-                ),
+            if (state.featuredRestaurants.isFailure) {
+              return RetryWidget(
+                message: state.featuredRestaurants.errorMessage ??
+                    'An error occurred fetching features restaurants',
+                onRetry: () {
+                  context.read<HomeCubit>().loadFeaturedRestaurants();
+                },
               );
             }
 
