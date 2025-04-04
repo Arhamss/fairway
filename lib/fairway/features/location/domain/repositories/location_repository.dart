@@ -1,10 +1,11 @@
+import 'package:fairway/fairway/features/location/data/models/airport_request_model.dart';
 import 'package:fairway/fairway/features/location/data/models/location_data_model.dart';
 import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
 abstract class LocationRepository {
   Future<RepositoryResponse<UserData>> updateUserLocation(
-    String location,
+    AirportRequestModel location,
   );
 
   Future<RepositoryResponse<LocationData>> getAirports({

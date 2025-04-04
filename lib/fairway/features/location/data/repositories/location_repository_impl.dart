@@ -2,6 +2,7 @@ import 'package:fairway/core/api_service/api_service.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/di/injector.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
+import 'package:fairway/fairway/features/location/data/models/airport_request_model.dart';
 import 'package:fairway/fairway/features/location/data/models/location_data_model.dart';
 import 'package:fairway/fairway/features/location/domain/repositories/location_repository.dart';
 import 'package:fairway/fairway/models/api_response_model.dart';
@@ -21,15 +22,13 @@ class LocationRepositoryImpl implements LocationRepository {
 
   @override
   Future<RepositoryResponse<UserData>> updateUserLocation(
-    String location,
+    AirportRequestModel location,
   ) async {
     try {
       AppLogger.info('Updating location to: $location');
-      final response = await _apiService.put(
-        Endpoints.customerLocation,
-        {
-          'airportCode': location,
-        },
+      final response = await _apiService.post(
+        endpoint: Endpoints.customerLocation,
+        data: location.toJson(),
       );
 
       final apiResponse = ApiResponse.fromJson(

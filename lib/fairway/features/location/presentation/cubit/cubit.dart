@@ -1,5 +1,6 @@
 import 'package:fairway/core/permissions/permission_manager.dart';
 import 'package:fairway/fairway/features/location/data/models/airport_model.dart';
+import 'package:fairway/fairway/features/location/data/models/airport_request_model.dart';
 import 'package:fairway/fairway/features/location/domain/repositories/location_repository.dart';
 import 'package:fairway/fairway/features/location/presentation/cubit/state.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
@@ -29,7 +30,10 @@ class LocationCubit extends Cubit<LocationState> {
           );
 
           AppLogger.info('Current location: $position');
-          await loadAirports();
+          await loadAirports(
+            lat: position.latitude,
+            long: position.longitude,
+          );
           emit(
             state.copyWith(
               location: DataState.loaded(data: position),
@@ -68,8 +72,15 @@ class LocationCubit extends Cubit<LocationState> {
       ),
     );
 
-    final response =
-        await repository.updateUserLocation(state.selectedAirport!.code);
+    final selectedAirport = state.selectedAirport;
+
+    final response = await repository.updateUserLocation(
+      AirportRequestModel(
+        airportCode: 'DFW',
+        terminal: 'Terminal A',
+        gate: 'A1',
+      ),
+    );
 
     if (response.isSuccess) {
       emit(
@@ -87,6 +98,8 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> loadAirports({
+    double? lat,
+    double? long,
     String? query,
     String? code,
     int page = 1,
@@ -95,9 +108,6 @@ class LocationCubit extends Cubit<LocationState> {
     emit(state.copyWith(airports: const DataState.loading()));
 
     try {
-      final long = state.location.data?.longitude;
-      final lat = state.location.data?.latitude;
-
       final response = await repository.getAirports(
         query: query,
         code: code,
@@ -142,7 +152,7 @@ class LocationCubit extends Cubit<LocationState> {
       return;
     }
 
-    loadAirports(query: value, limit: 5);
+    loadAirports(query: value, limit: 10);
 
     final lowercaseQuery = value.toLowerCase();
     final airports = state.airports.data?.airports ?? [];

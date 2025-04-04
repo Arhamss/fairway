@@ -22,10 +22,10 @@ class Endpoints {
   /// Customer Endpoints
   static const String restaurants = 'customers/restaurants';
   static const String airports = 'customers/airports';
-  static const String customerLocation = 'customers/location';
+  static const String customerLocation = 'customers/my-locations';
   static const String restaurantSearch = 'customers/restaurants/search';
   static const String customerOrderHistory = 'customers/orders/history';
-  static const String customerAirportSearch = 'customers/search';
+  static const String customerAirportSearch = 'customers/airport/search';
   static const String customerProfile = 'customers/profile';
 
   /// Order Endpoints
