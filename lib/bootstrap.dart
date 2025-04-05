@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/di/injector.dart';
 import 'package:flutter/widgets.dart';
 

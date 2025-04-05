@@ -9,7 +9,7 @@ enum FairwayTextFieldType {
   description,
   number,
   text,
-  location, // Add this
+  location,
 }
 
 class FairwayTextFieldState extends Equatable {
@@ -42,7 +42,7 @@ class FairwayTextFieldCubit extends Cubit<FairwayTextFieldState> {
 }
 
 class FairwayTextField extends StatefulWidget {
-  FairwayTextField({
+  const FairwayTextField({
     required this.controller,
     this.padding = EdgeInsets.zero,
     this.labelText,
@@ -50,7 +50,7 @@ class FairwayTextField extends StatefulWidget {
     this.hintColor,
     this.type = FairwayTextFieldType.text,
     this.validator,
-    this.prefixPath,
+    this.prefixPath, // SVG asset path for prefix icon
     this.suffixPath,
     this.contentPadding,
     this.readOnly,
@@ -58,8 +58,10 @@ class FairwayTextField extends StatefulWidget {
     this.regularMaxCharacter = 100,
     this.onTap,
     this.onChanged,
+    this.onClear,
     super.key,
     this.compareValueBuilder,
+    this.enabled = true,
   });
 
   final TextEditingController controller;
@@ -69,14 +71,16 @@ class FairwayTextField extends StatefulWidget {
   final Color? hintColor;
   final FairwayTextFieldType type;
   final String? Function(String?)? validator;
-  final String? prefixPath;
+  final String? prefixPath; // Custom SVG path for prefix icon
   final String? suffixPath;
   final EdgeInsetsGeometry? contentPadding;
   final bool? readOnly;
+  final bool enabled;
   final VoidCallback? onTap;
   final int regularMaxCharacter;
   final int descriptionMaxCharacter;
-  void Function(String)? onChanged;
+  final void Function(String)? onChanged;
+  final VoidCallback? onClear;
   final String Function()? compareValueBuilder;
 
   @override
@@ -107,7 +111,7 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
     final isEmail = widget.type == FairwayTextFieldType.email;
     final isNumber = widget.type == FairwayTextFieldType.number;
     final isDescription = widget.type == FairwayTextFieldType.description;
-    final isLocation = widget.type == FairwayTextFieldType.location; // Add this
+    final isLocation = widget.type == FairwayTextFieldType.location;
     final baseBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(
         isDescription ? 24 : 15,
@@ -149,6 +153,59 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
       return null;
     }
 
+    // Get prefix icon based on field type or custom SVG path
+    Widget? buildPrefixIcon() {
+      // If a custom prefixPath is provided, use it
+      if (widget.prefixPath != null) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 16, right: 8),
+          child: SizedBox(
+            child: SvgPicture.asset(
+              widget.prefixPath!,
+              height: 18,
+            ),
+          ),
+        );
+      }
+
+      // Otherwise, use default icon based on type
+      if (isLocation) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 16, right: 8),
+          child: SizedBox(
+            child: SvgPicture.asset(
+              AssetPaths.locationIcon,
+              height: 18,
+            ),
+          ),
+        );
+      } else if (isEmail) {
+        return const Padding(
+          padding: EdgeInsets.only(left: 16, right: 8),
+          child: SizedBox(
+            child: Icon(
+              Icons.email_outlined,
+              size: 18,
+              color: AppColors.grey,
+            ),
+          ),
+        );
+      } else if (isPassword) {
+        return const Padding(
+          padding: EdgeInsets.only(left: 16, right: 8),
+          child: SizedBox(
+            child: Icon(
+              Icons.lock_outline,
+              size: 18,
+              color: AppColors.grey,
+            ),
+          ),
+        );
+      }
+
+      return null;
+    }
+
     Widget? buildSuffixIcon(
       bool isPassword,
       bool isLocation,
@@ -165,9 +222,15 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
             _cubit.toggleObscureText();
           },
         );
-      } else if (isLocation && widget.controller.text.isNotEmpty) {
+      } else if (widget.controller.text.isNotEmpty && isLocation) {
         return GestureDetector(
-          onTap: () => widget.controller.clear(),
+          onTap: () {
+            widget.controller.clear();
+            // Call the onClear callback if provided
+            if (widget.onClear != null) {
+              widget.onClear!();
+            }
+          },
           child: Container(
             margin: const EdgeInsets.all(8),
             decoration: const BoxDecoration(
@@ -198,6 +261,7 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
               onChanged: widget.onChanged,
               onTap: widget.onTap,
               readOnly: widget.readOnly ?? false,
+              enabled: widget.enabled,
               focusNode: _focusNode,
               autocorrect: widget.type != FairwayTextFieldType.password,
               cursorWidth: 1,
@@ -232,17 +296,7 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
                   minWidth: 40,
                 ),
                 suffixIcon: buildSuffixIcon(isPassword, isLocation, state),
-                prefixIcon: isLocation
-                    ? Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 8),
-                        child: SizedBox(
-                          child: SvgPicture.asset(
-                            AssetPaths.locationIcon,
-                            height: 18,
-                          ),
-                        ),
-                      )
-                    : null,
+                prefixIcon: buildPrefixIcon(),
                 prefixIconConstraints: const BoxConstraints(),
                 border: baseBorder,
                 focusedBorder: baseBorder,
