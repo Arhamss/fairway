@@ -10,17 +10,23 @@ class SavedLocation extends Equatable {
     DateTime? addedAt,
   }) : addedAt = addedAt ?? DateTime.now();
 
+  factory SavedLocation.empty() => SavedLocation(
+        airportName: '',
+        airportCode: '',
+        terminal: '',
+        gate: '',
+        addedAt: DateTime.now(),
+      );
+
   factory SavedLocation.fromJson(Map<String, dynamic> json) {
-    // Handle different response formats
-    final responseJson = json['savedLocations'] ?? json;
     return SavedLocation(
-      airportName: responseJson['airportName'] as String,
-      airportCode: responseJson['airportCode'] as String,
-      terminal: responseJson['terminal'] as String,
-      gate: responseJson['gate'] as String,
-      isCurrent: responseJson['isCurrent'] as bool? ?? false,
-      addedAt: responseJson['addedAt'] != null
-          ? DateTime.parse(responseJson['addedAt'] as String)
+      airportName: json['airportName'] as String,
+      airportCode: json['airportCode'] as String,
+      terminal: json['terminal'] as String,
+      gate: json['gate'] as String,
+      isCurrent: json['isCurrent'] as bool? ?? false,
+      addedAt: json['addedAt'] != null
+          ? DateTime.parse(json['addedAt'] as String)
           : null,
     );
   }

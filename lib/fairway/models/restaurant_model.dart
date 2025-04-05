@@ -1,4 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fairway/fairway/models/api_response/api_response_model.dart';
+import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 
 class Restaurant extends Equatable {
   const Restaurant({
@@ -11,7 +14,6 @@ class Restaurant extends Equatable {
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
-    // Handle both direct restaurant data and nested data
     final restaurantData = json['restaurants'] as Map<String, dynamic>? ?? json;
 
     return Restaurant(
@@ -32,16 +34,13 @@ class Restaurant extends Equatable {
   final List<String> airports;
   final List<String> categories;
 
-  // Helper method to get primary image or placeholder
   String get primaryImage => images.isNotEmpty
       ? images.first
       : 'assets/images/placeholder_restaurant.png';
 
-  // Helper method to check if restaurant is in a specific airport
   bool isInAirport(String airportCode) => airports
       .any((airport) => airport.toLowerCase() == airportCode.toLowerCase());
 
-  // Helper method to check if restaurant belongs to a category
   bool hasCategory(String category) =>
       categories.any((cat) => cat.toLowerCase() == category.toLowerCase());
 
@@ -56,7 +55,6 @@ class Restaurant extends Equatable {
       ];
 }
 
-// You might also want a class for restaurant lists
 class RestaurantList extends Equatable {
   const RestaurantList({
     required this.restaurants,
@@ -66,19 +64,27 @@ class RestaurantList extends Equatable {
   });
 
   factory RestaurantList.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] as Map<String, dynamic>? ?? json;
+    final restaurantsJson = json['restaurants'] as List<dynamic>? ?? [];
 
-    final restaurantsJson = data['restaurants'] as List<dynamic>;
     return RestaurantList(
       restaurants: restaurantsJson
           .map<Restaurant>(
-            (dynamic restaurant) =>
+            (restaurant) =>
                 Restaurant.fromJson(restaurant as Map<String, dynamic>),
           )
           .toList(),
-      totalResults: data['totalResults'] as int? ?? restaurantsJson.length,
-      totalPages: data['totalPages'] as int? ?? 1,
-      currentPage: data['currentPage'] as int? ?? 1,
+      totalResults: json['totalResults'] as int? ?? restaurantsJson.length,
+      totalPages: json['totalPages'] as int? ?? 1,
+      currentPage: json['currentPage'] as int? ?? 1,
+    );
+  }
+
+  static ResponseModel<BaseApiResponse<RestaurantList>> parseResponse(
+      Response response) {
+    return ResponseModel.fromApiResponse<BaseApiResponse<RestaurantList>>(
+      response,
+      (json) => BaseApiResponse<RestaurantList>.fromJson(
+          json, RestaurantList.fromJson),
     );
   }
 

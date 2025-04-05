@@ -99,7 +99,9 @@ class LocationCubit extends Cubit<LocationState> {
 
   Future<void> updateLocation() async {
     if (state.selectedAirport == const Airport.empty() ||
-        state.selectedTerminal == const Terminal.empty()) return;
+        state.selectedTerminal == const Terminal.empty()) {
+      return;
+    }
 
     emit(
       state.copyWith(

@@ -27,9 +27,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final homeCubit = context.read<HomeCubit>();
     await homeCubit.loadUserProfile();
     final user = homeCubit.state.userProfile;
-    if ((user.data?.location ?? '').isEmpty) {
+    final hasCurrentLocation =
+        user.data?.savedLocations.any((location) => location.isCurrent) ??
+            false;
+
+    if (!hasCurrentLocation) {
       context.goNamed(AppRouteNames.selectLocation);
     }
+
     await homeCubit.loadAllRestaurantsData();
   }
 

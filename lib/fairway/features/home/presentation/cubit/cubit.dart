@@ -1,6 +1,7 @@
 import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/fairway/features/home/domain/repositories/home_repository.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
+import 'package:fairway/fairway/models/saved_location_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,10 +17,10 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       final response = await repository.getUserProfile();
 
-      if (response.isSuccess && response.data?.data != null) {
+      if (response.isSuccess && response.data != null) {
         emit(
           state.copyWith(
-            userProfile: DataState.loaded(data: response.data?.data),
+            userProfile: DataState.loaded(data: response.data),
           ),
         );
         AppLogger.info('User profile loaded in cubit');
@@ -57,10 +58,10 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       final response = await repository.getRestaurants();
 
-      if (response.isSuccess && response.data?.data != null) {
+      if (response.isSuccess && response.data != null) {
         emit(
           state.copyWith(
-            restaurants: DataState.loaded(data: response.data?.data),
+            restaurants: DataState.loaded(data: response.data),
           ),
         );
       } else {
@@ -89,10 +90,10 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       final response = await repository.getRestaurants();
 
-      if (response.isSuccess && response.data?.data != null) {
+      if (response.isSuccess && response.data != null) {
         emit(
           state.copyWith(
-            featuredRestaurants: DataState.loaded(data: response.data?.data),
+            featuredRestaurants: DataState.loaded(data: response.data),
           ),
         );
       } else {
@@ -113,19 +114,21 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  // Load nearby restaurants based on user location
   Future<void> loadNearbyRestaurants({String? airport, int limit = 5}) async {
     emit(state.copyWith(nearbyRestaurants: const DataState.loading()));
 
     try {
-      final userAirport = airport ?? state.userProfile.data?.location ?? '';
+      final userAirport = airport ??
+          state.userProfile.data?.savedLocations
+              .firstWhere((loc) => loc.isCurrent, orElse: SavedLocation.empty)
+              .airportName;
 
       final response = await repository.getRestaurants();
 
-      if (response.isSuccess && response.data?.data != null) {
+      if (response.isSuccess && response.data != null) {
         emit(
           state.copyWith(
-            nearbyRestaurants: DataState.loaded(data: response.data?.data),
+            nearbyRestaurants: DataState.loaded(data: response.data),
           ),
         );
       } else {
@@ -157,13 +160,13 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       final response = await repository.searchRestaurants(query);
 
-      if (response.isSuccess && response.data?.data != null) {
+      if (response.isSuccess && response.data != null) {
         // Add query to recent searches
         _addToRecentSearches(query);
 
         emit(
           state.copyWith(
-            searchResults: DataState.loaded(data: response.data?.data),
+            searchResults: DataState.loaded(data: response.data),
           ),
         );
       } else {

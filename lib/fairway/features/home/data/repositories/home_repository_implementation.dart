@@ -2,7 +2,6 @@ import 'package:fairway/core/api_service/api_service.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
 import 'package:fairway/fairway/features/home/domain/repositories/home_repository.dart';
-import 'package:fairway/fairway/models/api_response_model.dart';
 import 'package:fairway/fairway/models/restaurant_model.dart';
 import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
@@ -19,7 +18,7 @@ class HomeRepositoryImplementation implements HomeRepository {
   final AppPreferences _cache;
 
   @override
-  Future<RepositoryResponse<ApiResponse<UserData>>> getUserProfile() async {
+  Future<RepositoryResponse<UserData>> getUserProfile() async {
     try {
       await _cache.init('app-storage');
       final uid = _cache.getUserId() ?? '';
@@ -33,37 +32,24 @@ class HomeRepositoryImplementation implements HomeRepository {
 
       final response = await _apiService.get(
         Endpoints.customerProfile,
-        queryParams: {'id': uid},
       );
 
       AppLogger.info('User profile response: ${response.data}');
-      if (response.data == null) {
-        AppLogger.error('User profile response is null');
-        return RepositoryResponse(
-          isSuccess: false,
-          message: 'User profile response is null',
-        );
-      }
 
-      final apiResponse = ApiResponse.fromJson(
-        response.data as Map<String, dynamic>,
-        UserData.fromJson,
-      );
+      final result = UserData.parseResponse(response);
+      final userData = result.response?.data;
 
-      if (apiResponse.isSuccess && apiResponse.data != null) {
-        AppLogger.info('User profile loaded: ${apiResponse.data!.name}');
+      if (result.isSuccess && userData != null) {
+        AppLogger.info('User profile loaded: ${userData.name}');
         return RepositoryResponse(
           isSuccess: true,
-          data: apiResponse,
+          data: userData,
         );
       } else {
-        AppLogger.error(
-          'Failed to load user profile: ${apiResponse.errorMessage}',
-        );
+        AppLogger.error('Failed to load user profile: ${result.error}');
         return RepositoryResponse(
           isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Failed to load user profile',
-          data: apiResponse,
+          message: result.error ?? 'Failed to load user profile',
         );
       }
     } catch (e) {
@@ -76,38 +62,24 @@ class HomeRepositoryImplementation implements HomeRepository {
   }
 
   @override
-  Future<RepositoryResponse<ApiResponse<UserData>>> updateUserProfile() {
-    // TODO: implement updateUserProfile
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<RepositoryResponse<ApiResponse<RestaurantList>>>
-      getRestaurants() async {
+  Future<RepositoryResponse<RestaurantList>> getRestaurants() async {
     try {
-      final response = await _apiService.get(
-        Endpoints.restaurants,
-      );
+      final response = await _apiService.get(Endpoints.restaurants);
 
-      final apiResponse = ApiResponse.fromJson(
-        response.data as Map<String, dynamic>,
-        RestaurantList.fromJson,
-      );
+      final result = RestaurantList.parseResponse(response);
+      final data = result.response?.data;
 
-      if (apiResponse.isSuccess && apiResponse.data != null) {
+      if (result.isSuccess && data != null) {
         AppLogger.info('Restaurants loaded successfully');
         return RepositoryResponse(
           isSuccess: true,
-          data: apiResponse,
+          data: data,
         );
       } else {
-        AppLogger.error(
-          'Failed to load restaurants: ${apiResponse.errorMessage}',
-        );
+        AppLogger.error('Failed to load restaurants: ${result.error}');
         return RepositoryResponse(
           isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Failed to load restaurants',
-          data: apiResponse,
+          message: result.error ?? 'Failed to load restaurants',
         );
       }
     } catch (e) {
@@ -120,37 +92,12 @@ class HomeRepositoryImplementation implements HomeRepository {
   }
 
   @override
-  Future<RepositoryResponse<ApiResponse<RestaurantList>>> searchRestaurants(
-    String query,
-  ) async {
-    try {
-      final response = await _apiService.get(
-        Endpoints.restaurantSearch,
-        queryParams: {'q': query},
-      );
+  Future<RepositoryResponse<RestaurantList>> searchRestaurants(String query) {
+    throw UnimplementedError();
+  }
 
-      final apiResponse = ApiResponse.fromJson(
-        response.data as Map<String, dynamic>,
-        RestaurantList.fromJson,
-      );
-
-      if (apiResponse.isSuccess && apiResponse.data != null) {
-        return RepositoryResponse(
-          isSuccess: true,
-          data: apiResponse,
-        );
-      } else {
-        return RepositoryResponse(
-          isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Failed to search restaurants',
-          data: apiResponse,
-        );
-      }
-    } catch (e) {
-      return RepositoryResponse(
-        isSuccess: false,
-        message: 'Failed to search restaurants: $e',
-      );
-    }
+  @override
+  Future<RepositoryResponse<UserData>> updateUserProfile() {
+    throw UnimplementedError();
   }
 }

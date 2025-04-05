@@ -5,7 +5,8 @@ import 'package:fairway/core/endpoints/endpoints.dart';
 import 'package:fairway/fairway/features/location/data/models/airport_request_model.dart';
 import 'package:fairway/fairway/features/location/data/models/location_data_model.dart';
 import 'package:fairway/fairway/features/location/domain/repositories/location_repository.dart';
-import 'package:fairway/fairway/models/api_response_model.dart';
+import 'package:fairway/fairway/models/api_response/api_response_model.dart';
+import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
@@ -69,14 +70,8 @@ class LocationRepositoryImpl implements LocationRepository {
     try {
       final queryParams = <String, dynamic>{};
 
-      if (query != null && query.isNotEmpty) {
-        queryParams['airportName'] = query;
-      }
-
-      if (code != null && code.isNotEmpty) {
-        queryParams['code'] = code;
-      }
-
+      if ((query ?? '').isNotEmpty) queryParams['airportName'] = query;
+      if ((code ?? '').isNotEmpty) queryParams['code'] = code;
       if (lat != null && long != null) {
         queryParams['lat'] = lat.toString();
         queryParams['long'] = long.toString();
@@ -87,25 +82,20 @@ class LocationRepositoryImpl implements LocationRepository {
         queryParams: queryParams,
       );
 
-      final apiResponse = ApiResponse.fromJson(
-        response.data as Map<String, dynamic>,
-        LocationData.fromJson,
-      );
+      final result = LocationData.parseResponse(response);
+      final airportsData = result.response?.data;
 
-      if (apiResponse.isSuccess) {
+      if (result.isSuccess && airportsData != null) {
         AppLogger.info('Airports fetched successfully');
         return RepositoryResponse(
           isSuccess: true,
-          data: apiResponse.data,
+          data: airportsData,
         );
       } else {
-        AppLogger.error(
-          'Failed to fetch airports: ${apiResponse.errorMessage}',
-        );
+        AppLogger.error('Failed to fetch airports: ${result.error}');
         return RepositoryResponse(
           isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Failed to fetch airports',
-          data: apiResponse.data,
+          message: result.error ?? 'Failed to fetch airports',
         );
       }
     } catch (e) {
@@ -131,31 +121,29 @@ class LocationRepositoryImpl implements LocationRepository {
         },
       );
 
-      final apiResponse = ApiResponse.fromJson(
-        response.data as Map<String, dynamic>,
-        LocationData.fromJson,
-      );
+      final result = LocationData.parseResponse(response);
+      final locationData = result.response?.data;
 
-      if (apiResponse.isSuccess) {
-        AppLogger.info('Airports fetched successfully by lat long');
+      if (result.isSuccess && locationData != null) {
+        AppLogger.info('Airports fetched successfully by lat/long');
         return RepositoryResponse(
           isSuccess: true,
-          data: apiResponse.data,
+          data: locationData,
         );
       } else {
         AppLogger.error(
-          'Failed to fetch airports by lat long: ${apiResponse.errorMessage}',
+          'Failed to fetch airports by lat/long: ${result.error}',
         );
         return RepositoryResponse(
           isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Failed to fetch airports',
+          message: result.error ?? 'Failed to fetch airports by lat/long',
         );
       }
     } catch (e) {
-      AppLogger.error('Airports fetch by lat long exception: $e');
+      AppLogger.error('Airports fetch by lat/long exception: $e');
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Failed to fetch airports by lat long: $e',
+        message: 'Failed to fetch airports by lat/long: $e',
       );
     }
   }
@@ -166,14 +154,18 @@ class LocationRepositoryImpl implements LocationRepository {
   ) async {
     try {
       AppLogger.info('Setting current location to: $location');
+
       final response = await _apiService.put(
         Endpoints.setCurrentLocation,
         location.toJson(),
       );
 
-      // Check if the response is successful based on status code
-      final responseData = response.data as Map<String, dynamic>;
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      final result = ResponseModel.fromApiResponse<BaseApiResponse<void>>(
+        response,
+        (json) => BaseApiResponse<void>.fromJson(json, (_) {}),
+      );
+
+      if (result.isSuccess && result.response?.statusCode == 200) {
         AppLogger.info('Current location set successfully');
         return RepositoryResponse(
           isSuccess: true,
@@ -181,17 +173,16 @@ class LocationRepositoryImpl implements LocationRepository {
           message: 'Current location set successfully',
         );
       } else {
-        final errorMessage =
-            responseData['error'] ?? 'Failed to set current location';
-        AppLogger.info('Set current location failed: $errorMessage');
+        final errorMsg = result.error ?? 'Failed to set current location';
+        AppLogger.error('Set current location failed: $errorMsg');
         return RepositoryResponse(
           isSuccess: false,
-          message: errorMessage.toString(),
+          message: errorMsg,
           data: false,
         );
       }
     } catch (e) {
-      AppLogger.info('Set current location exception: $e');
+      AppLogger.error('Set current location exception: $e');
       return RepositoryResponse(
         isSuccess: false,
         message: 'Set current location failed: $e',

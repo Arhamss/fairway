@@ -4,6 +4,7 @@ import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/animated_tabs.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/category_item.dart';
+import 'package:fairway/fairway/models/saved_location_model.dart';
 import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/widgets/core_widgets/button.dart';
 import 'package:fairway/utils/widgets/core_widgets/text_field.dart';
@@ -27,6 +28,8 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
+        final currentLocation = widget.userData?.savedLocations
+            .firstWhere((loc) => loc.isCurrent, orElse: SavedLocation.empty);
         return Container(
           padding: EdgeInsets.fromLTRB(
             0,
@@ -118,8 +121,11 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                                   Row(
                                     children: [
                                       Text(
-                                        widget.userData?.location ??
-                                            'Select location',
+                                        (currentLocation
+                                                    ?.airportName.isNotEmpty ??
+                                                false)
+                                            ? '${currentLocation!.airportName}, ${currentLocation.airportCode}'
+                                            : 'Select location',
                                         style: context.b1.copyWith(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 16,

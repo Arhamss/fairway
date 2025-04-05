@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:fairway/fairway/models/api_response_model.dart';
 import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 
@@ -11,7 +10,7 @@ class ProfileState extends Equatable {
     this.deleteAccountStatus = const DataState.initial(),
   });
 
-  final DataState<ApiResponse<UserData>>? updateProfile;
+  final DataState<UserData>? updateProfile;
   final DataState<dynamic>? updatePassword;
   final DataState<void> logoutStatus;
   final DataState<void> deleteAccountStatus;
@@ -21,7 +20,7 @@ class ProfileState extends Equatable {
       [updateProfile, updatePassword, logoutStatus, deleteAccountStatus];
 
   ProfileState copyWith({
-    DataState<ApiResponse<UserData>>? updateProfile,
+    DataState<UserData>? updateProfile,
     DataState<dynamic>? updatePassword,
     DataState<void>? logoutStatus,
     DataState<void>? deleteAccountStatus,

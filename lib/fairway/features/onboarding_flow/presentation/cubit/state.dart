@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:fairway/fairway/models/api_response_model.dart';
 import 'package:fairway/fairway/models/auth_data_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 
@@ -12,18 +11,18 @@ class OnboardingFlowState extends Equatable {
     this.resetPassword = const DataState.initial(),
   });
 
-  final DataState<ApiResponse<AuthData>> signIn;
-  final DataState<ApiResponse<AuthData>> signUp;
-  final DataState<ApiResponse<dynamic>> forgotPassword;
+  final DataState<AuthData> signIn;
+  final DataState<AuthData> signUp;
+  final DataState<dynamic> forgotPassword;
   final String? resetCode;
-  final DataState<ApiResponse<dynamic>> resetPassword;
+  final DataState<dynamic> resetPassword;
 
   OnboardingFlowState copyWith({
-    DataState<ApiResponse<AuthData>>? signIn,
-    DataState<ApiResponse<AuthData>>? signUp,
-    DataState<ApiResponse<dynamic>>? forgotPassword,
+    DataState<AuthData>? signIn,
+    DataState<AuthData>? signUp,
+    DataState<dynamic>? forgotPassword,
     String? resetCode,
-    DataState<ApiResponse<dynamic>>? resetPassword,
+    DataState<dynamic>? resetPassword,
   }) {
     return OnboardingFlowState(
       signIn: signIn ?? this.signIn,

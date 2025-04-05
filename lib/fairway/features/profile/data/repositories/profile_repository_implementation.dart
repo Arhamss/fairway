@@ -1,9 +1,9 @@
 import 'package:fairway/core/api_service/api_service.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
-import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/profile/domain/repositories/profile_repository.dart';
-import 'package:fairway/fairway/models/api_response_model.dart';
+import 'package:fairway/fairway/models/api_response/api_response_model.dart';
+import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
@@ -17,43 +17,40 @@ class ProfileRepositoryImplementation implements ProfileRepository {
   final ApiService _apiService;
   final AppPreferences _cache;
   @override
-  Future<RepositoryResponse<ApiResponse<UserData>>> updateUserProfile(
-    String name,
-  ) async {
+  Future<RepositoryResponse<UserData>> updateUserProfile(String name) async {
     try {
       final response = await _apiService.get(
         Endpoints.customerProfile,
         queryParams: {'name': name},
       );
 
-      final apiResponse = ApiResponse.fromJson(
-        response.data as Map<String, dynamic>,
-        UserData.fromJson,
-      );
+      final result = UserData.parseResponse(response);
+      final userData = result.response?.data;
 
-      if (apiResponse.isSuccess && apiResponse.data != null) {
+      if (result.isSuccess && userData != null) {
         return RepositoryResponse(
           isSuccess: true,
-          data: apiResponse,
+          data: userData,
         );
       } else {
         return RepositoryResponse(
           isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Failed to search restaurants',
-          data: apiResponse,
+          message: result.error ?? 'Failed to update user profile',
         );
       }
     } catch (e) {
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Failed to search restaurants: $e',
+        message: 'Failed to update user profile: $e',
       );
     }
   }
 
   @override
-  Future<RepositoryResponse<ApiResponse>> updateUserPassword(
-      String oldPassword, String newPassword) async {
+  Future<RepositoryResponse<bool>> updateUserPassword(
+    String oldPassword,
+    String newPassword,
+  ) async {
     try {
       final response = await _apiService.post(
         endpoint: Endpoints.changePassword,
@@ -63,54 +60,57 @@ class ProfileRepositoryImplementation implements ProfileRepository {
         },
       );
 
-      final apiResponse = ApiResponse.fromJson(
-        response.data as Map<String, dynamic>,
-        (json) => json,
+      final result = ResponseModel.fromApiResponse<BaseApiResponse<void>>(
+        response,
+        (json) => BaseApiResponse<void>.fromJson(json, (_) {}),
       );
 
-      if (apiResponse.isSuccess) {
+      if (result.isSuccess) {
         return RepositoryResponse(
           isSuccess: true,
-          data: apiResponse,
+          data: true,
+          message: 'Password updated successfully',
         );
       } else {
         return RepositoryResponse(
           isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Failed to update password',
-          data: apiResponse,
+          message: result.error ?? 'Failed to update password',
+          data: false,
         );
       }
     } catch (e) {
       return RepositoryResponse(
         isSuccess: false,
         message: 'Failed to update password: $e',
+        data: false,
       );
     }
   }
-  
-@override
-Future<RepositoryResponse<void>> deleteAccount() async {
-  try {
-    final response = await _apiService.delete(
-      Endpoints.deleteAccount,
-      
-    );
-    
-    if (response.statusCode == 200) {
+
+  @override
+  Future<RepositoryResponse<bool>> deleteAccount() async {
+    try {
+      final response = await _apiService.delete(Endpoints.deleteAccount);
+
+      if (response.statusCode == 200) {
+        return RepositoryResponse(
+          isSuccess: true,
+          data: true,
+          message: 'Account deleted successfully',
+        );
+      }
+
       return RepositoryResponse(
-        isSuccess: true,
+        isSuccess: false,
+        data: false,
+        message: 'Failed to delete account',
+      );
+    } catch (e) {
+      return RepositoryResponse(
+        isSuccess: false,
+        data: false,
+        message: 'Error: $e',
       );
     }
-    
-    return RepositoryResponse(
-      isSuccess: false,
-      message: 'Failed to delete account',
-    );
-  } catch (e) {
-    return RepositoryResponse(
-      isSuccess: false,
-      message: 'Error: $e',
-    );
   }
-}
 }

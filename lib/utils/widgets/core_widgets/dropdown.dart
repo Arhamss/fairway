@@ -244,7 +244,7 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
                             itemBuilder: (context, index) {
                               final item = _filteredData[index];
                               return DropdownRow(
-                                dropdownText: item[widget.displayKey]!,
+                                dropdownText: item[widget.displayKey] as String,
                                 isSelected: widget.controller.text ==
                                     item[widget.displayKey]!,
                                 onTap: () {

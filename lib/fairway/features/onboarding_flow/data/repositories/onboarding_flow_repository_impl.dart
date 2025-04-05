@@ -3,7 +3,8 @@ import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/di/injector.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
 import 'package:fairway/fairway/features/onboarding_flow/domain/repositories/onboarding_flow_repository.dart';
-import 'package:fairway/fairway/models/api_response_model.dart';
+import 'package:fairway/fairway/models/api_response/api_response_model.dart';
+import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 import 'package:fairway/fairway/models/auth_data_model.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
@@ -19,7 +20,7 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
   final AppPreferences _cache;
 
   @override
-  Future<RepositoryResponse<ApiResponse<AuthData>>> signIn(
+  Future<RepositoryResponse<AuthData>> signIn(
     String email,
     String password,
   ) async {
@@ -32,26 +33,25 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
         },
       );
 
-      final apiResponse = ApiResponse.fromJson(
-        response.data as Map<String, dynamic>,
-        AuthData.fromJson,
-      );
+      final result = AuthData.parseResponse(response);
+      final authData = result.response?.data;
 
-      if (apiResponse.isSuccess && apiResponse.data != null) {
+      if (result.isSuccess && authData != null) {
         _cache
-          ..setToken(apiResponse.data!.token)
-          ..setUserId(apiResponse.data!.id);
-        AppLogger.info('Login successful: ${apiResponse.data!.name}');
+          ..setToken(authData.token)
+          ..setUserId(authData.id);
+
+        AppLogger.info('Login successful: ${authData.name}');
+
         return RepositoryResponse(
           isSuccess: true,
-          data: apiResponse,
+          data: authData,
         );
       } else {
-        AppLogger.info('Login failed: ${apiResponse.errorMessage}');
+        AppLogger.info('Login failed: ${result.error}');
         return RepositoryResponse(
           isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Sign in failed',
-          data: apiResponse,
+          message: result.error ?? 'Sign in failed',
         );
       }
     } catch (e, s) {
@@ -64,7 +64,7 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
   }
 
   @override
-  Future<RepositoryResponse<ApiResponse<AuthData>>> signUp(
+  Future<RepositoryResponse<AuthData>> signUp(
     String name,
     String email,
     String password,
@@ -80,26 +80,24 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
         },
       );
 
-      final apiResponse = ApiResponse.fromJson(
-        response.data as Map<String, dynamic>,
-        AuthData.fromJson,
-      );
+      final result = AuthData.parseResponse(response);
+      final authData = result.response?.data;
 
-      if (apiResponse.isSuccess && apiResponse.data != null) {
+      if (result.isSuccess && authData != null) {
         _cache
-          ..setToken(apiResponse.data!.token)
-          ..setUserId(apiResponse.data!.id);
-        AppLogger.info('Signup successful: ${apiResponse.data!.name}');
+          ..setToken(authData.token)
+          ..setUserId(authData.id);
+
+        AppLogger.info('Signup successful: ${authData.name}');
         return RepositoryResponse(
           isSuccess: true,
-          data: apiResponse,
+          data: authData,
         );
       } else {
-        AppLogger.error('Signup failed: ${apiResponse.errorMessage}');
+        AppLogger.error('Signup failed: ${result.error}');
         return RepositoryResponse(
           isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Sign up failed',
-          data: apiResponse,
+          message: result.error ?? 'Sign up failed',
         );
       }
     } catch (e, s) {
@@ -112,9 +110,7 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
   }
 
   @override
-  Future<RepositoryResponse<ApiResponse<dynamic>>> forgotPassword(
-    String email,
-  ) async {
+  Future<RepositoryResponse<bool>> forgotPassword(String email) async {
     try {
       final response = await _apiService.post(
         endpoint: Endpoints.forgotPassword,
@@ -123,23 +119,24 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
         },
       );
 
-      final apiResponse = ApiResponse<dynamic>.fromJson(
-        response.data as Map<String, dynamic>,
-        (json) => json, // Just pass through the data
+      final result = ResponseModel.fromApiResponse<BaseApiResponse<void>>(
+        response,
+        (json) => BaseApiResponse<void>.fromJson(json, (_) {}),
       );
 
-      if (apiResponse.isSuccess) {
+      if (result.isSuccess) {
         AppLogger.info('Password reset email sent to: $email');
         return RepositoryResponse(
           isSuccess: true,
-          data: apiResponse,
+          data: true,
+          message: 'Password reset email sent',
         );
       } else {
-        AppLogger.info('Password reset failed: ${apiResponse.errorMessage}');
+        AppLogger.info('Password reset failed: ${result.error}');
         return RepositoryResponse(
           isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Failed to reset password',
-          data: apiResponse,
+          message: result.error ?? 'Failed to reset password',
+          data: false,
         );
       }
     } catch (e) {
@@ -147,12 +144,13 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
       return RepositoryResponse(
         isSuccess: false,
         message: 'Failed to reset password: $e',
+        data: false,
       );
     }
   }
 
   @override
-  Future<RepositoryResponse<ApiResponse<dynamic>>> resetPassword(
+  Future<RepositoryResponse<bool>> resetPassword(
     String code,
     String password,
   ) async {
@@ -165,23 +163,24 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
         },
       );
 
-      final apiResponse = ApiResponse<dynamic>.fromJson(
-        response.data as Map<String, dynamic>,
-        (json) => json,
+      final result = ResponseModel.fromApiResponse<BaseApiResponse<void>>(
+        response,
+        (json) => BaseApiResponse<void>.fromJson(json, (_) {}),
       );
 
-      if (apiResponse.isSuccess) {
+      if (result.isSuccess) {
         AppLogger.info('Password reset successful');
         return RepositoryResponse(
           isSuccess: true,
-          data: apiResponse,
+          data: true,
+          message: 'Password reset successful',
         );
       } else {
-        AppLogger.info('Password reset failed: ${apiResponse.errorMessage}');
+        AppLogger.info('Password reset failed: ${result.error}');
         return RepositoryResponse(
           isSuccess: false,
-          message: apiResponse.errorMessage ?? 'Failed to reset password',
-          data: apiResponse,
+          message: result.error ?? 'Failed to reset password',
+          data: false,
         );
       }
     } catch (e) {
@@ -189,6 +188,7 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
       return RepositoryResponse(
         isSuccess: false,
         message: 'Failed to reset password: $e',
+        data: false,
       );
     }
   }

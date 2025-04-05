@@ -1,5 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fairway/fairway/features/location/data/models/airport_model.dart';
+import 'package:fairway/fairway/models/api_response/api_response_model.dart';
+import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 
 class LocationData extends Equatable {
   const LocationData({
@@ -10,32 +13,35 @@ class LocationData extends Equatable {
   });
 
   factory LocationData.fromJson(Map<String, dynamic> json) {
-    // Check if response is a direct airport response or the usual paginated response
     if (json['id'] != null) {
-      // Direct airport response
-      final airportJson = json;
       return LocationData(
-        airports: [Airport.fromJson(airportJson)],
+        airports: [Airport.fromJson(json)],
         totalResults: 1,
         totalPages: 1,
         currentPage: 1,
       );
     }
 
-    // Regular paginated response
-    final data = json['data'] as Map<String, dynamic>? ?? json;
+    final airportsJson = json['airports'] as List<dynamic>? ?? [];
 
-    final airportsJson = data['airports'] as List<dynamic>? ?? [];
     return LocationData(
       airports: airportsJson
           .map<Airport>(
-            (dynamic airport) =>
-                Airport.fromJson(airport as Map<String, dynamic>),
+            (airport) => Airport.fromJson(airport as Map<String, dynamic>),
           )
           .toList(),
-      totalResults: data['totalResults'] as int? ?? 0,
-      totalPages: data['totalPages'] as int? ?? 0,
-      currentPage: data['currentPage'] as int? ?? 0,
+      totalResults: json['totalResults'] as int? ?? 0,
+      totalPages: json['totalPages'] as int? ?? 0,
+      currentPage: json['currentPage'] as int? ?? 0,
+    );
+  }
+
+  static ResponseModel<BaseApiResponse<LocationData>> parseResponse(
+      Response response) {
+    return ResponseModel.fromApiResponse<BaseApiResponse<LocationData>>(
+      response,
+      (json) =>
+          BaseApiResponse<LocationData>.fromJson(json, LocationData.fromJson),
     );
   }
 
