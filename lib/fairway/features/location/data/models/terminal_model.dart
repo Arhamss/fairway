@@ -7,8 +7,12 @@ class Terminal extends Equatable {
     this.gates = const [],
   });
 
+  const Terminal.empty()
+      : id = '',
+        name = '',
+        gates = const [];
+
   factory Terminal.fromJson(Map<String, dynamic> json) {
-    // Handle gates from JSON array
     final gates = <String>[];
     if (json['gates'] != null) {
       final gatesJson = json['gates'] as List<dynamic>;

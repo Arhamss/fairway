@@ -6,8 +6,6 @@ import 'package:fairway/fairway/features/location/data/models/airport_request_mo
 import 'package:fairway/fairway/features/location/data/models/location_data_model.dart';
 import 'package:fairway/fairway/features/location/domain/repositories/location_repository.dart';
 import 'package:fairway/fairway/models/api_response_model.dart';
-import 'package:fairway/fairway/models/saved_location_model.dart';
-import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
@@ -63,18 +61,13 @@ class LocationRepositoryImpl implements LocationRepository {
 
   @override
   Future<RepositoryResponse<LocationData>> getAirports({
-    required int page,
-    required int limit,
     String? query,
     String? code,
     double? lat,
     double? long,
   }) async {
     try {
-      final queryParams = {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      };
+      final queryParams = <String, dynamic>{};
 
       if (query != null && query.isNotEmpty) {
         queryParams['airportName'] = query;

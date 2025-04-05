@@ -1,4 +1,6 @@
 import 'package:fairway/export.dart';
+import 'package:fairway/fairway/features/location/data/models/airport_model.dart';
+import 'package:fairway/fairway/features/location/data/models/terminal_model.dart';
 import 'package:fairway/fairway/features/location/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/location/presentation/cubit/state.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
@@ -16,6 +18,12 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
   final TextEditingController gateController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    context.read<LocationCubit>().loadAirports();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -31,6 +39,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
             previous.airports != current.airports,
         listener: (context, state) {
           if (state.updateLocation.isLoaded) {
+            context.read<LocationCubit>().resetUpdateLocationState();
             context.goNamed(AppRouteNames.homeScreen);
           }
 
@@ -51,7 +60,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
           }
           if (state.location.isLoaded) {
             airportController.text =
-                '${state.selectedAirport!.name}, ${state.selectedAirport!.code}';
+                '${state.selectedAirport.name}, ${state.selectedAirport.code}';
             context.read<LocationCubit>().selectAirport(state.selectedAirport);
             FocusScope.of(context).unfocus();
           }
@@ -71,8 +80,10 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
         },
         builder: (context, state) {
           final isLoading = state.location.isLoading;
-          final isAirportSelected = state.selectedAirport != null;
-          final isTerminalSelected = state.selectedTerminal != null;
+          final isAirportSelected =
+              state.selectedAirport != const Airport.empty();
+          final isTerminalSelected =
+              state.selectedTerminal != const Terminal.empty();
 
           return LayoutBuilder(
             builder: (context, constraints) {
@@ -82,7 +93,6 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Initial setup screen
                       Image.asset(
                         AssetPaths.location,
                         height: 160,
@@ -116,236 +126,122 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                         splashColor: Colors.transparent,
                       ),
                       const SizedBox(height: 16),
-
-                      // Airport search field
-                      FairwayTextField(
-                        type: FairwayTextFieldType.location,
+                      FairwayDropDown(
+                        labelText: 'Airport',
                         hintText: 'Search for airport',
                         controller: airportController,
-                        onChanged: (value) => context
-                            .read<LocationCubit>()
-                            .onLocationInput(value),
-                        onClear: () {
-                          airportController.clear(); // Clear the text field
-                          terminalController
-                              .clear(); // Clear terminal field too
-                          gateController.clear(); // Clear gate field too
+                        displayKey: 'name',
+                        prefixPath: AssetPaths.locationIcon,
+                        dataLoader: () async {
+                          return state.filteredAirports
+                              .map(
+                                (airport) => {
+                                  'name': '${airport.name}, ${airport.code}',
+                                  'code': airport.code,
+                                  'airport': airport,
+                                },
+                              )
+                              .toList();
+                        },
+                        onSelected: (selectedItem) {
+                          final selectedAirport =
+                              selectedItem['airport'] as Airport?;
+                          if (selectedAirport != null) {
+                            airportController.text =
+                                '${selectedAirport.name}, ${selectedAirport.code}';
+                            context
+                                .read<LocationCubit>()
+                                .selectAirport(selectedAirport);
+                            FocusScope.of(context).unfocus();
+                          }
+                        },
+                        onFieldTap: () {
+                          terminalController.clear();
+                          gateController.clear();
                           context.read<LocationCubit>().clearLocationState();
                         },
-                        readOnly: isAirportSelected,
                       ),
-
-                      // Airport search results - only shown when typing
-                      if (!isAirportSelected &&
-                          airportController.text.isNotEmpty &&
-                          state.filteredAirports.isNotEmpty)
-                        // Replace Expanded with a SizedBox
-                        SizedBox(
-                          height: 300, // Fixed height instead of Expanded
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 16,
-                                  top: 8,
-                                  bottom: 8,
-                                ),
-                                child: Text(
-                                  state.location.isLoaded
-                                      ? 'Nearby Airports'
-                                      : 'Search Results',
-                                  style: context.b1.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.primaryBlue,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const ClampingScrollPhysics(),
-                                  itemCount: state.filteredAirports.length,
-                                  itemBuilder: (context, index) {
-                                    final airport =
-                                        state.filteredAirports[index];
-                                    return ListTile(
-                                      dense: true,
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 4,
-                                      ),
-                                      title: Text(
-                                        airport.name,
-                                        style: context.b1.copyWith(
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      subtitle: Row(
-                                        children: [
-                                          Text(
-                                            airport.code,
-                                            style: context.b2,
-                                          ),
-                                          if (state.location.isLoaded)
-                                            Text(
-                                              ' • Nearby',
-                                              style: context.b2.copyWith(
-                                                color: AppColors.primaryBlue,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                      onTap: () {
-                                        airportController.text =
-                                            '${airport.name}, ${airport.code}';
-                                        context
-                                            .read<LocationCubit>()
-                                            .selectAirport(airport);
-                                        FocusScope.of(context).unfocus();
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                      // Selected Airport Container and fields for terminal/gate
                       if (isAirportSelected) ...[
-                        // Terminal selection
                         if (!state.loadingTerminals) ...[
-                          const SizedBox(height: 24),
-                          Text(
-                            'Terminal',
-                            style: context.b1
-                                .copyWith(fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(height: 12),
-                          FairwayTextField(
-                            type: FairwayTextFieldType.location,
-                            hintText: 'Search for terminal',
+                          const SizedBox(height: 8),
+                          FairwayDropDown(
+                            labelText: 'Terminal',
                             controller: terminalController,
-                            onChanged: (value) => context
-                                .read<LocationCubit>()
-                                .onTerminalInput(value),
-                            onClear: () {
-                              terminalController
-                                  .clear(); // Clear the text field
-                              gateController.clear(); // Clear gate field too
+                            displayKey: 'name',
+                            prefixPath: AssetPaths.terminalIcon,
+                            dataLoader: () async {
+                              final sourceList =
+                                  terminalController.text.isNotEmpty
+                                      ? state.filteredTerminals
+                                      : state.availableTerminals;
+
+                              return sourceList
+                                  .map(
+                                    (terminal) => {
+                                      'name': terminal.name,
+                                      'terminal': terminal,
+                                    },
+                                  )
+                                  .toList();
+                            },
+                            onSelected: (selectedItem) {
+                              final selectedTerminal =
+                                  selectedItem['terminal'] as Terminal?;
+                              if (selectedTerminal != null) {
+                                terminalController.text = selectedTerminal.name;
+                                context
+                                    .read<LocationCubit>()
+                                    .selectTerminal(selectedTerminal);
+                                FocusScope.of(context).unfocus();
+                              }
+                            },
+                            onFieldTap: () {
+                              gateController.clear();
                               context
                                   .read<LocationCubit>()
                                   .clearTerminalSelection();
                             },
-                            readOnly: isTerminalSelected,
                           ),
-
-                          // Terminal search results - only when typing
-                          if (!isTerminalSelected &&
-                              terminalController.text.isNotEmpty &&
-                              state.filteredTerminals.isNotEmpty)
-                            _buildSearchResults(
-                              context,
-                              title: 'Matching Terminals',
-                              items: state.filteredTerminals
-                                  .map((terminal) => terminal.name)
-                                  .toList(),
-                              onItemSelected: (index) {
-                                final terminal = state.filteredTerminals[index];
-                                terminalController.text = terminal.name;
-                                context
-                                    .read<LocationCubit>()
-                                    .selectTerminal(terminal);
-                                FocusScope.of(context).unfocus();
-                              },
-                            ),
-
-                          // Show all terminals if not filtered
-                          if (!isTerminalSelected &&
-                              terminalController.text.isEmpty &&
-                              state.availableTerminals.isNotEmpty)
-                            _buildSearchResults(
-                              context,
-                              title: 'Available Terminals',
-                              items: state.availableTerminals
-                                  .map((terminal) => terminal.name)
-                                  .toList(),
-                              onItemSelected: (index) {
-                                final terminal =
-                                    state.availableTerminals[index];
-                                terminalController.text = terminal.name;
-                                context
-                                    .read<LocationCubit>()
-                                    .selectTerminal(terminal);
-                                FocusScope.of(context).unfocus();
-                              },
-                            ),
-
-                          // Terminal selected, show gate selection
                           if (isTerminalSelected) ...[
-                            // Gate selection
                             if (!state.loadingGates) ...[
-                              const SizedBox(height: 24),
-                              Text(
-                                'Gate',
-                                style: context.b1
-                                    .copyWith(fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 12),
-                              FairwayTextField(
-                                type: FairwayTextFieldType.location,
-                                hintText: 'Search for gate',
+                              const SizedBox(height: 8),
+                              FairwayDropDown(
+                                labelText: 'Gate',
                                 controller: gateController,
-                                onChanged: (value) => context
-                                    .read<LocationCubit>()
-                                    .onGateInput(value),
-                                onClear: () {
-                                  gateController
-                                      .clear(); // Clear the text field
+                                displayKey: 'name',
+                                prefixPath: AssetPaths.gateIcon,
+                                dataLoader: () async {
+                                  final sourceList =
+                                      gateController.text.isNotEmpty
+                                          ? state.filteredGates
+                                          : state.availableGates;
+
+                                  return sourceList
+                                      .map(
+                                        (gate) => {
+                                          'name': gate,
+                                          'gate': gate,
+                                        },
+                                      )
+                                      .toList();
+                                },
+                                onSelected: (selectedItem) {
+                                  final selectedGate =
+                                      selectedItem['gate'] as String?;
+                                  if (selectedGate != null) {
+                                    gateController.text = selectedGate;
+                                    context
+                                        .read<LocationCubit>()
+                                        .selectGate(selectedGate);
+                                    FocusScope.of(context).unfocus();
+                                  }
+                                },
+                                onFieldTap: () {
                                   context
                                       .read<LocationCubit>()
                                       .clearGateLocationState();
                                 },
-                                readOnly: state.selectedTerminal != null,
                               ),
-
-                              // Gate search results - only when typing
-                              if (state.selectedGate == null &&
-                                  gateController.text.isNotEmpty &&
-                                  state.filteredGates.isNotEmpty)
-                                _buildSearchResults(
-                                  context,
-                                  title: 'Matching Gates',
-                                  items: state.filteredGates,
-                                  onItemSelected: (index) {
-                                    final gate = state.filteredGates[index];
-                                    gateController.text = gate;
-                                    context
-                                        .read<LocationCubit>()
-                                        .selectGate(gate);
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                ),
-
-                              // Show all gates if not filtered
-                              if (state.selectedGate == null &&
-                                  gateController.text.isEmpty &&
-                                  state.availableGates.isNotEmpty)
-                                _buildSearchResults(
-                                  context,
-                                  title: 'Available Gates',
-                                  items: state.availableGates,
-                                  onItemSelected: (index) {
-                                    final gate = state.availableGates[index];
-                                    gateController.text = gate;
-                                    context
-                                        .read<LocationCubit>()
-                                        .selectGate(gate);
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                ),
                             ] else
                               const Padding(
                                 padding: EdgeInsets.only(top: 24),
@@ -370,61 +266,6 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
     );
   }
 
-  // Reusable widget for search results with fixed height instead of Expanded
-  Widget _buildSearchResults(
-    BuildContext context, {
-    required String title,
-    required List<String> items,
-    required Function(int) onItemSelected,
-  }) {
-    return SizedBox(
-      height: 200,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 16,
-              top: 8,
-              bottom: 8,
-            ),
-            child: Text(
-              title,
-              style: context.b1.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppColors.primaryBlue,
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  dense: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 4,
-                  ),
-                  title: Text(
-                    items[index],
-                    style: context.b1.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  onTap: () => onItemSelected(index),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Bottom navigation bar
   Widget _buildBottomBar(BuildContext context) {
     return Container(
       color: Colors.transparent,
@@ -434,14 +275,17 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
         children: [
           BlocBuilder<LocationCubit, LocationState>(
             builder: (context, state) {
-              final allSelected = state.selectedAirport != null &&
-                  state.selectedTerminal != null;
+              final allSelected =
+                  state.selectedAirport != const Airport.empty() &&
+                      state.selectedTerminal != const Terminal.empty();
               return FairwayButton(
                 borderRadius: 16,
                 onPressed: allSelected
-                    ? () => context.read<LocationCubit>().updateLocation()
+                    ? () {
+                        context.read<LocationCubit>().updateLocation();
+                      }
                     : null,
-                text: 'Next',
+                text: 'Save',
                 textColor: AppColors.white,
                 disabled: !allSelected,
                 isLoading: state.updateLocation.isLoading,

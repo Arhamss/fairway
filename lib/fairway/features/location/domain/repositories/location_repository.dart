@@ -1,7 +1,5 @@
 import 'package:fairway/fairway/features/location/data/models/airport_request_model.dart';
 import 'package:fairway/fairway/features/location/data/models/location_data_model.dart';
-import 'package:fairway/fairway/models/saved_location_model.dart';
-import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
 abstract class LocationRepository {
@@ -14,8 +12,6 @@ abstract class LocationRepository {
   );
 
   Future<RepositoryResponse<LocationData>> getAirports({
-    required int page,
-    required int limit,
     String? query,
     String? code,
     double? lat,

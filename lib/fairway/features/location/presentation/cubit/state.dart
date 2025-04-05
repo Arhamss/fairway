@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:fairway/fairway/features/location/data/models/airport_model.dart';
 import 'package:fairway/fairway/features/location/data/models/location_data_model.dart';
 import 'package:fairway/fairway/features/location/data/models/terminal_model.dart';
-import 'package:fairway/fairway/models/saved_location_model.dart';
-import 'package:fairway/fairway/models/user_data_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -14,9 +12,9 @@ class LocationState extends Equatable {
     this.setCurrentLocation = const DataState.initial(),
     this.airports = const DataState.initial(),
     this.filteredAirports = const [],
-    this.selectedAirport,
+    this.selectedAirport = const Airport.empty(),
     this.hasSelectedLocation = false,
-    this.selectedTerminal,
+    this.selectedTerminal = const Terminal.empty(),
     this.selectedGate,
     this.availableTerminals = const [],
     this.availableGates = const [],
@@ -32,8 +30,8 @@ class LocationState extends Equatable {
   final DataState<bool> setCurrentLocation;
   final DataState<LocationData> airports;
   final List<Airport> filteredAirports;
-  final Airport? selectedAirport;
-  final Terminal? selectedTerminal;
+  final Airport selectedAirport;
+  final Terminal selectedTerminal;
   final String? selectedGate;
   final List<Terminal> availableTerminals;
   final List<String> availableGates;

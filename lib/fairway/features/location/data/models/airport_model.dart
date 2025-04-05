@@ -12,18 +12,23 @@ class Airport extends Equatable {
     this.createdAt,
   });
 
-  factory Airport.fromJson(Map<String, dynamic> json) {
-    // Handle different response formats
-    final id = json['id'] as String? ?? json['_id'] as String?;
+  const Airport.empty()
+      : id = '',
+        name = '',
+        code = '',
+        lat = null,
+        long = null,
+        terminals = const [],
+        createdAt = null;
 
-    // Parse terminals if available
+  factory Airport.fromJson(Map<String, dynamic> json) {
+    final id = json['id'] as String? ?? json['_id'] as String?;
     var terminals = <Terminal>[];
     if (json['terminals'] != null) {
       final terminalsJson = json['terminals'] as List<dynamic>;
       terminals = terminalsJson
           .map(
-            (terminal) => Terminal.fromJson(terminal as Map<String, dynamic>),
-          )
+              (terminal) => Terminal.fromJson(terminal as Map<String, dynamic>))
           .toList();
     }
 

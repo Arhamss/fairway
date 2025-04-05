@@ -2,21 +2,21 @@ class AssetPaths {
   const AssetPaths._();
 
   ///new assets
-  static const eyeIcon = 'assets/vectors/eye.svg';
-  static const eyeSlashIcon = 'assets/vectors/eye_slash.svg';
-  static const smsIcon = 'assets/vectors/sms.svg';
-  static const lockIcon = 'assets/vectors/lock.svg';
-  static const leftArrowIcon = 'assets/vectors/arrow_left.svg';
-  static const arrowDownIcon = 'assets/vectors/arrow_down.svg';
-  static const arrowUpIcon = 'assets/vectors/arrow_up.svg';
-  static const informationIcon = 'assets/vectors/information_icon.svg';
+  static const eyeIcon = 'assets/svgs/eye.svg';
+  static const eyeSlashIcon = 'assets/svgs/eye_slash.svg';
+  static const smsIcon = 'assets/svgs/sms.svg';
+  static const lockIcon = 'assets/svgs/lock.svg';
+  static const leftArrowIcon = 'assets/svgs/arrow_left.svg';
+  static const arrowDownIcon = 'assets/svgs/arrow_down.svg';
+  static const arrowUpIcon = 'assets/svgs/arrow_up.svg';
+  static const informationIcon = 'assets/svgs/information_icon.svg';
   static const notificationEnabledIcon =
       'assets/vectors/notification_enabled.svg';
-  static const searchIcon = 'assets/vectors/search_icon.svg';
-  static const cameraFilledIcon = 'assets/vectors/camera_filled.svg';
-  static const importGalleryIcon = 'assets/vectors/import_gallery.svg';
+  static const searchIcon = 'assets/svgs/search_icon.svg';
+  static const cameraFilledIcon = 'assets/svgs/camera_filled.svg';
+  static const importGalleryIcon = 'assets/svgs/import_gallery.svg';
   static const menuIcon = 'assets/svgs/menu_icon.svg';
-  static const rightArrowIcon = 'assets/vectors/right_arrow_icon.svg';
+  static const rightArrowIcon = 'assets/svgs/right_arrow_icon.svg';
   static const fairwaySignupLogo = 'assets/svgs/fairway_signup_logo.svg';
   static const logo = 'assets/images/logo.png';
   static const intro1 = 'assets/images/intro1.png';
@@ -43,4 +43,6 @@ class AssetPaths {
   static const myOrders = 'assets/svgs/my_orders.svg';
   static const rightArrowRounded = 'assets/svgs/right_arrow_rounded.svg';
   static const notificationIcon = 'assets/svgs/notification_icon.svg';
+  static const terminalIcon = 'assets/svgs/terminal.svg';
+  static const gateIcon = 'assets/svgs/airport_gate.svg';
 }
