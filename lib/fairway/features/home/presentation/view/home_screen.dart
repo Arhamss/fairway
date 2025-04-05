@@ -27,9 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final homeCubit = context.read<HomeCubit>();
     await homeCubit.loadUserProfile();
     final user = homeCubit.state.userProfile;
-    // if ((user.data?.location ?? '').isEmpty) {
-    //   context.goNamed(AppRouteNames.selectLocation);
-    // }
+    if ((user.data?.location ?? '').isEmpty) {
+      context.goNamed(AppRouteNames.selectLocation);
+    }
     await homeCubit.loadAllRestaurantsData();
   }
 
