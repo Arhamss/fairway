@@ -31,7 +31,6 @@ class LocationRepositoryImpl implements LocationRepository {
         data: location.toJson(),
       );
 
-      // Check if the response is successful based on status code
       final responseData = response.data as Map<String, dynamic>;
       if (response.statusCode == 200 || response.statusCode == 201) {
         AppLogger.info('Location updated successfully');
