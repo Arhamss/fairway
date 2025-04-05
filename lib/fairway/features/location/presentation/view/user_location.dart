@@ -57,7 +57,20 @@ class _UserLocationScreenState extends State<UserLocationScreen> {
               ),
             );
           }
-          return BlocBuilder<LocationCubit, LocationState>(
+          return BlocConsumer<LocationCubit, LocationState>(
+            listenWhen: (previous, current) =>
+                previous.setCurrentLocation != current.setCurrentLocation,
+            listener: (context, state) {
+              if (state.setCurrentLocation.isFailure) {
+                ToastHelper.showErrorToast(
+                  state.setCurrentLocation.errorMessage ??
+                      'An error saving your location',
+                );
+              } else if (state.setCurrentLocation.isLoaded) {
+                context.read<HomeCubit>().loadUserProfile();
+                context.pop();
+              }
+            },
             builder: (context, state) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -173,13 +186,19 @@ class _UserLocationScreenState extends State<UserLocationScreen> {
                       text: 'Submit',
                       onPressed: state.selectedLocationIndex != null
                           ? () {
+                              print(
+                                  'Selected index: ${state.selectedLocationIndex}');
                               final selected =
                                   locations[state.selectedLocationIndex!];
-                              AppLogger.info(
-                                  'Selected Location: ${selected.toJson()}');
+
+                              context.read<LocationCubit>().setCurrentLocation(
+                                    airportCode: selected.airportCode,
+                                    terminal: selected.terminal,
+                                    gate: selected.gate,
+                                  );
                             }
                           : null,
-                      isLoading: false,
+                      isLoading: state.setCurrentLocation.isLoading,
                       textColor: AppColors.white,
                       borderRadius: 16,
                       fontWeight: FontWeight.w600,

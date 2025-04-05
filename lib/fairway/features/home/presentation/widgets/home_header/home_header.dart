@@ -118,25 +118,30 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                                       color: AppColors.secondaryBlue,
                                     ),
                                   ),
+                                  const SizedBox(height: 2),
                                   Row(
                                     children: [
-                                      Text(
-                                        (currentLocation
-                                                    ?.airportName.isNotEmpty ??
-                                                false)
-                                            ? '${currentLocation!.airportName}, ${currentLocation.airportCode}'
-                                            : 'Select location',
-                                        style: context.b1.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16,
+                                      Expanded(
+                                        child: Text(
+                                          (currentLocation?.airportName
+                                                      .isNotEmpty ??
+                                                  false)
+                                              ? '${currentLocation!.airportName}, ${currentLocation.airportCode}'
+                                              : 'Select location',
+                                          style: context.b1.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
+                                          maxLines:
+                                              state.isFilterExpanded ? 5 : 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                       const Icon(
                                         Icons.arrow_right_rounded,
                                         color: AppColors.primaryAmber,
                                       ),
+                                      const SizedBox(width: 16)
                                     ],
                                   ),
                                 ],

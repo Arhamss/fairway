@@ -65,9 +65,11 @@ class LocationCubit extends Cubit<LocationState> {
     );
   }
 
-  Future<void> setCurrentLocation() async {
-    if (state.location.data == null) return;
-
+  Future<void> setCurrentLocation({
+    String? airportCode,
+    String? terminal,
+    String? gate,
+  }) async {
     emit(
       state.copyWith(
         setCurrentLocation: const DataState.loading(),
@@ -76,9 +78,9 @@ class LocationCubit extends Cubit<LocationState> {
 
     final response = await repository.setCurrentLocation(
       AirportRequestModel(
-        airportCode: state.selectedAirport.code,
-        terminal: state.selectedTerminal.name,
-        gate: state.selectedGate ?? '',
+        airportCode: airportCode ?? state.selectedAirport.code,
+        terminal: terminal ?? state.selectedTerminal.name,
+        gate: gate ?? state.selectedGate ?? '',
       ),
     );
 
