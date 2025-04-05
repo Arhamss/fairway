@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await homeCubit.loadUserProfile();
     final user = homeCubit.state.userProfile;
     final hasCurrentLocation =
-        user.data?.savedLocations.any((location) => location.isCurrent) ??
+        user.data?.savedLocations.any((location) => !location.isCurrent) ??
             false;
 
     if (!hasCurrentLocation) {

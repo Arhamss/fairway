@@ -356,4 +356,10 @@ class LocationCubit extends Cubit<LocationState> {
       ),
     );
   }
+
+  void selectSavedLocationIndex(int index) {
+    emit(
+      state.copyWith(selectedLocationIndex: index),
+    );
+  }
 }

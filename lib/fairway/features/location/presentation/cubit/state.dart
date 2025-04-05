@@ -22,6 +22,7 @@ class LocationState extends Equatable {
     this.filteredGates = const [],
     this.loadingTerminals = false,
     this.loadingGates = false,
+    this.selectedLocationIndex,
   });
 
   final DataState<Position> location;
@@ -39,7 +40,7 @@ class LocationState extends Equatable {
   final List<String> filteredGates;
   final bool loadingTerminals;
   final bool loadingGates;
-
+  final int? selectedLocationIndex;
   LocationState copyWith({
     DataState<Position>? location,
     bool? hasSelectedLocation,
@@ -56,6 +57,7 @@ class LocationState extends Equatable {
     List<String>? filteredGates,
     bool? loadingTerminals,
     bool? loadingGates,
+    int? selectedLocationIndex,
   }) {
     return LocationState(
       location: location ?? this.location,
@@ -73,6 +75,8 @@ class LocationState extends Equatable {
       filteredGates: filteredGates ?? this.filteredGates,
       loadingTerminals: loadingTerminals ?? this.loadingTerminals,
       loadingGates: loadingGates ?? this.loadingGates,
+      selectedLocationIndex:
+          selectedLocationIndex ?? this.selectedLocationIndex,
     );
   }
 
@@ -93,5 +97,6 @@ class LocationState extends Equatable {
         filteredGates,
         loadingTerminals,
         loadingGates,
+        selectedLocationIndex,
       ];
 }
