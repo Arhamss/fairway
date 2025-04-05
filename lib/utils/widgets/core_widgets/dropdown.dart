@@ -118,7 +118,7 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
     final setEnabledColor = isFocused || hasText;
 
     final borderColor =
-        _valueChanged ? AppColors.greenPrimary : AppColors.disabled;
+        _valueChanged ? AppColors.primaryBlue : AppColors.disabled;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
