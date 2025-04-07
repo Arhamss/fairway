@@ -16,11 +16,13 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
   final TextEditingController airportController = TextEditingController();
   final TextEditingController terminalController = TextEditingController();
   final TextEditingController gateController = TextEditingController();
+  Airport? previousAirport;
 
   @override
   void initState() {
     super.initState();
     context.read<LocationCubit>().loadAirports();
+    previousAirport = context.read<LocationCubit>().state.selectedAirport;
   }
 
   @override
@@ -38,6 +40,16 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
             previous.updateLocation != current.updateLocation ||
             previous.airports != current.airports,
         listener: (context, state) {
+          if (state.selectedAirport != previousAirport) {
+            previousAirport = state.selectedAirport;
+            if (state.selectedAirport != const Airport.empty()) {
+              airportController.text =
+                  '${state.selectedAirport.name}, ${state.selectedAirport.code}';
+            } else {
+              airportController.clear();
+            }
+          }
+
           if (state.updateLocation.isLoaded) {
             context.read<LocationCubit>().resetUpdateLocationState();
             context.goNamed(AppRouteNames.homeScreen);
@@ -66,16 +78,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
           }
 
           if (state.updateLocation.isLoaded) {
-            context.read<LocationCubit>().setCurrentLocation();
-          }
-
-          if (state.setCurrentLocation.isLoaded) {
             context.goNamed(AppRouteNames.homeScreen);
-          }
-          if (state.setCurrentLocation.isFailure) {
-            ToastHelper.showErrorToast(
-              state.setCurrentLocation.errorMessage ?? 'Failed to set location',
-            );
           }
         },
         builder: (context, state) {
@@ -133,7 +136,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                         displayKey: 'name',
                         prefixPath: AssetPaths.locationIcon,
                         dataLoader: () async {
-                          return state.filteredAirports
+                          return (state.airports.data?.airports ?? [])
                               .map(
                                 (airport) => {
                                   'name': '${airport.name}, ${airport.code}',
@@ -170,12 +173,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                             displayKey: 'name',
                             prefixPath: AssetPaths.terminalIcon,
                             dataLoader: () async {
-                              final sourceList =
-                                  terminalController.text.isNotEmpty
-                                      ? state.filteredTerminals
-                                      : state.availableTerminals;
-
-                              return sourceList
+                              return state.availableTerminals
                                   .map(
                                     (terminal) => {
                                       'name': terminal.name,
@@ -211,12 +209,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                                 displayKey: 'name',
                                 prefixPath: AssetPaths.gateIcon,
                                 dataLoader: () async {
-                                  final sourceList =
-                                      gateController.text.isNotEmpty
-                                          ? state.filteredGates
-                                          : state.availableGates;
-
-                                  return sourceList
+                                  return state.availableGates
                                       .map(
                                         (gate) => {
                                           'name': gate,

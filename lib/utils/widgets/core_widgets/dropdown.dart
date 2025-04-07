@@ -58,6 +58,15 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
   }
 
   @override
+  void didUpdateWidget(covariant FairwayDropDown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.controller.text != _searchController.text) {
+      _searchController.text = widget.controller.text;
+    }
+  }
+
+  @override
   void dispose() {
     _focusNode.dispose();
     super.dispose();

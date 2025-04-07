@@ -1,7 +1,7 @@
 import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/fairway/features/home/domain/repositories/home_repository.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
-import 'package:fairway/fairway/models/saved_location_model.dart';
+import 'package:fairway/fairway/models/saved_locations/saved_location_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,23 +83,29 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  // Load featured restaurants (for best partners)
-  Future<void> loadFeaturedRestaurants({int limit = 5}) async {
-    emit(state.copyWith(featuredRestaurants: const DataState.loading()));
+  Future<void> loadBestPartners({int limit = 5}) async {
+    emit(
+      state.copyWith(
+        bestPartnerRestaurants: const DataState.loading(),
+      ),
+    );
 
     try {
       final response = await repository.getRestaurants();
 
       if (response.isSuccess && response.data != null) {
+        print('Best partners loaded successfully');
+        print("Response: ${response.data}");
+        print("Response length: ${response.data?.restaurants.length}");
         emit(
           state.copyWith(
-            featuredRestaurants: DataState.loaded(data: response.data),
+            bestPartnerRestaurants: DataState.loaded(data: response.data),
           ),
         );
       } else {
         emit(
           state.copyWith(
-            featuredRestaurants: DataState.failure(
+            bestPartnerRestaurants: DataState.failure(
               error: response.message ?? 'Failed to load featured restaurants',
             ),
           ),
@@ -108,7 +114,7 @@ class HomeCubit extends Cubit<HomeState> {
     } catch (e) {
       emit(
         state.copyWith(
-          featuredRestaurants: DataState.failure(error: e.toString()),
+          bestPartnerRestaurants: DataState.failure(error: e.toString()),
         ),
       );
     }
@@ -150,7 +156,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> loadAllRestaurantsData() async {
-    await loadFeaturedRestaurants();
+    await loadBestPartners();
     await loadNearbyRestaurants();
   }
 

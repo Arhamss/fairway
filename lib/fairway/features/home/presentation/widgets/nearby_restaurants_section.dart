@@ -137,7 +137,8 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
   }
 
   // Build restaurant tile
-  Widget _buildRestaurantTile(BuildContext context, Restaurant restaurant) {
+  Widget _buildRestaurantTile(
+      BuildContext context, RestaurantModel restaurant) {
     return InkWell(
       onTap: () => UrlHelper.launchWebsite(restaurant.website),
       child: Container(
@@ -162,7 +163,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
               borderRadius: const BorderRadius.all(Radius.circular(12)),
               child: restaurant.images.isNotEmpty
                   ? Image.network(
-                      restaurant.images.first,
+                      restaurant.images,
                       height: 180,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -199,17 +200,13 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Name and status row
                   Text(
                     restaurant.name,
                     style: context.b1.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
-                  // Categories as tags
                   Wrap(
                     spacing: 8,
                     children: restaurant.categories.map((category) {
@@ -223,7 +220,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          category,
+                          category.name,
                           style: context.l3.copyWith(
                             color: AppColors.black,
                           ),
@@ -231,7 +228,6 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
                       );
                     }).toList(),
                   ),
-
                   const SizedBox(height: 8),
                   Text(
                     'Open',

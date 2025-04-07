@@ -4,8 +4,8 @@ import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/animated_tabs.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/category_item.dart';
-import 'package:fairway/fairway/models/saved_location_model.dart';
-import 'package:fairway/fairway/models/user_data_model.dart';
+import 'package:fairway/fairway/models/saved_locations/saved_location_model.dart';
+import 'package:fairway/fairway/models/user_model/user_model.dart';
 import 'package:fairway/utils/widgets/core_widgets/button.dart';
 import 'package:fairway/utils/widgets/core_widgets/text_field.dart';
 
@@ -16,7 +16,7 @@ class HomeHeader extends StatefulWidget {
     this.scaffoldKey,
   });
 
-  final UserData? userData;
+  final UserModel? userData;
   final GlobalKey<ScaffoldState>? scaffoldKey;
 
   @override
@@ -106,7 +106,7 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                context.pushNamed(AppRouteNames.userLocation);
+                                context.pushNamed(AppRouteNames.selectLocation);
                               },
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

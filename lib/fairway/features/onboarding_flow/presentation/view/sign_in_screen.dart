@@ -1,3 +1,5 @@
+import 'package:fairway/core/app_preferences/app_preferences.dart';
+import 'package:fairway/core/di/injector.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/state.dart';
@@ -14,6 +16,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final cache = Injector.resolve<AppPreferences>();
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +67,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                 .copyWith(fontWeight: FontWeight.w700),
                           ),
                           const SizedBox(height: 8),
-                          Text('Hello Jos, sign in to continue',
-                              style: context.b2),
+                          Text(
+                            cache.getUserModel()?.name != null
+                                ? 'Hello ${cache.getUserModel()!.name}, sign in to continue'
+                                : 'Hi there, sign in to continue',
+                            style: context.b2,
+                          ),
                           const SizedBox(height: 4),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,

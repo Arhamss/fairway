@@ -2,11 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fairway/fairway/models/api_response/api_response_model.dart';
 import 'package:fairway/fairway/models/api_response/base_api_response.dart';
-import 'package:fairway/fairway/models/saved_location_model.dart';
+import 'package:fairway/fairway/models/saved_locations/saved_location_model.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
+import 'package:hive_flutter/adapters.dart';
 
-class UserData extends Equatable {
-  const UserData({
+part 'user_model.g.dart';
+
+@HiveType(typeId: 1)
+class UserModel extends Equatable {
+  const UserModel({
     required this.id,
     required this.name,
     required this.email,
@@ -23,17 +27,18 @@ class UserData extends Equatable {
     this.notificationPreference = false,
   });
 
-  factory UserData.fromJson(Map<String, dynamic> json) {
+  factory UserModel.fromJson(Map<String, dynamic> json) {
     try {
       final userData = json['user'] as Map<String, dynamic>?;
 
       if (userData == null) {
         AppLogger.error(
-            'UserData.fromJson: Missing "user" key in JSON. Full input: $json');
+          'UserData.fromJson: Missing "user" key in JSON. Full input: $json',
+        );
         throw Exception('User data is null');
       }
 
-      return UserData(
+      return UserModel(
         id: userData['id'] as String,
         name: userData['name'] as String,
         email: userData['email'] as String,
@@ -76,27 +81,55 @@ class UserData extends Equatable {
     }
   }
 
-  static ResponseModel<BaseApiResponse<UserData>> parseResponse(
-      Response response) {
-    return ResponseModel.fromApiResponse<BaseApiResponse<UserData>>(
+  static ResponseModel<BaseApiResponse<UserModel>> parseResponse(
+    Response response,
+  ) {
+    return ResponseModel.fromApiResponse<BaseApiResponse<UserModel>>(
       response,
-      (json) => BaseApiResponse<UserData>.fromJson(json, UserData.fromJson),
+      (json) => BaseApiResponse<UserModel>.fromJson(json, UserModel.fromJson),
     );
   }
 
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String name;
+
+  @HiveField(2)
   final String email;
+
+  @HiveField(3)
   final String? phone;
+
+  @HiveField(4)
   final String role;
+
+  @HiveField(5)
   final List<SavedLocation> savedLocations;
+
+  @HiveField(6)
   final String? passwordResetToken;
+
+  @HiveField(7)
   final DateTime? passwordResetExpires;
+
+  @HiveField(8)
   final DateTime createdAt;
+
+  @HiveField(9)
   final bool subscriber;
+
+  @HiveField(10)
   final DateTime? subscriptionStart;
+
+  @HiveField(11)
   final DateTime? subscriptionEnd;
+
+  @HiveField(12)
   final List<String> blacklistedTokens;
+
+  @HiveField(13)
   final bool notificationPreference;
 
   Map<String, dynamic> toJson() => {
@@ -115,6 +148,41 @@ class UserData extends Equatable {
         'blacklistedTokens': blacklistedTokens,
         'notificationPreference': notificationPreference,
       };
+
+  UserModel copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? phone,
+    String? role,
+    List<SavedLocation>? savedLocations,
+    String? passwordResetToken,
+    DateTime? passwordResetExpires,
+    DateTime? createdAt,
+    bool? subscriber,
+    DateTime? subscriptionStart,
+    DateTime? subscriptionEnd,
+    List<String>? blacklistedTokens,
+    bool? notificationPreference,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      role: role ?? this.role,
+      savedLocations: savedLocations ?? this.savedLocations,
+      passwordResetToken: passwordResetToken ?? this.passwordResetToken,
+      passwordResetExpires: passwordResetExpires ?? this.passwordResetExpires,
+      createdAt: createdAt ?? this.createdAt,
+      subscriber: subscriber ?? this.subscriber,
+      subscriptionStart: subscriptionStart ?? this.subscriptionStart,
+      subscriptionEnd: subscriptionEnd ?? this.subscriptionEnd,
+      blacklistedTokens: blacklistedTokens ?? this.blacklistedTokens,
+      notificationPreference:
+          notificationPreference ?? this.notificationPreference,
+    );
+  }
 
   @override
   List<Object?> get props => [

@@ -1,5 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:hive_flutter/adapters.dart';
 
+part 'saved_location_model.g.dart';
+
+@HiveType(typeId: 2)
 class SavedLocation extends Equatable {
   SavedLocation({
     required this.airportName,
@@ -31,11 +35,22 @@ class SavedLocation extends Equatable {
     );
   }
 
+  @HiveField(0)
   final String airportName;
+
+  @HiveField(1)
   final String airportCode;
+
+  @HiveField(2)
   final String terminal;
+
+  @HiveField(3)
   final String gate;
+
+  @HiveField(4)
   final bool isCurrent;
+
+  @HiveField(5)
   final DateTime addedAt;
 
   Map<String, dynamic> toJson() => {
@@ -46,6 +61,24 @@ class SavedLocation extends Equatable {
         'isCurrent': isCurrent,
         'addedAt': addedAt.toIso8601String(),
       };
+
+  SavedLocation copyWith({
+    String? airportName,
+    String? airportCode,
+    String? terminal,
+    String? gate,
+    bool? isCurrent,
+    DateTime? addedAt,
+  }) {
+    return SavedLocation(
+      airportName: airportName ?? this.airportName,
+      airportCode: airportCode ?? this.airportCode,
+      terminal: terminal ?? this.terminal,
+      gate: gate ?? this.gate,
+      isCurrent: isCurrent ?? this.isCurrent,
+      addedAt: addedAt ?? this.addedAt,
+    );
+  }
 
   @override
   List<Object?> get props => [

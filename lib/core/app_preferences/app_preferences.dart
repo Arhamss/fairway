@@ -1,5 +1,6 @@
 import 'package:fairway/core/app_preferences/base_storage.dart';
 import 'package:fairway/core/shared_preference_service.dart';
+import 'package:fairway/fairway/models/user_model/user_model.dart';
 
 class AppPreferences extends BaseStorage {
   AppPreferences() {
@@ -10,6 +11,7 @@ class AppPreferences extends BaseStorage {
   final String _userIdKey = 'user_id';
   final String _refreshTokenKey = 'refresh_token';
   final String _appLocale = 'app_locale';
+  final String _userModelKey = 'user_model';
 
   void setAppLocale(String locale) {
     store<String>(_appLocale, locale);
@@ -45,6 +47,18 @@ class AppPreferences extends BaseStorage {
 
   String? getRefreshToken() {
     return retrieve<String>(_refreshTokenKey);
+  }
+
+  void setUserModel(UserModel userModel) {
+    store<UserModel>(_userModelKey, userModel);
+  }
+
+  UserModel? getUserModel() {
+    return retrieve<UserModel>(_userModelKey);
+  }
+
+  void removeUserModel() {
+    remove(_userModelKey);
   }
 
   void clearAuthData() {

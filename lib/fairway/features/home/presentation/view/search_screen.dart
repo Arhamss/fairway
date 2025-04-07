@@ -129,13 +129,14 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildRestaurantTile(BuildContext context, Restaurant restaurant) {
+  Widget _buildRestaurantTile(
+      BuildContext context, RestaurantModel restaurant) {
     return ListTile(
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: restaurant.images.isNotEmpty
             ? Image.network(
-                restaurant.images.first,
+                restaurant.images,
                 width: 50,
                 height: 50,
                 fit: BoxFit.cover,

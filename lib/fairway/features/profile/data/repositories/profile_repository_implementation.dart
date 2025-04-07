@@ -5,7 +5,7 @@ import 'package:fairway/core/endpoints/endpoints.dart';
 import 'package:fairway/fairway/features/profile/domain/repositories/profile_repository.dart';
 import 'package:fairway/fairway/models/api_response/api_response_model.dart';
 import 'package:fairway/fairway/models/api_response/base_api_response.dart';
-import 'package:fairway/fairway/models/user_data_model.dart';
+import 'package:fairway/fairway/models/user_model/user_model.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
@@ -19,17 +19,18 @@ class ProfileRepositoryImplementation implements ProfileRepository {
   final ApiService _apiService;
   final AppPreferences _cache;
   @override
-  Future<RepositoryResponse<UserData>> updateUserProfile(String name) async {
+  Future<RepositoryResponse<UserModel>> updateUserProfile(String name) async {
     try {
       final response = await _apiService.get(
         Endpoints.customerProfile,
         queryParams: {'name': name},
       );
 
-      final result = UserData.parseResponse(response);
+      final result = UserModel.parseResponse(response);
       final userData = result.response?.data;
 
       if (result.isSuccess && userData != null) {
+        _cache.setUserModel(userData);
         return RepositoryResponse(
           isSuccess: true,
           data: userData,

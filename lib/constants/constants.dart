@@ -11,4 +11,6 @@ class AppConstants {
       'https://static.wikia.nocookie.net/villains/images/2/2b/Cmtspb.jpg/revision/latest?cb=20210513195220';
   static const placeholderUserName = 'Unknown User';
   static const placeholderUserEmail = 'Unknown Email';
+  static const restaurantPlaceHolder =
+      'assets/images/placeholder_restaurant.png';
 }

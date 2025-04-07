@@ -1,48 +1,48 @@
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:fairway/fairway/models/api_response/api_response_model.dart';
-import 'package:fairway/fairway/models/api_response/base_api_response.dart';
+import 'package:fairway/constants/constants.dart';
+import 'package:fairway/fairway/models/category_model.dart';
 
-class Restaurant extends Equatable {
-  const Restaurant({
+class RestaurantModel extends Equatable {
+  const RestaurantModel({
     required this.id,
     required this.name,
     required this.website,
     required this.images,
     required this.airports,
     required this.categories,
+    required this.recommended,
+    required this.popularity,
   });
 
-  factory Restaurant.fromJson(Map<String, dynamic> json) {
-    final restaurantData = json['restaurants'] as Map<String, dynamic>? ?? json;
-
-    return Restaurant(
-      id: restaurantData['id'] as String,
-      name: restaurantData['name'] as String,
-      website: restaurantData['website'] as String,
-      images: (restaurantData['images'] as List<dynamic>).cast<String>(),
-      airports: (restaurantData['airports'] as List<dynamic>).cast<String>(),
-      categories:
-          (restaurantData['categories'] as List<dynamic>).cast<String>(),
+  factory RestaurantModel.fromJson(Map<String, dynamic> json) {
+    return RestaurantModel(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      website: json['website'] as String,
+      images: json['images'] as String,
+      airports: json['airport'] as String,
+      categories: (json['categories'] as List<dynamic>)
+          .map((cat) => CategoryModel.fromJson(cat as Map<String, dynamic>))
+          .toList(),
+      recommended: json['recommended'] as bool? ?? false,
+      popularity: json['popularity'] as int? ?? 0,
     );
   }
 
   final String id;
   final String name;
   final String website;
-  final List<String> images;
-  final List<String> airports;
-  final List<String> categories;
+  final String images;
+  final String airports;
+  final List<CategoryModel> categories;
+  final bool recommended;
+  final int popularity;
 
-  String get primaryImage => images.isNotEmpty
-      ? images.first
-      : 'assets/images/placeholder_restaurant.png';
-
-  bool isInAirport(String airportCode) => airports
-      .any((airport) => airport.toLowerCase() == airportCode.toLowerCase());
+  String get primaryImage =>
+      images.isNotEmpty ? images : AppConstants.restaurantPlaceHolder;
 
   bool hasCategory(String category) =>
-      categories.any((cat) => cat.toLowerCase() == category.toLowerCase());
+      categories.any((cat) => cat.name.toLowerCase() == category.toLowerCase());
 
   @override
   List<Object?> get props => [
@@ -52,48 +52,7 @@ class Restaurant extends Equatable {
         images,
         airports,
         categories,
+        recommended,
+        popularity,
       ];
-}
-
-class RestaurantList extends Equatable {
-  const RestaurantList({
-    required this.restaurants,
-    this.totalResults = 0,
-    this.totalPages = 1,
-    this.currentPage = 1,
-  });
-
-  factory RestaurantList.fromJson(Map<String, dynamic> json) {
-    final restaurantsJson = json['restaurants'] as List<dynamic>? ?? [];
-
-    return RestaurantList(
-      restaurants: restaurantsJson
-          .map<Restaurant>(
-            (restaurant) =>
-                Restaurant.fromJson(restaurant as Map<String, dynamic>),
-          )
-          .toList(),
-      totalResults: json['totalResults'] as int? ?? restaurantsJson.length,
-      totalPages: json['totalPages'] as int? ?? 1,
-      currentPage: json['currentPage'] as int? ?? 1,
-    );
-  }
-
-  static ResponseModel<BaseApiResponse<RestaurantList>> parseResponse(
-      Response response) {
-    return ResponseModel.fromApiResponse<BaseApiResponse<RestaurantList>>(
-      response,
-      (json) => BaseApiResponse<RestaurantList>.fromJson(
-          json, RestaurantList.fromJson),
-    );
-  }
-
-  final List<Restaurant> restaurants;
-  final int totalResults;
-  final int totalPages;
-  final int currentPage;
-
-  @override
-  List<Object?> get props =>
-      [restaurants, totalResults, totalPages, currentPage];
 }

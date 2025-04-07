@@ -19,7 +19,6 @@ class LocationCubit extends Cubit<LocationState> {
       state.copyWith(
         location: const DataState.loading(),
         hasSelectedLocation: false,
-        filteredAirports: [],
       ),
     );
 
@@ -30,15 +29,23 @@ class LocationCubit extends Cubit<LocationState> {
             desiredAccuracy: LocationAccuracy.high,
           );
 
-          AppLogger.info('Current location: $position');
-          await loadAirportsWithLatLong(
+          final response = await repository.getAirportsByLatLong(
             lat: position.latitude,
             long: position.longitude,
           );
+
+          final nearbyAirport = response.data?.airports.first;
+          final allAirports = state.airports.data?.airports ?? [];
+
+          final matchedAirport = allAirports.firstWhere(
+            (airport) => airport.code == nearbyAirport?.code,
+            orElse: () => nearbyAirport ?? const Airport.empty(),
+          );
+
           emit(
             state.copyWith(
               location: DataState.loaded(data: position),
-              selectedAirport: state.airports.data?.airports.first,
+              selectedAirport: matchedAirport,
               hasSelectedLocation: true,
             ),
           );
@@ -115,6 +122,10 @@ class LocationCubit extends Cubit<LocationState> {
     final selectedTerminal = state.selectedTerminal;
     final selectedGate = state.selectedGate;
 
+    print("Selected airport: ${selectedAirport.code}");
+    print("Selected terminal: ${selectedTerminal.name}");
+    print("Selected gate: $selectedGate");
+
     final response = await repository.updateUserLocation(
       AirportRequestModel(
         airportCode: selectedAirport.code,
@@ -133,41 +144,6 @@ class LocationCubit extends Cubit<LocationState> {
       emit(
         state.copyWith(
           updateLocation: DataState.failure(error: response.message),
-        ),
-      );
-    }
-  }
-
-  Future<void> loadAirportsWithLatLong({
-    required double lat,
-    required double long,
-  }) async {
-    emit(state.copyWith(airports: const DataState.loading()));
-
-    try {
-      final response = await repository.getAirportsByLatLong(
-        lat: lat,
-        long: long,
-      );
-
-      if (response.isSuccess && response.data != null) {
-        emit(
-          state.copyWith(
-            airports: DataState.loaded(data: response.data),
-            filteredAirports: response.data?.airports ?? [],
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            airports: DataState.failure(error: response.message),
-          ),
-        );
-      }
-    } catch (e) {
-      emit(
-        state.copyWith(
-          airports: DataState.failure(error: e.toString()),
         ),
       );
     }
@@ -193,7 +169,6 @@ class LocationCubit extends Cubit<LocationState> {
         emit(
           state.copyWith(
             airports: DataState.loaded(data: response.data),
-            filteredAirports: response.data?.airports ?? [],
             location: const DataState.initial(),
           ),
         );
@@ -218,22 +193,19 @@ class LocationCubit extends Cubit<LocationState> {
       emit(
         state.copyWith(
           availableTerminals: const [],
-          filteredTerminals: const [],
           availableGates: const [],
-          filteredGates: const [],
           hasSelectedLocation: false,
         ),
       );
       return;
     }
 
+    print("Selected airport with code:${airport.code}");
     emit(
       state.copyWith(
         selectedAirport: airport,
         hasSelectedLocation: true,
-        filteredAirports: [],
         availableGates: const [],
-        filteredGates: const [],
         loadingTerminals: true,
       ),
     );
@@ -250,7 +222,6 @@ class LocationCubit extends Cubit<LocationState> {
       emit(
         state.copyWith(
           availableTerminals: terminals,
-          filteredTerminals: [],
           loadingTerminals: false,
         ),
       );
@@ -268,8 +239,6 @@ class LocationCubit extends Cubit<LocationState> {
     emit(
       state.copyWith(
         selectedTerminal: terminal,
-        filteredTerminals: [],
-        filteredGates: [],
         loadingGates: true,
       ),
     );
@@ -288,7 +257,6 @@ class LocationCubit extends Cubit<LocationState> {
       emit(
         state.copyWith(
           availableGates: gates,
-          filteredGates: [],
           loadingGates: false,
         ),
       );
@@ -306,7 +274,6 @@ class LocationCubit extends Cubit<LocationState> {
     emit(
       state.copyWith(
         selectedGate: gate,
-        filteredGates: [],
       ),
     );
   }
@@ -315,7 +282,6 @@ class LocationCubit extends Cubit<LocationState> {
     emit(
       state.copyWith(
         selectedGate: '',
-        filteredGates: const [],
       ),
     );
   }
@@ -325,12 +291,9 @@ class LocationCubit extends Cubit<LocationState> {
       state.copyWith(
         location: const DataState.initial(),
         hasSelectedLocation: false,
-        filteredAirports: [],
         selectedGate: '',
         availableTerminals: const [],
         availableGates: const [],
-        filteredTerminals: const [],
-        filteredGates: const [],
         loadingTerminals: false,
         loadingGates: false,
       ),
@@ -342,8 +305,6 @@ class LocationCubit extends Cubit<LocationState> {
       state.copyWith(
         selectedGate: '',
         availableGates: const [],
-        filteredGates: const [],
-        filteredTerminals: const [],
         loadingGates: false,
       ),
     );

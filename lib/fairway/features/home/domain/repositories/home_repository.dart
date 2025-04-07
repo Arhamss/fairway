@@ -1,10 +1,11 @@
-import 'package:fairway/fairway/models/restaurant_model.dart';
-import 'package:fairway/fairway/models/user_data_model.dart';
+import 'package:fairway/fairway/models/restaurant_response_model.dart';
+import 'package:fairway/fairway/models/user_model/user_model.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
 abstract class HomeRepository {
-  Future<RepositoryResponse<UserData>> getUserProfile();
-  Future<RepositoryResponse<UserData>> updateUserProfile();
-  Future<RepositoryResponse<RestaurantList>> getRestaurants();
-  Future<RepositoryResponse<RestaurantList>> searchRestaurants(String query);
+  Future<RepositoryResponse<UserModel>> getUserProfile();
+  Future<RepositoryResponse<UserModel>> updateUserProfile();
+  Future<RepositoryResponse<RestaurantResponseModel>> getRestaurants();
+  Future<RepositoryResponse<RestaurantResponseModel>> searchRestaurants(
+      String query);
 }

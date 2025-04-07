@@ -36,9 +36,9 @@ class BestPartnersSection extends StatelessWidget {
         BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
             final restaurants =
-                state.featuredRestaurants.data?.restaurants ?? [];
+                state.bestPartnerRestaurants.data?.restaurants ?? [];
 
-            if (state.featuredRestaurants.isLoading) {
+            if (state.bestPartnerRestaurants.isLoading) {
               return const Center(
                 child: SizedBox(
                   height: 150,
@@ -47,12 +47,12 @@ class BestPartnersSection extends StatelessWidget {
               );
             }
 
-            if (state.featuredRestaurants.isFailure) {
+            if (state.bestPartnerRestaurants.isFailure) {
               return RetryWidget(
-                message: state.featuredRestaurants.errorMessage ??
+                message: state.bestPartnerRestaurants.errorMessage ??
                     'An error occurred fetching features restaurants',
                 onRetry: () {
-                  context.read<HomeCubit>().loadFeaturedRestaurants();
+                  context.read<HomeCubit>().loadBestPartners();
                 },
               );
             }
@@ -85,7 +85,8 @@ class BestPartnersSection extends StatelessWidget {
     );
   }
 
-  Widget _buildRestaurantCard(BuildContext context, Restaurant restaurant) {
+  Widget _buildRestaurantCard(
+      BuildContext context, RestaurantModel restaurant) {
     return InkWell(
       onTap: () => UrlHelper.launchWebsite(restaurant.website),
       child: Padding(
@@ -107,7 +108,7 @@ class BestPartnersSection extends StatelessWidget {
                         const BorderRadius.vertical(top: Radius.circular(8)),
                     child: restaurant.images.isNotEmpty
                         ? Image.network(
-                            restaurant.images.first,
+                            restaurant.images,
                             fit: BoxFit.cover,
                             width: double.infinity,
                             errorBuilder: (context, error, stackTrace) {

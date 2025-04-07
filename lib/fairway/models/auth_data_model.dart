@@ -20,7 +20,8 @@ class AuthData extends Equatable {
   }
 
   static ResponseModel<BaseApiResponse<AuthData>> parseResponse(
-      Response response) {
+    Response response,
+  ) {
     return ResponseModel.fromApiResponse<BaseApiResponse<AuthData>>(
       response,
       (json) => BaseApiResponse<AuthData>.fromJson(json, AuthData.fromJson),
@@ -38,6 +39,20 @@ class AuthData extends Equatable {
         'email': email,
         'token': token,
       };
+
+  AuthData copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? token,
+  }) {
+    return AuthData(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      token: token ?? this.token,
+    );
+  }
 
   @override
   List<Object?> get props => [id, name, email, token];
