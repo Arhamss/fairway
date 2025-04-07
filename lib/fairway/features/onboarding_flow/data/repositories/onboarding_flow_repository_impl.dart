@@ -1,4 +1,5 @@
 import 'package:fairway/core/api_service/api_service.dart';
+import 'package:fairway/core/api_service/app_api_exception.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/di/injector.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
@@ -41,24 +42,25 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
           ..setToken(authData.token)
           ..setUserId(authData.id);
 
-        AppLogger.info('Login successful: ${authData.name}');
+        AppLogger.info('Sign in successful: ${authData.name}');
 
         return RepositoryResponse(
           isSuccess: true,
           data: authData,
         );
       } else {
-        AppLogger.info('Login failed: ${result.error}');
+        AppLogger.info('Sign in failed: ${result.error}');
         return RepositoryResponse(
           isSuccess: false,
           message: result.error ?? 'Sign in failed',
         );
       }
     } catch (e, s) {
-      AppLogger.error('Login exception:', e, s);
+      AppLogger.error('Sign in exception:', e, s);
+
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Sign in failed: $e',
+        message: extractApiErrorMessage(e, 'Sign in failed'),
       );
     }
   }
@@ -102,9 +104,10 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
       }
     } catch (e, s) {
       AppLogger.error('Signup exception:', e, s);
+
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Sign up failed: $e',
+        message: extractApiErrorMessage(e, 'Sign up failed'),
       );
     }
   }
@@ -139,11 +142,12 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
           data: false,
         );
       }
-    } catch (e) {
-      AppLogger.info('Password reset exception: $e');
+    } catch (e, s) {
+      AppLogger.error('Password reset exception:', e, s);
+
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Failed to reset password: $e',
+        message: extractApiErrorMessage(e, 'Failed to reset Password'),
         data: false,
       );
     }
@@ -183,11 +187,12 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
           data: false,
         );
       }
-    } catch (e) {
-      AppLogger.info('Password reset exception: $e');
+    } catch (e, s) {
+      AppLogger.error('Password reset exception:', e, s);
+
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Failed to reset password: $e',
+        message: extractApiErrorMessage(e, 'Failed to reset password'),
         data: false,
       );
     }

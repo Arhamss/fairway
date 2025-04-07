@@ -1,4 +1,5 @@
 import 'package:fairway/core/api_service/api_service.dart';
+import 'package:fairway/core/api_service/app_api_exception.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/di/injector.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
@@ -49,11 +50,11 @@ class LocationRepositoryImpl implements LocationRepository {
           data: false,
         );
       }
-    } catch (e) {
-      AppLogger.info('Location update exception: $e');
+    } catch (e, s) {
+      AppLogger.error('Location update exception:', e, s);
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Location update failed: $e',
+        message: extractApiErrorMessage(e, 'Failed to update location'),
         data: false,
       );
     }
@@ -97,11 +98,11 @@ class LocationRepositoryImpl implements LocationRepository {
           message: result.error ?? 'Failed to fetch airports',
         );
       }
-    } catch (e) {
-      AppLogger.error('Airports fetch exception: $e');
+    } catch (e, s) {
+      AppLogger.error('Airports fetch exception:', e, s);
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Failed to fetch airports: $e',
+        message: extractApiErrorMessage(e, 'Failed to fetch airports'),
       );
     }
   }
@@ -138,11 +139,11 @@ class LocationRepositoryImpl implements LocationRepository {
           message: result.error ?? 'Failed to fetch airports by lat/long',
         );
       }
-    } catch (e) {
-      AppLogger.error('Airports fetch by lat/long exception: $e');
+    } catch (e, s) {
+      AppLogger.error('Airports fetch by lat/long exception:', e, s);
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Failed to fetch airports by lat/long: $e',
+        message: extractApiErrorMessage(e, 'Failed to fetch airports'),
       );
     }
   }
@@ -184,7 +185,7 @@ class LocationRepositoryImpl implements LocationRepository {
       AppLogger.error('Set current location exception: $e');
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Set current location failed: $e',
+        message: extractApiErrorMessage(e, 'Failed to set current location'),
         data: false,
       );
     }

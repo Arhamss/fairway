@@ -1,10 +1,12 @@
 import 'package:fairway/core/api_service/api_service.dart';
+import 'package:fairway/core/api_service/app_api_exception.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
 import 'package:fairway/fairway/features/profile/domain/repositories/profile_repository.dart';
 import 'package:fairway/fairway/models/api_response/api_response_model.dart';
 import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 import 'package:fairway/fairway/models/user_data_model.dart';
+import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
 class ProfileRepositoryImplementation implements ProfileRepository {
@@ -38,10 +40,11 @@ class ProfileRepositoryImplementation implements ProfileRepository {
           message: result.error ?? 'Failed to update user profile',
         );
       }
-    } catch (e) {
+    } catch (e, s) {
+      AppLogger.error('User profile exception:', e, s);
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Failed to update user profile: $e',
+        message: extractApiErrorMessage(e, 'Failed to update user profile'),
       );
     }
   }
@@ -78,10 +81,11 @@ class ProfileRepositoryImplementation implements ProfileRepository {
           data: false,
         );
       }
-    } catch (e) {
+    } catch (e, s) {
+      AppLogger.error('Password update exception:', e, s);
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Failed to update password: $e',
+        message: extractApiErrorMessage(e, 'Failed to update password'),
         data: false,
       );
     }
@@ -105,11 +109,12 @@ class ProfileRepositoryImplementation implements ProfileRepository {
         data: false,
         message: 'Failed to delete account',
       );
-    } catch (e) {
+    } catch (e, s) {
+      AppLogger.error('Account deletion exception:', e, s);
       return RepositoryResponse(
         isSuccess: false,
         data: false,
-        message: 'Error: $e',
+        message: extractApiErrorMessage(e, 'Failed to delete account'),
       );
     }
   }

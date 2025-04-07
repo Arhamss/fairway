@@ -1,4 +1,5 @@
 import 'package:fairway/core/api_service/api_service.dart';
+import 'package:fairway/core/api_service/app_api_exception.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
 import 'package:fairway/fairway/features/home/domain/repositories/home_repository.dart';
@@ -52,11 +53,11 @@ class HomeRepositoryImplementation implements HomeRepository {
           message: result.error ?? 'Failed to load user profile',
         );
       }
-    } catch (e) {
-      AppLogger.error('User profile exception: $e');
+    } catch (e, s) {
+      AppLogger.error('User profile exception:', e, s);
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Failed to load user profile: $e',
+        message: extractApiErrorMessage(e, 'Failed to load user profile'),
       );
     }
   }
@@ -82,11 +83,11 @@ class HomeRepositoryImplementation implements HomeRepository {
           message: result.error ?? 'Failed to load restaurants',
         );
       }
-    } catch (e) {
-      AppLogger.error('Restaurant fetch exception: $e');
+    } catch (e, s) {
+      AppLogger.error('Restaurant fetch exception:', e, s);
       return RepositoryResponse(
         isSuccess: false,
-        message: 'Failed to load restaurants: $e',
+        message: extractApiErrorMessage(e, 'Failed to load restaurants'),
       );
     }
   }
