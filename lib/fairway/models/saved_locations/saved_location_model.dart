@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/adapters.dart';
 
-part 'saved_location_model.g.dart';
+ part 'saved_location_model.g.dart';
 
 @HiveType(typeId: 2)
 class SavedLocation extends Equatable {

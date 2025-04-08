@@ -15,7 +15,7 @@ class AuthData extends Equatable {
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
-      token: json['token'] as String,
+      token: json['accessToken'] as String,
     );
   }
 
@@ -37,7 +37,7 @@ class AuthData extends Equatable {
         'id': id,
         'name': name,
         'email': email,
-        'token': token,
+        'accessToken': token,
       };
 
   AuthData copyWith({

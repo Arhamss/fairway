@@ -64,43 +64,84 @@ class HomeRepositoryImplementation implements HomeRepository {
   }
 
   @override
-  Future<RepositoryResponse<RestaurantResponseModel>> getRestaurants() async {
+  Future<RepositoryResponse<RestaurantResponseModel>> getRestaurants({
+    int page = 1,
+    int limit = 5,
+  }) async {
     try {
-      final response = await _apiService.get(Endpoints.restaurants);
+      final response = await _apiService.get(
+        Endpoints.restaurants,
+        queryParams: {
+          'page': page.toString(),
+          'limit': limit.toString(),
+        },
+      );
 
       final result = RestaurantResponseModel.parseResponse(response);
-      final data = result.response?.data;
 
-      if (result.isSuccess && data != null) {
-        AppLogger.info('Restaurants loaded successfully');
+      if (result.isSuccess && result.response?.data != null) {
         return RepositoryResponse(
           isSuccess: true,
-          data: data,
+          data: result.response!.data,
         );
       } else {
-        AppLogger.error('Failed to load restaurants: ${result.error}');
         return RepositoryResponse(
           isSuccess: false,
-          message: result.error ?? 'Failed to load restaurants',
+          message: result.error ?? 'Failed to fetch restaurants',
         );
       }
-    } catch (e, s) {
-      AppLogger.error('Restaurant fetch exception:', e, s);
+    } catch (e) {
       return RepositoryResponse(
         isSuccess: false,
-        message: extractApiErrorMessage(e, 'Failed to load restaurants'),
+        message: 'Failed to fetch restaurants: $e',
       );
     }
   }
 
   @override
   Future<RepositoryResponse<RestaurantResponseModel>> searchRestaurants(
-      String query) {
+    String query, {
+    int page = 1,
+    int limit = 5,
+  }) {
     throw UnimplementedError();
   }
 
   @override
   Future<RepositoryResponse<UserModel>> updateUserProfile() {
     throw UnimplementedError();
+  }
+
+  @override
+  Future<RepositoryResponse<RestaurantResponseModel>> getBestPartnerRestaurants(
+      {int page = 1, int limit = 5}) async {
+    try {
+      final response = await _apiService.get(
+        Endpoints.bestPartnerRestaurants,
+        queryParams: {
+          'page': page.toString(),
+          'limit': limit.toString(),
+        },
+      );
+
+      final result = RestaurantResponseModel.parseResponse(response);
+
+      if (result.isSuccess && result.response?.data != null) {
+        return RepositoryResponse(
+          isSuccess: true,
+          data: result.response!.data,
+        );
+      } else {
+        return RepositoryResponse(
+          isSuccess: false,
+          message: result.error ?? 'Failed to fetch best partner restaurants',
+        );
+      }
+    } catch (e) {
+      return RepositoryResponse(
+        isSuccess: false,
+        message: 'Failed to fetch best partner restaurants: $e',
+      );
+    }
   }
 }

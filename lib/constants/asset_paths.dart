@@ -45,4 +45,6 @@ class AssetPaths {
   static const notificationIcon = 'assets/svgs/notification_icon.svg';
   static const terminalIcon = 'assets/svgs/terminal.svg';
   static const gateIcon = 'assets/svgs/airport_gate.svg';
+  static const conciergeIcon = 'assets/svgs/concierge.svg';
+  static const pickYourselfIcon = 'assets/svgs/pick_yourself.svg';
 }
