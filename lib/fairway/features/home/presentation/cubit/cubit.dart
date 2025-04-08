@@ -4,6 +4,7 @@ import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/models/saved_locations/saved_location_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
+import 'package:fairway/utils/helpers/toast_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeCubit extends Cubit<HomeState> {
@@ -46,67 +47,112 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  // Load all restaurants
-  Future<void> loadRestaurants({
-    String? category,
-    String? airport,
-    int page = 1,
-    int limit = 10,
-  }) async {
-    emit(state.copyWith(restaurants: const DataState.loading()));
+  // Update the getRestaurants method for nearby restaurants
+  Future<void> getRestaurants() async {
+    emit(
+      state.copyWith(
+        restaurants: const DataState.loading(),
+        nearbyCurrentPage: 1, // Reset page number
+      ),
+    );
 
-    try {
-      final response = await repository.getRestaurants();
+    final response = await repository.getRestaurants();
 
-      if (response.isSuccess && response.data != null) {
-        emit(
-          state.copyWith(
-            restaurants: DataState.loaded(data: response.data),
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            restaurants: DataState.failure(
-              error: response.message ?? 'Failed to load restaurants',
-            ),
-          ),
-        );
-      }
-    } catch (e) {
+    if (response.isSuccess && response.data != null) {
+      final hasMore = response.data!.restaurants.length >= 5;
       emit(
         state.copyWith(
-          restaurants: DataState.failure(error: e.toString()),
+          restaurants: DataState.loaded(data: response.data),
+          nearbyCurrentPage: 1,
+          hasMoreNearbyRestaurants: hasMore,
         ),
       );
-      AppLogger.error('Exception in loadRestaurants: $e');
+    } else {
+      emit(
+        state.copyWith(
+          restaurants: DataState.failure(
+            error: response.message ?? 'Failed to load restaurants',
+          ),
+        ),
+      );
     }
   }
 
+  // Update loadMoreRestaurants for nearby restaurants
+  Future<void> loadMoreRestaurants() async {
+    if (state.isLoadingMoreNearby || !state.hasMoreNearbyRestaurants) {
+      return;
+    }
+
+    emit(state.copyWith(isLoadingMoreNearby: true));
+
+    final nextPage = state.nearbyCurrentPage + 1;
+
+    final response = await repository.getRestaurants(page: nextPage);
+
+    if (response.isSuccess && response.data != null) {
+      final newData = response.data!;
+      final currentData = state.restaurants.data!;
+
+      final hasMore = newData.restaurants.length >= 5;
+
+      final combinedRestaurants = [
+        ...currentData.restaurants,
+        ...newData.restaurants,
+      ];
+
+      final updatedData = currentData.copyWith(
+        restaurants: combinedRestaurants,
+        currentPage: nextPage,
+      );
+
+      emit(
+        state.copyWith(
+          restaurants: DataState.loaded(data: updatedData),
+          nearbyCurrentPage: nextPage,
+          hasMoreNearbyRestaurants: hasMore,
+          isLoadingMoreNearby: false,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isLoadingMoreNearby: false,
+        ),
+      );
+
+      ToastHelper.showErrorToast(
+        response.message ?? 'Failed to load more restaurants',
+      );
+    }
+  }
+
+  // Add loadBestPartners with pagination support
   Future<void> loadBestPartners({int limit = 5}) async {
     emit(
       state.copyWith(
         bestPartnerRestaurants: const DataState.loading(),
+        bestPartnersCurrentPage: 1, // Reset page number
       ),
     );
 
     try {
-      final response = await repository.getRestaurants();
+      final response = await repository.getBestPartnerRestaurants(limit: limit);
 
       if (response.isSuccess && response.data != null) {
-        print('Best partners loaded successfully');
-        print("Response: ${response.data}");
-        print("Response length: ${response.data?.restaurants.length}");
+        final hasMore = response.data!.restaurants.length >= limit;
         emit(
           state.copyWith(
             bestPartnerRestaurants: DataState.loaded(data: response.data),
+            bestPartnersCurrentPage: 1,
+            hasMoreBestPartners: hasMore,
           ),
         );
       } else {
         emit(
           state.copyWith(
             bestPartnerRestaurants: DataState.failure(
-              error: response.message ?? 'Failed to load featured restaurants',
+              error: response.message ?? 'Failed to load best partners',
             ),
           ),
         );
@@ -118,6 +164,77 @@ class HomeCubit extends Cubit<HomeState> {
         ),
       );
     }
+  }
+
+  // Add loadMoreBestPartners method
+  Future<void> loadMoreBestPartners({int limit = 5}) async {
+    if (state.isLoadingMoreBestPartners || !state.hasMoreBestPartners) {
+      return;
+    }
+
+    emit(state.copyWith(isLoadingMoreBestPartners: true));
+
+    final nextPage = state.bestPartnersCurrentPage + 1;
+
+    try {
+      final response = await repository.getBestPartnerRestaurants(
+        page: nextPage,
+        limit: limit,
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final newRestaurants = response.data!.restaurants;
+        final hasMore = newRestaurants.length >= limit;
+
+        if (state.bestPartnerRestaurants.data != null) {
+          final currentRestaurants =
+              state.bestPartnerRestaurants.data!.restaurants;
+          final allRestaurants = [...currentRestaurants, ...newRestaurants];
+
+          final updatedData = state.bestPartnerRestaurants.data!.copyWith(
+            restaurants: allRestaurants,
+          );
+
+          emit(
+            state.copyWith(
+              bestPartnerRestaurants: DataState.loaded(data: updatedData),
+              bestPartnersCurrentPage: nextPage,
+              hasMoreBestPartners: hasMore,
+              isLoadingMoreBestPartners: false,
+            ),
+          );
+        }
+      } else {
+        emit(state.copyWith(isLoadingMoreBestPartners: false));
+        ToastHelper.showErrorToast(
+          response.message ?? 'Failed to load more best partners',
+        );
+      }
+    } catch (e) {
+      emit(state.copyWith(isLoadingMoreBestPartners: false));
+      ToastHelper.showErrorToast('Failed to load more best partners: $e');
+    }
+  }
+
+  // Update resetPagination to handle both states
+  void resetNearbyPagination() {
+    emit(
+      state.copyWith(
+        nearbyCurrentPage: 1,
+        hasMoreNearbyRestaurants: true,
+        isLoadingMoreNearby: false,
+      ),
+    );
+  }
+
+  void resetBestPartnersPagination() {
+    emit(
+      state.copyWith(
+        bestPartnersCurrentPage: 1,
+        hasMoreBestPartners: true,
+        isLoadingMoreBestPartners: false,
+      ),
+    );
   }
 
   Future<void> loadNearbyRestaurants({String? airport, int limit = 5}) async {
@@ -232,5 +349,19 @@ class HomeCubit extends Cubit<HomeState> {
     emit(
       state.copyWith(selectedSortOption: option),
     );
+  }
+
+  void setSelectedFilter(String filter) {
+    emit(
+      state.copyWith(selectedFilter: filter),
+    );
+  }
+
+  void selectOrderMethod(String method) {
+    emit(state.copyWith(selectedOrderMethod: method));
+  }
+
+  void clearOrderMethod() {
+    emit(state.copyWith());
   }
 }

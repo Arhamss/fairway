@@ -4,6 +4,7 @@ import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/animated_tabs.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/category_item.dart';
+import 'package:fairway/fairway/features/home/presentation/widgets/order_method_dialog.dart';
 import 'package:fairway/fairway/models/saved_locations/saved_location_model.dart';
 import 'package:fairway/fairway/models/user_model/user_model.dart';
 import 'package:fairway/utils/widgets/core_widgets/button.dart';
@@ -80,14 +81,17 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: SvgPicture.asset(
-                          AssetPaths.notificationIcon,
-                        ),
-                      ),
+                    IconButton(
+                      icon: SvgPicture.asset(AssetPaths.notificationIcon),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const OrderMethodDialog(
+                            restaurantLink:
+                                'https://example.com', // Replace with the actual link
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -141,7 +145,7 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                                         Icons.arrow_right_rounded,
                                         color: AppColors.primaryAmber,
                                       ),
-                                      const SizedBox(width: 16)
+                                      const SizedBox(width: 16),
                                     ],
                                   ),
                                 ],

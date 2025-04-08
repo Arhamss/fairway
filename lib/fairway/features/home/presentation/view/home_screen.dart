@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   scaffoldKey: _scaffoldKey,
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
