@@ -164,58 +164,63 @@ class CustomDialog {
       barrierDismissible: !isLoading,
       barrierColor: AppColors.black.withOpacity(0.7),
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          backgroundColor: AppColors.white,
-          title: Text(
-            title,
-            style: context.h2.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.black,
+        return Dialog(
+          // Remove SingleChildScrollView and ConstrainedBox - they're causing the issue
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(30),
             ),
-            textAlign: TextAlign.center,
-          ),
-          contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 12),
-          insetPadding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          content: Text(
-            message,
-            style: context.b1.copyWith(
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          actionsAlignment: MainAxisAlignment.center,
-          actionsPadding: const EdgeInsets.all(24),
-          actions: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            padding: const EdgeInsets.fromLTRB(24, 48, 24, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Important: use min size
               children: [
-                // Confirm Button
-                FairwayButton(
-                  text: confirmText,
-                  onPressed: isLoading ? null : onConfirm,
-                  isLoading: isLoading,
-                  backgroundColor:
-                      isDanger ? AppColors.error : AppColors.primaryBlue,
-                  textColor: Colors.white,
-                  borderRadius: 8,
+                Text(
+                  title,
+                  style: context.h2.copyWith(fontWeight: FontWeight.w800),
                 ),
+
                 const SizedBox(height: 16),
-                FairwayButton(
-                  text: cancelText,
-                  onPressed: isLoading ? null : () => Navigator.pop(context),
-                  backgroundColor: Colors.transparent,
-                  textColor: AppColors.textSecondary,
-                  borderRadius: 8,
-                  isLoading: isLoading,
+                Text(
+                  textAlign: TextAlign.center,
+                  message,
+                  style: context.b1.copyWith(
+                    color: AppColors.black,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+                // Replace Column with Row and remove Expanded widgets
+                Flexible(
+                  child: FairwayButton(
+                    text: confirmText,
+                    onPressed: isLoading ? null : onConfirm,
+                    isLoading: isLoading,
+                    backgroundColor:
+                        isDanger ? AppColors.error : AppColors.primaryBlue,
+                    textColor: AppColors.white,
+                    borderRadius: 16,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Flexible(
+                    child: Text(
+                      cancelText,
+                      style: context.b2.copyWith(
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
               ],
             ),
-          ],
+          ),
         );
       },
     );

@@ -117,6 +117,11 @@ class AppRouter {
                 name: AppRouteNames.changePassword,
                 builder: (context, state) => const ChangePasswordScreen(),
               ),
+              GoRoute(
+                path: AppRoutes.deleteAccount,
+                name: AppRouteNames.deleteAccount,
+                builder: (context, state) => const DeleteAccountScreen(),
+              ),
             ],
           ),
         ],

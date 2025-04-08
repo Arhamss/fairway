@@ -31,13 +31,16 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       subscriptionEnd: fields[11] as DateTime?,
       blacklistedTokens: (fields[12] as List).cast<String>(),
       notificationPreference: fields[13] as bool,
+      signupType: fields[14] as String?,
+      googleId: fields[15] as String?,
+      appleId: fields[16] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -65,7 +68,13 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       ..writeByte(12)
       ..write(obj.blacklistedTokens)
       ..writeByte(13)
-      ..write(obj.notificationPreference);
+      ..write(obj.notificationPreference)
+      ..writeByte(14)
+      ..write(obj.signupType)
+      ..writeByte(15)
+      ..write(obj.googleId)
+      ..writeByte(16)
+      ..write(obj.appleId);
   }
 
   @override

@@ -8,28 +8,38 @@ class ProfileState extends Equatable {
     this.updatePassword = const DataState.initial(),
     this.logoutStatus = const DataState.initial(),
     this.deleteAccountStatus = const DataState.initial(),
+    this.notificationPreference = const DataState.initial(),
   });
 
-  final DataState<UserModel>? updateProfile;
-  final DataState<dynamic>? updatePassword;
+  final DataState<UserModel> updateProfile;
+  final DataState<dynamic> updatePassword;
   final DataState<void> logoutStatus;
   final DataState<void> deleteAccountStatus;
+  final DataState<void> notificationPreference;
 
   @override
-  List<Object?> get props =>
-      [updateProfile, updatePassword, logoutStatus, deleteAccountStatus];
+  List<Object?> get props => [
+        updateProfile,
+        updatePassword,
+        logoutStatus,
+        deleteAccountStatus,
+        notificationPreference,
+      ];
 
   ProfileState copyWith({
     DataState<UserModel>? updateProfile,
     DataState<dynamic>? updatePassword,
     DataState<void>? logoutStatus,
     DataState<void>? deleteAccountStatus,
+    DataState<void>? notificationPreference,
   }) {
     return ProfileState(
       updateProfile: updateProfile ?? this.updateProfile,
       updatePassword: updatePassword ?? this.updatePassword,
       logoutStatus: logoutStatus ?? this.logoutStatus,
       deleteAccountStatus: deleteAccountStatus ?? this.deleteAccountStatus,
+      notificationPreference:
+          notificationPreference ?? this.notificationPreference,
     );
   }
 }
