@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
 import 'package:fairway/fairway/models/api_response/api_response_model.dart';
 import 'package:fairway/fairway/models/api_response/base_api_response.dart';
-import 'package:fairway/fairway/models/restaurant_model.dart';
 
 class RestaurantResponseModel extends Equatable {
   const RestaurantResponseModel({

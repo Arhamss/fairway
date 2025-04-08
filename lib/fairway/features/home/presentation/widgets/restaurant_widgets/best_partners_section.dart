@@ -1,7 +1,7 @@
 import 'package:fairway/export.dart';
-import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
-import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
-import 'package:fairway/fairway/models/restaurant_model.dart';
+import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
 import 'package:fairway/utils/helpers/url_helper.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 import 'package:fairway/utils/widgets/core_widgets/retry_widget.dart';
@@ -19,30 +19,25 @@ class _BestPartnersSectionState extends State<BestPartnersSection> {
   @override
   void initState() {
     super.initState();
-
-    // Add scroll listener to detect when to load more
     _scrollController.addListener(_onScroll);
 
-    // Initial load
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeCubit>().loadBestPartners();
-    });
+    context.read<RestaurantCubit>().loadBestPartners();
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     super.dispose();
   }
 
   void _onScroll() {
-    // Check if we're at the right edge of the horizontal list
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      final state = context.read<HomeCubit>().state;
+      final state = context.read<RestaurantCubit>().state;
       if (!state.isLoadingMoreBestPartners && state.hasMoreBestPartners) {
-        context.read<HomeCubit>().loadMoreBestPartners();
+        context.read<RestaurantCubit>().loadMoreBestPartners();
       }
     }
   }
@@ -80,7 +75,7 @@ class _BestPartnersSectionState extends State<BestPartnersSection> {
             ],
           ),
           const SizedBox(height: 12),
-          BlocBuilder<HomeCubit, HomeState>(
+          BlocBuilder<RestaurantCubit, RestaurantState>(
             builder: (context, state) {
               final restaurants =
                   state.bestPartnerRestaurants.data?.restaurants ?? [];
@@ -101,7 +96,7 @@ class _BestPartnersSectionState extends State<BestPartnersSection> {
                   message: state.bestPartnerRestaurants.errorMessage ??
                       'An error occurred fetching features restaurants',
                   onRetry: () {
-                    context.read<HomeCubit>().loadBestPartners();
+                    context.read<RestaurantCubit>().loadBestPartners();
                   },
                 );
               }

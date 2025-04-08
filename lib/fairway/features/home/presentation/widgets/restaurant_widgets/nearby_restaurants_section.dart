@@ -1,7 +1,9 @@
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
-import 'package:fairway/fairway/models/restaurant_model.dart';
+import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
 import 'package:fairway/utils/helpers/url_helper.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 
@@ -22,7 +24,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
 
     // Initial load
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeCubit>().getRestaurants();
+      context.read<RestaurantCubit>().getRestaurants();
     });
 
     // Add scroll listener to detect when to load more
@@ -31,17 +33,18 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     super.dispose();
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      final state = context.read<HomeCubit>().state;
+      final state = context.read<RestaurantCubit>().state;
       if (!state.isLoadingMoreNearby && state.hasMoreNearbyRestaurants) {
-        context.read<HomeCubit>().loadMoreRestaurants();
+        context.read<RestaurantCubit>().loadMoreRestaurants();
       }
     }
   }
@@ -109,8 +112,8 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
 
         // Reset pagination when filter changes
         if (label == 'Nearby') {
-          context.read<HomeCubit>().resetNearbyPagination();
-          context.read<HomeCubit>().getRestaurants();
+          context.read<RestaurantCubit>().resetNearbyPagination();
+          context.read<RestaurantCubit>().getRestaurants();
         }
       },
       child: Column(
@@ -137,7 +140,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
 
   // Build nearby restaurants section with pagination
   Widget _buildNearbyRestaurants(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
+    return BlocBuilder<RestaurantCubit, RestaurantState>(
       builder: (context, state) {
         final isLoading =
             state.restaurants.isLoading && state.nearbyCurrentPage == 1;
@@ -230,7 +233,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: AppColors.black.withValues(alpha: 0.05),
               spreadRadius: 1,
               blurRadius: 5,
               offset: const Offset(0, 2),

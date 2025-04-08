@@ -1,7 +1,7 @@
 import 'package:fairway/export.dart';
-import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
-import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
-import 'package:fairway/fairway/models/restaurant_model.dart';
+import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
 import 'package:fairway/utils/helpers/url_helper.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 import 'package:fairway/utils/widgets/core_widgets/search_field.dart';
@@ -27,13 +27,13 @@ class _SearchScreenState extends State<SearchScreen> {
           hintText: 'Search restaurants...',
           onChanged: (query) {
             if (query.isNotEmpty) {
-              context.read<HomeCubit>().searchRestaurants(query);
+              context.read<RestaurantCubit>().searchRestaurants(query);
             }
           },
         ),
         automaticallyImplyLeading: false,
       ),
-      body: BlocBuilder<HomeCubit, HomeState>(
+      body: BlocBuilder<RestaurantCubit, RestaurantState>(
         builder: (context, state) {
           final isLoading = state.searchResults.isLoading;
           final hasError = state.searchResults.isFailure;
@@ -94,7 +94,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () => context.read<HomeCubit>().clearRecentSearches(),
+                onTap: () =>
+                    context.read<RestaurantCubit>().clearRecentSearches(),
                 child: Text(
                   'CLEAR ALL',
                   style: context.b2.copyWith(
@@ -119,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 onTap: () {
                   _searchController.text = query;
-                  context.read<HomeCubit>().searchRestaurants(query);
+                  context.read<RestaurantCubit>().searchRestaurants(query);
                 },
               );
             },
@@ -130,7 +131,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildRestaurantTile(
-      BuildContext context, RestaurantModel restaurant) {
+    BuildContext context,
+    RestaurantModel restaurant,
+  ) {
     return ListTile(
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),

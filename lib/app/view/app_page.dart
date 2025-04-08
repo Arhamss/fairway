@@ -7,6 +7,8 @@ import 'package:fairway/fairway/features/onboarding_flow/data/repositories/onboa
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/profile/data/repositories/profile_repository_implementation.dart';
 import 'package:fairway/fairway/features/profile/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/restaurant/data/repository/restaurant_repository_impl.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,7 +35,12 @@ class App extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => HomeCubit(
-            repository: HomeRepositoryImplementation(),
+            repository: HomeRepositoryImpl(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => RestaurantCubit(
+            repository: RestaurantRepositoryImpl(),
           ),
         ),
         BlocProvider(

@@ -1,11 +1,12 @@
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
-import 'package:fairway/fairway/features/home/presentation/widgets/best_partners_section.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/drawer/drawer.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/flight_alert_banner.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/home_header.dart';
-import 'package:fairway/fairway/features/home/presentation/widgets/nearby_restaurants_section.dart';
+import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/best_partners_section.dart';
+import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/nearby_restaurants_section.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadHomeData() async {
     final homeCubit = context.read<HomeCubit>();
+    final restaurantCubit = context.read<RestaurantCubit>();
     await homeCubit.loadUserProfile();
     final user = homeCubit.state.userProfile;
     final hasCurrentLocation =
@@ -35,7 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
       context.goNamed(AppRouteNames.selectLocation);
     }
 
-    await homeCubit.loadAllRestaurantsData();
+    await restaurantCubit.loadAllRestaurantsData(
+      savedLocations: user.data?.savedLocations,
+    );
   }
 
   @override
