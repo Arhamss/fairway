@@ -14,46 +14,104 @@ class NearbyRestaurantsSection extends StatefulWidget {
 }
 
 class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
-  String selectedFilter = 'Nearby';
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initial load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeCubit>().getRestaurants();
+    });
+
+    // Add scroll listener to detect when to load more
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      final state = context.read<HomeCubit>().state;
+      if (!state.isLoadingMoreNearby && state.hasMoreNearbyRestaurants) {
+        context.read<HomeCubit>().loadMoreRestaurants();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Filter options as tabs
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildFilterTab(context, 'Nearby'),
-              _buildFilterTab(context, 'Sales'),
-              _buildFilterTab(context, 'Rate'),
-              _buildFilterTab(context, 'Fast'),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: AppColors.white,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Wrap the tab row with BlocBuilder
+          BlocBuilder<HomeCubit, HomeState>(
+            buildWhen: (previous, current) =>
+                previous.selectedFilter != current.selectedFilter,
+            builder: (context, state) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildFilterTab(context, 'Nearby', state),
+                    _buildFilterTab(context, 'Sales', state),
+                    _buildFilterTab(context, 'Rate', state),
+                    _buildFilterTab(context, 'Fast', state),
+                  ],
+                ),
+              );
+            },
           ),
-        ),
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-        // Display content based on selected filter
-        if (selectedFilter == 'Nearby') _buildNearbyRestaurants(context),
-        if (selectedFilter == 'Sales') _buildEmptySection('Sales'),
-        if (selectedFilter == 'Rate') _buildEmptySection('Rate'),
-        if (selectedFilter == 'Fast') _buildEmptySection('Fast'),
-      ],
+          // Wrap the content with BlocBuilder too
+          BlocBuilder<HomeCubit, HomeState>(
+            buildWhen: (previous, current) =>
+                previous.selectedFilter != current.selectedFilter,
+            builder: (context, state) {
+              if (state.selectedFilter == 'Nearby') {
+                return _buildNearbyRestaurants(context);
+              } else if (state.selectedFilter == 'Sales') {
+                return _buildEmptySection('Sales');
+              } else if (state.selectedFilter == 'Rate') {
+                return _buildEmptySection('Rate');
+              } else {
+                return _buildEmptySection('Fast');
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  // Build filter tab
-  Widget _buildFilterTab(BuildContext context, String label) {
-    final isSelected = selectedFilter == label;
+  // Update _buildFilterTab to accept state parameter
+  Widget _buildFilterTab(BuildContext context, String label, HomeState state) {
+    final isSelected = state.selectedFilter == label;
 
     return GestureDetector(
       onTap: () {
-        setState(() {
-          selectedFilter = label;
-        });
+        context.read<HomeCubit>().setSelectedFilter(label);
+
+        // Reset pagination when filter changes
+        if (label == 'Nearby') {
+          context.read<HomeCubit>().resetNearbyPagination();
+          context.read<HomeCubit>().getRestaurants();
+        }
       },
       child: Column(
         children: [
@@ -77,13 +135,15 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
     );
   }
 
-  // Build nearby restaurants section
+  // Build nearby restaurants section with pagination
   Widget _buildNearbyRestaurants(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        final isLoading = state.nearbyRestaurants.isLoading;
-        final hasError = state.nearbyRestaurants.isFailure;
-        final restaurants = state.nearbyRestaurants.data?.restaurants ?? [];
+        final isLoading =
+            state.restaurants.isLoading && state.nearbyCurrentPage == 1;
+        final hasError =
+            state.restaurants.isFailure && state.nearbyCurrentPage == 1;
+        final restaurants = state.restaurants.data?.restaurants ?? [];
 
         if (isLoading) {
           return const SizedBox(
@@ -97,8 +157,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
             height: 200,
             child: Center(
               child: Text(
-                state.nearbyRestaurants.errorMessage ??
-                    'Failed to load restaurants',
+                state.restaurants.errorMessage ?? 'Failed to load restaurants',
                 style: context.b2.copyWith(color: AppColors.error),
               ),
             ),
@@ -114,10 +173,30 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
           );
         }
 
-        return Column(
-          children: restaurants.map((restaurant) {
-            return _buildRestaurantTile(context, restaurant);
-          }).toList(),
+        // Replace the SizedBox with a Container that handles padding better
+        return Container(
+          // Use constraints instead of fixed height
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.5,
+            minHeight: MediaQuery.of(context).size.height * 0.3,
+          ),
+          // Add bottom padding to prevent overlay
+          padding: const EdgeInsets.only(bottom: 8),
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: restaurants.length + (state.isLoadingMoreNearby ? 1 : 0),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.zero, // Remove default ListView padding
+            itemBuilder: (context, index) {
+              if (index == restaurants.length) {
+                return const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Center(child: LoadingWidget()),
+                );
+              }
+              return _buildRestaurantTile(context, restaurants[index]);
+            },
+          ),
         );
       },
     );
@@ -138,7 +217,10 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
 
   // Build restaurant tile
   Widget _buildRestaurantTile(
-      BuildContext context, RestaurantModel restaurant) {
+    BuildContext context,
+    RestaurantModel restaurant,
+  ) {
+    // Your existing _buildRestaurantTile code
     return InkWell(
       onTap: () => UrlHelper.launchWebsite(restaurant.website),
       child: Container(

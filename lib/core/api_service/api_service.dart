@@ -81,7 +81,7 @@ class ApiService {
   }
 
   AppApiException _handleDioError(DioException e) {
-    String errorMessage = 'An unknown error occurred';
+    var errorMessage = 'An unknown error occurred';
     int? statusCode;
 
     if (e.response != null) {
@@ -97,19 +97,14 @@ class ApiService {
           switch (statusCode) {
             case 400:
               errorMessage = 'Bad request';
-              break;
             case 401:
               errorMessage = 'Unauthorized';
-              break;
             case 403:
               errorMessage = 'Forbidden';
-              break;
             case 404:
               errorMessage = 'Not found';
-              break;
             case 500:
               errorMessage = 'Internal server error';
-              break;
             default:
               errorMessage = 'Unexpected error: ${e.response?.statusMessage}';
           }
