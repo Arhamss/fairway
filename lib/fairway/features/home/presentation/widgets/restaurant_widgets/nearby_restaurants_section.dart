@@ -1,6 +1,4 @@
 import 'package:fairway/export.dart';
-import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
-import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
@@ -61,7 +59,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Wrap the tab row with BlocBuilder
-          BlocBuilder<HomeCubit, HomeState>(
+          BlocBuilder<RestaurantCubit, RestaurantState>(
             buildWhen: (previous, current) =>
                 previous.selectedFilter != current.selectedFilter,
             builder: (context, state) {
@@ -70,10 +68,10 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildFilterTab(context, 'Nearby', state),
-                    _buildFilterTab(context, 'Sales', state),
-                    _buildFilterTab(context, 'Rate', state),
-                    _buildFilterTab(context, 'Fast', state),
+                    _buildFilterTab(context, 'Nearby'),
+                    _buildFilterTab(context, 'Sales'),
+                    _buildFilterTab(context, 'Rate'),
+                    _buildFilterTab(context, 'Fast'),
                   ],
                 ),
               );
@@ -82,7 +80,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
           const SizedBox(height: 16),
 
           // Wrap the content with BlocBuilder too
-          BlocBuilder<HomeCubit, HomeState>(
+          BlocBuilder<RestaurantCubit, RestaurantState>(
             buildWhen: (previous, current) =>
                 previous.selectedFilter != current.selectedFilter,
             builder: (context, state) {
@@ -103,14 +101,14 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
   }
 
   // Update _buildFilterTab to accept state parameter
-  Widget _buildFilterTab(BuildContext context, String label, HomeState state) {
-    final isSelected = state.selectedFilter == label;
+  Widget _buildFilterTab(BuildContext context, String label) {
+    final isSelected =
+        context.read<RestaurantCubit>().state.selectedFilter == label;
 
     return GestureDetector(
       onTap: () {
-        context.read<HomeCubit>().setSelectedFilter(label);
+        context.read<RestaurantCubit>().setSelectedFilter(label);
 
-        // Reset pagination when filter changes
         if (label == 'Nearby') {
           context.read<RestaurantCubit>().resetNearbyPagination();
           context.read<RestaurantCubit>().getRestaurants();

@@ -66,10 +66,4 @@ class HomeCubit extends Cubit<HomeState> {
       state.copyWith(selectedTabIndex: index),
     );
   }
-
-  void setSelectedFilter(String filter) {
-    emit(
-      state.copyWith(selectedFilter: filter),
-    );
-  }
 }

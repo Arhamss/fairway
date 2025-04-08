@@ -7,25 +7,21 @@ class HomeState extends Equatable {
     this.userProfile = const DataState.initial(),
     this.isFilterExpanded = false,
     this.selectedTabIndex = 0,
-    this.selectedFilter = 'Nearby',
   });
 
   final DataState<UserModel> userProfile;
   final bool isFilterExpanded;
   final int selectedTabIndex;
-  final String selectedFilter;
 
   HomeState copyWith({
     DataState<UserModel>? userProfile,
     bool? isFilterExpanded,
     int? selectedTabIndex,
-    String? selectedFilter,
   }) {
     return HomeState(
       userProfile: userProfile ?? this.userProfile,
       isFilterExpanded: isFilterExpanded ?? this.isFilterExpanded,
       selectedTabIndex: selectedTabIndex ?? this.selectedTabIndex,
-      selectedFilter: selectedFilter ?? this.selectedFilter,
     );
   }
 
@@ -34,6 +30,5 @@ class HomeState extends Equatable {
         userProfile,
         isFilterExpanded,
         selectedTabIndex,
-        selectedFilter,
       ];
 }

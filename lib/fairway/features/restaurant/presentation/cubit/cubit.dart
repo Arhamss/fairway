@@ -302,4 +302,10 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       ),
     );
   }
+
+  void setSelectedFilter(String filter) {
+    emit(
+      state.copyWith(selectedFilter: filter),
+    );
+  }
 }
