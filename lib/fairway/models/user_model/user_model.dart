@@ -25,6 +25,9 @@ class UserModel extends Equatable {
     this.subscriptionEnd,
     this.blacklistedTokens = const [],
     this.notificationPreference = false,
+    this.signupType,
+    this.googleId,
+    this.appleId,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -68,6 +71,9 @@ class UserModel extends Equatable {
             [],
         notificationPreference:
             userData['notificationPreference'] as bool? ?? false,
+        signupType: userData['signupType'] as String?,
+        googleId: userData['googleId'] as String?,
+        appleId: userData['appleId'] as String?,
       );
     } catch (e, stackTrace) {
       AppLogger.error(
@@ -132,6 +138,15 @@ class UserModel extends Equatable {
   @HiveField(13)
   final bool notificationPreference;
 
+  @HiveField(14)
+  final String? signupType;
+
+  @HiveField(15)
+  final String? googleId;
+
+  @HiveField(16)
+  final String? appleId;
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
@@ -147,6 +162,9 @@ class UserModel extends Equatable {
         'subscriptionEnd': subscriptionEnd?.toIso8601String(),
         'blacklistedTokens': blacklistedTokens,
         'notificationPreference': notificationPreference,
+        'signupType': signupType,
+        'googleId': googleId,
+        'appleId': appleId,
       };
 
   UserModel copyWith({
@@ -164,6 +182,9 @@ class UserModel extends Equatable {
     DateTime? subscriptionEnd,
     List<String>? blacklistedTokens,
     bool? notificationPreference,
+    String? signupType,
+    String? googleId,
+    String? appleId,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -181,6 +202,9 @@ class UserModel extends Equatable {
       blacklistedTokens: blacklistedTokens ?? this.blacklistedTokens,
       notificationPreference:
           notificationPreference ?? this.notificationPreference,
+      signupType: signupType ?? this.signupType,
+      googleId: googleId ?? this.googleId,
+      appleId: appleId ?? this.appleId,
     );
   }
 
@@ -200,5 +224,8 @@ class UserModel extends Equatable {
         subscriptionEnd,
         blacklistedTokens,
         notificationPreference,
+        signupType,
+        googleId,
+        appleId,
       ];
 }

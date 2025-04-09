@@ -1,6 +1,7 @@
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/di/injector.dart';
 import 'package:fairway/export.dart';
+import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/profile/domain/repositories/profile_repository.dart';
 import 'package:fairway/fairway/features/profile/presentation/cubit/state.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
@@ -122,6 +123,37 @@ class ProfileCubit extends Cubit<ProfileState> {
         state.copyWith(
           deleteAccountStatus: DataState.failure(
             error: 'Failed to delete account: $e',
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> updateNotificationPreference(bool notificationPref) async {
+    try {
+      emit(state.copyWith(notificationPreference: const DataState.loading()));
+
+      // Call API to update notification preference
+      final response =
+          await repository.updateNotificationPreference(notificationPref);
+
+      if (response.isSuccess) {
+        emit(state.copyWith(notificationPreference: const DataState.loaded()));
+      } else {
+        emit(
+          state.copyWith(
+            notificationPreference: DataState.failure(
+              error: response.message ?? 'Failed to update preference',
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      AppLogger.error('Update notification preference failed: $e');
+      emit(
+        state.copyWith(
+          notificationPreference: DataState.failure(
+            error: 'Failed to update preference: $e',
           ),
         ),
       );

@@ -47,4 +47,10 @@ class AssetPaths {
   static const gateIcon = 'assets/svgs/airport_gate.svg';
   static const conciergeIcon = 'assets/svgs/concierge.svg';
   static const pickYourselfIcon = 'assets/svgs/pick_yourself.svg';
+  static const appleIcon = 'assets/svgs/apple_logo.svg';
+  static const googleIcon = 'assets/svgs/google_logo.svg';
+  static const logoutIcon = 'assets/svgs/logout.svg';
+  static const accountInfoLogo = 'assets/svgs/account_information.svg';
+  static const notificationSwitchLogo = 'assets/svgs/notification_tile.svg';
+  static const passwordIcon = 'assets/svgs/password.svg';
 }

@@ -249,14 +249,14 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       final response = await repository.searchRestaurants(query);
 
       if (response.isSuccess && response.data != null) {
-        // Add query to recent searches
-        _addToRecentSearches(query);
-
         emit(
           state.copyWith(
             searchResults: DataState.loaded(data: response.data),
           ),
         );
+
+        // Refresh recent searches after successful search
+        await loadRecentSearches();
       } else {
         emit(
           state.copyWith(
@@ -275,12 +275,50 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     }
   }
 
-  void _addToRecentSearches(String query) {
-    final updatedSearches = List<String>.from(state.recentSearches);
-    if (!updatedSearches.contains(query)) {
-      updatedSearches.insert(0, query);
+  Future<void> getSearchSuggestions(String query) async {
+    if (query.isEmpty) {
+      emit(state.copyWith(searchSuggestions: const DataState.initial()));
+      return;
     }
-    emit(state.copyWith(recentSearches: updatedSearches));
+
+    emit(state.copyWith(searchSuggestions: const DataState.loading()));
+
+    final response = await repository.getSearchSuggestions(query);
+
+    if (response.isSuccess && response.data != null) {
+      emit(
+        state.copyWith(
+          searchSuggestions: DataState.loaded(data: response.data),
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          searchSuggestions: DataState.failure(error: response.message),
+        ),
+      );
+    }
+  }
+
+  Future<void> loadRecentSearches() async {
+    emit(state.copyWith(recentSearchesData: const DataState.loading()));
+
+    final response = await repository.getRecentSearches();
+
+    if (response.isSuccess && response.data != null) {
+      emit(
+        state.copyWith(
+          recentSearchesData: DataState.loaded(data: response.data),
+          recentSearches: response.data?.recentSearches,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          recentSearchesData: DataState.failure(error: response.message),
+        ),
+      );
+    }
   }
 
   void clearRecentSearches() {

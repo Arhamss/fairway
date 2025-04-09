@@ -8,4 +8,6 @@ abstract class ProfileRepository {
     String newPassword,
   );
   Future<RepositoryResponse<void>> deleteAccount();
+
+  Future<RepositoryResponse<bool>> updateNotificationPreference(bool isEnabled);
 }

@@ -119,4 +119,40 @@ class ProfileRepositoryImplementation implements ProfileRepository {
       );
     }
   }
+
+  @override
+  Future<RepositoryResponse<bool>> updateNotificationPreference(
+    bool value,
+  ) async {
+    try {
+      final response = await _apiService.put(
+        Endpoints.updateNotificationPreference,
+        {'preference': value},
+      );
+
+      if (response.statusCode == 200) {
+        return RepositoryResponse(
+          isSuccess: true,
+          data: value,
+          message: 'Notification preference updated successfully',
+        );
+      }
+
+      return RepositoryResponse(
+        isSuccess: false,
+        data: false,
+        message: 'Failed to update notification preference',
+      );
+    } catch (e, s) {
+      AppLogger.error('Notification preference update exception:', e, s);
+      return RepositoryResponse(
+        isSuccess: false,
+        data: false,
+        message: extractApiErrorMessage(
+          e,
+          'Failed to update notification preference',
+        ),
+      );
+    }
+  }
 }

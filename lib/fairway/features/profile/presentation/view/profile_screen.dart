@@ -3,9 +3,11 @@ import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/profile/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/profile/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/profile/presentation/widgets/account_type_widget.dart';
 import 'package:fairway/fairway/features/profile/presentation/widgets/profile_item.dart';
 import 'package:fairway/utils/widgets/core_widgets/custom_dialog.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
+import 'package:fairway/utils/widgets/core_widgets/retry_widget.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -19,33 +21,35 @@ class ProfileScreen extends StatelessWidget {
           context.goNamed(AppRouteNames.signIn);
         }
 
-        // Handle successful account deletion
-        if (state.deleteAccountStatus.isLoaded) {
-          context.goNamed(AppRouteNames.signIn);
+        if (state.notificationPreference.isLoaded) {
+          context.read<HomeCubit>().loadUserProfile();
         }
       },
       builder: (context, profileState) {
         return Scaffold(
           backgroundColor: AppColors.darkWhiteBackground,
-          appBar: fairwayAppBar(
-            title: 'Profile',
-            titleStyle: context.h2.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.black,
-              fontSize: 24,
+          appBar: AppBar(
+            title: Text(
+              'Profile',
+              style: context.h2.copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppColors.black,
+                fontSize: 24,
+              ),
             ),
             centerTitle: true,
-            leadingIcon: const Icon(Icons.arrow_back_ios),
-            onLeadingPressed: () {
-              context.pop();
-            },
-            actionWidget: IconButton(
-              icon: const Icon(Icons.notifications, color: AppColors.black),
-              onPressed: () {
-                // Handle notifications
-              },
+            leading: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(Icons.arrow_back_ios),
             ),
-            context: context,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications, color: AppColors.black),
+                onPressed: () {
+                  // Handle notifications
+                },
+              ),
+            ],
           ),
           body: BlocBuilder<HomeCubit, HomeState>(
             builder: (context, homeState) {
@@ -56,23 +60,12 @@ class ProfileScreen extends StatelessWidget {
               }
 
               if (homeState.userProfile.isFailure) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Failed to load profile',
-                        style: context.b1.copyWith(fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 16),
-                      FairwayButton(
-                        onPressed: () =>
-                            context.read<HomeCubit>().loadUserProfile(),
-                        text: 'Retry',
-                        isLoading: false,
-                      ),
-                    ],
-                  ),
+                return RetryWidget(
+                  onRetry: () {
+                    context.read<HomeCubit>().loadUserProfile();
+                  },
+                  message: homeState.userProfile.errorMessage ??
+                      'Failed to load user profile',
                 );
               }
 
@@ -93,7 +86,8 @@ class ProfileScreen extends StatelessWidget {
                           const CircleAvatar(
                             radius: 40,
                             backgroundImage: NetworkImage(
-                              'https://placehold.co/600x400', // Replace with actual image
+                              AppConstants
+                                  .placeholderUserAvatar, // Replace with actual image
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -119,12 +113,22 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
 
+                    if (userProfile?.signupType == 'google')
+                      const AccountTypeWidget(
+                        accountType: AccountType.google,
+                      ),
+
+                    if (userProfile?.signupType == 'apple')
+                      const AccountTypeWidget(
+                        accountType: AccountType.apple,
+                      ),
+
                     // Account section
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Account',
-                        style: context.b1.copyWith(
+                        'General',
+                        style: context.t2.copyWith(
                           fontWeight: FontWeight.w700,
                           color: AppColors.black,
                         ),
@@ -132,30 +136,30 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
 
-                    // Account settings items
                     ProfileItem(
-                      icon: Icons.person_outline,
-                      label: 'Account Information',
-                      subtitle: 'Change your account details',
+                      title: 'Account Information',
+                      subtitle: 'Change your Account information',
                       onTap: () =>
                           context.pushNamed(AppRouteNames.accountInformation),
+                      iconPath: AssetPaths.accountInfoLogo,
                     ),
                     const SizedBox(height: 8),
 
-                    ProfileItem(
-                      icon: Icons.lock_outline,
-                      label: 'Change Password',
-                      subtitle: 'Change your password',
-                      onTap: () =>
-                          context.pushNamed(AppRouteNames.changePassword),
-                    ),
+                    if (userProfile?.signupType == 'email')
+                      ProfileItem(
+                        iconPath: AssetPaths.passwordIcon,
+                        title: 'Password',
+                        subtitle: 'Change your Password',
+                        onTap: () =>
+                            context.pushNamed(AppRouteNames.changePassword),
+                      ),
                     const SizedBox(height: 24),
 
                     // Preferences section
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Preferences',
+                        'Notifications',
                         style: context.b1.copyWith(
                           fontWeight: FontWeight.w700,
                           color: AppColors.black,
@@ -164,33 +168,37 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
 
-                    // Preferences items
+                    // Notifications items
                     ProfileItem(
-                      icon: Icons.notifications_none_outlined,
-                      label: 'Notifications',
+                      title: 'Notifications',
                       subtitle: 'Manage notifications settings',
-                      onTap: () {},
+                      switchValue: userProfile!.notificationPreference,
+                      onSwitchChanged: (value) {
+                        context
+                            .read<ProfileCubit>()
+                            .updateNotificationPreference(value);
+                      },
+                      iconPath: AssetPaths.notificationSwitchLogo,
+                      type: ProfileItemType.notification,
                     ),
                     const SizedBox(height: 8),
 
                     // Logout button
                     ProfileItem(
-                      icon: Icons.logout,
-                      label: 'Log Out',
+                      title: 'Log Out',
                       onTap: () => _showLogoutDialog(
                         context,
                         profileState.logoutStatus.isLoading,
                       ),
+                      iconPath: AssetPaths.logoutIcon,
                     ),
                     const SizedBox(height: 24),
 
                     // Delete account button
                     FairwayButton(
                       text: 'Delete Account',
-                      onPressed: () => _showDeleteAccountDialog(
-                        context,
-                        profileState.deleteAccountStatus.isLoading,
-                      ),
+                      onPressed: () =>
+                          context.goNamed(AppRouteNames.deleteAccount),
                       backgroundColor: Colors.white,
                       textColor: AppColors.error,
                       isLoading: profileState.deleteAccountStatus.isLoading,
@@ -208,28 +216,13 @@ class ProfileScreen extends StatelessWidget {
   void _showLogoutDialog(BuildContext context, bool isLoading) {
     CustomDialog.showActionDialog(
       context: context,
-      title: 'Log Out',
+      title: 'Logout',
       message: 'Are you sure you want to log out?',
-      confirmText: 'Log Out',
+      confirmText: 'Yes',
       isLoading: isLoading,
       isDanger: true,
       onConfirm: () {
         context.read<ProfileCubit>().logout();
-      },
-    );
-  }
-
-  void _showDeleteAccountDialog(BuildContext context, bool isLoading) {
-    CustomDialog.showActionDialog(
-      context: context,
-      title: 'Delete Account',
-      message:
-          'This action cannot be undone. Are you sure you want to delete your account?',
-      confirmText: 'Delete Account',
-      isLoading: isLoading,
-      isDanger: true,
-      onConfirm: () {
-        context.read<ProfileCubit>().deleteAccount();
       },
     );
   }
