@@ -1,8 +1,6 @@
 import 'package:fairway/export.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-class FairwaySmartSearchField extends StatelessWidget {
+class FairwaySmartSearchField extends StatefulWidget {
   const FairwaySmartSearchField({
     required this.controller,
     required this.hintText,
@@ -17,57 +15,78 @@ class FairwaySmartSearchField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
 
   @override
+  State<FairwaySmartSearchField> createState() =>
+      _FairwaySmartSearchFieldState();
+}
+
+class _FairwaySmartSearchFieldState extends State<FairwaySmartSearchField> {
+  bool _showClearIcon = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _showClearIcon = widget.controller.text.isNotEmpty;
+    widget.controller.addListener(_handleTextChange);
+  }
+
+  void _handleTextChange() {
+    setState(() {
+      _showClearIcon = widget.controller.text.isNotEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_handleTextChange);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         // Search Field
         Expanded(
           child: Container(
-            height: 48,
             decoration: BoxDecoration(
               color: AppColors.greyShade5,
               borderRadius: BorderRadius.circular(15),
             ),
             child: TextField(
-              controller: controller,
-              onChanged: onChanged,
-              onSubmitted: onSubmitted,
+              controller: widget.controller,
+              onChanged: widget.onChanged,
+              onSubmitted: widget.onSubmitted,
               textInputAction: TextInputAction.search,
               decoration: InputDecoration(
-                hintText: hintText,
+                hintText: widget.hintText,
                 hintStyle: context.b2.copyWith(
                   color: AppColors.greyShade2,
-                  fontSize: 20,
                 ),
                 border: InputBorder.none,
+                isDense: true,
                 prefixIcon: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.only(left: 16, right: 8),
                   child: SvgPicture.asset(
-                    AssetPaths.searchIcon, // Replace with your SVG path
+                    AssetPaths.searchIcon,
                   ),
                 ),
+                prefixIconConstraints: const BoxConstraints(
+                  minHeight: 24,
+                  minWidth: 40,
+                ),
+                suffixIcon: _showClearIcon
+                    ? IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () {
+                          widget.controller.clear();
+                          widget.onChanged?.call('');
+                        },
+                      )
+                    : null,
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8, // Add vertical padding to center-align the text
+                  vertical: 12,
                 ),
               ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        // Cancel Button
-        GestureDetector(
-          onTap: () {
-            controller.clear();
-            if (onChanged != null) {
-              onChanged!('');
-            }
-          },
-          child: Text(
-            'Cancel',
-            style: context.l1.copyWith(
-              color: AppColors.black,
-              fontWeight: FontWeight.w600,
             ),
           ),
         ),

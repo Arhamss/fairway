@@ -51,6 +51,7 @@ class RestaurantState extends Equatable {
   int get currentPage => nearbyCurrentPage;
   bool get hasMoreRestaurants => hasMoreNearbyRestaurants;
   bool get isLoadingMore => isLoadingMoreNearby;
+  bool get isIdle => searchSuggestions.isInitial && searchResults.isInitial;
 
   RestaurantState copyWith({
     DataState<RestaurantResponseModel>? restaurants,

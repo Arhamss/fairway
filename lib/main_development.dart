@@ -4,5 +4,6 @@ import 'package:fairway/config/flavor_config.dart';
 
 void main() {
   FlavorConfig(flavor: Flavor.development);
+
   bootstrap(() => const App());
 }

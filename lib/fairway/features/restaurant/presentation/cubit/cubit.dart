@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/fairway/features/restaurant/domain/repository/restaurant_repository.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
@@ -10,6 +12,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   RestaurantCubit({required this.repository}) : super(const RestaurantState());
 
   final RestaurantRepository repository;
+  Timer? _debounceTimer;
 
   Future<void> getRestaurants() async {
     emit(
@@ -319,6 +322,53 @@ class RestaurantCubit extends Cubit<RestaurantState> {
         ),
       );
     }
+  }
+
+  void onSearchTextChanged(String query) {
+    _debounceTimer?.cancel();
+
+    if (query.isEmpty) {
+      emit(
+        state.copyWith(
+          searchSuggestions: const DataState.initial(),
+          searchResults: const DataState.initial(),
+        ),
+      );
+      return;
+    }
+
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      _getSuggestionsAndResetResults(query);
+    });
+  }
+
+  Future<void> _getSuggestionsAndResetResults(String query) async {
+    emit(
+      state.copyWith(
+        searchSuggestions: const DataState.loading(),
+      ),
+    );
+
+    final response = await repository.getSearchSuggestions(query);
+
+    if (response.isSuccess && response.data != null) {
+      emit(state.copyWith(
+        searchSuggestions: DataState.loaded(data: response.data),
+        searchResults: const DataState.initial(), // clear previous results
+      ));
+    } else {
+      emit(state.copyWith(
+        searchSuggestions: DataState.failure(
+          error: response.message ?? 'Failed to fetch suggestions',
+        ),
+      ));
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _debounceTimer?.cancel();
+    return super.close();
   }
 
   void clearRecentSearches() {

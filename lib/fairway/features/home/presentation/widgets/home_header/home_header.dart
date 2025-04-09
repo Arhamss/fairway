@@ -71,7 +71,7 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                         ),
                         child: FairwayTextField(
                           onTap: () =>
-                              context.goNamed(AppRouteNames.searchScreen),
+                              context.pushNamed(AppRouteNames.searchScreen),
                           controller: TextEditingController(),
                           hintText: 'Search',
                           type: FairwayTextFieldType.location,
