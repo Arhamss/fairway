@@ -29,6 +29,10 @@ class ProfileScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: AppColors.darkWhiteBackground,
           appBar: AppBar(
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            forceMaterialTransparency: true,
             title: Text(
               'Profile',
               style: context.h2.copyWith(

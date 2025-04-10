@@ -258,7 +258,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
           ),
         );
 
-        // Refresh recent searches after successful search
         await loadRecentSearches();
       } else {
         emit(
@@ -304,7 +303,11 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   }
 
   Future<void> loadRecentSearches() async {
-    emit(state.copyWith(recentSearchesData: const DataState.loading()));
+    emit(
+      state.copyWith(
+        recentSearchesData: const DataState.loading(),
+      ),
+    );
 
     final response = await repository.getRecentSearches();
 

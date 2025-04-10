@@ -3,7 +3,6 @@ import 'package:fairway/fairway/features/profile/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/profile/presentation/cubit/state.dart';
 import 'package:fairway/utils/widgets/core_widgets/button.dart';
 import 'package:fairway/utils/widgets/core_widgets/custom_dialog.dart';
-import 'package:flutter/material.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -24,7 +23,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: AppColors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         title: Text(
           'Delete account',
