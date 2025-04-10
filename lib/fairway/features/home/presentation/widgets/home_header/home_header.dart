@@ -86,13 +86,13 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                     IconButton(
                       icon: SvgPicture.asset(AssetPaths.notificationIcon),
                       onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => const OrderMethodDialog(
-                            restaurantLink:
-                                'https://example.com', // Replace with the actual link
-                          ),
-                        );
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (context) => const OrderMethodDialog(
+                        //     restaurantLink:
+                        //         'https://example.com', // Replace with the actual link
+                        //   ),
+                        // );
                       },
                     ),
                   ],
@@ -241,61 +241,63 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                             ],
                             if (state.selectedTabIndex == 1) ...[
                               BlocBuilder<RestaurantCubit, RestaurantState>(
-                                  builder: (context, state) {
-                                return Column(
-                                  children: SortByOption.values.map((option) {
-                                    final isSelected =
-                                        state.selectedSortOption == option;
+                                builder: (context, state) {
+                                  return Column(
+                                    children: SortByOption.values.map((option) {
+                                      final isSelected =
+                                          state.selectedSortOption == option;
 
-                                    return GestureDetector(
-                                      onTap: () {
-                                        context
-                                            .read<RestaurantCubit>()
-                                            .setSelectedSortOption(option);
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 16,
-                                          left: 16,
-                                          bottom: 8,
-                                        ),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 12,
+                                      return GestureDetector(
+                                        onTap: () {
+                                          context
+                                              .read<RestaurantCubit>()
+                                              .setSelectedSortOption(option);
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 16,
+                                            left: 16,
+                                            bottom: 8,
                                           ),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.greyShade5,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              SvgPicture.asset(
-                                                option.asset,
-                                              ),
-                                              const SizedBox(width: 16),
-                                              Expanded(
-                                                child: Text(
-                                                  option.label,
-                                                  style: context.b2.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: AppColors.textDark,
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 12,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.greyShade5,
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  option.asset,
+                                                ),
+                                                const SizedBox(width: 16),
+                                                Expanded(
+                                                  child: Text(
+                                                    option.label,
+                                                    style: context.b2.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppColors.textDark,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              if (isSelected)
-                                                SvgPicture.asset(
-                                                  AssetPaths.selectedIcon,
-                                                ),
-                                            ],
+                                                if (isSelected)
+                                                  SvgPicture.asset(
+                                                    AssetPaths.selectedIcon,
+                                                  ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                );
-                              })
+                                      );
+                                    }).toList(),
+                                  );
+                                },
+                              ),
                             ],
                             const SizedBox(height: 24),
                             FairwayButton(

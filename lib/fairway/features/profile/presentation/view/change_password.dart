@@ -12,25 +12,27 @@ class ChangePasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<ProfileCubit, ProfileState>(
       listener: (context, state) {
-        if (state.updatePassword?.isLoaded ?? false) {
+        if (state.updatePassword.isLoaded ?? false) {
           ToastHelper.showSuccessToast(
             'Password updated successfully',
           );
-        } else if (state.updatePassword?.isFailure ?? false) {
+        } else if (state.updatePassword.isFailure ?? false) {
           ToastHelper.showErrorToast(
-            state.updatePassword?.errorMessage ?? 'Failed to update profile',
+            state.updatePassword.errorMessage ?? 'Failed to update profile',
           );
         }
       },
       child: Scaffold(
-        appBar: fairwayAppBar(
-          title: '',
-          centerTitle: true,
-          context: context,
-          leadingIcon: const Icon(Icons.arrow_back_ios),
-          onLeadingPressed: () {
-            context.pop();
-          },
+        backgroundColor: AppColors.white,
+        appBar: AppBar(
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          forceMaterialTransparency: true,
+          leading: GestureDetector(
+            onTap: () => context.pop(),
+            child: const Icon(Icons.arrow_back_ios),
+          ),
         ),
         body: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
@@ -62,7 +64,8 @@ class ChangePasswordScreen extends StatelessWidget {
             }
 
             if (userProfile == null) {
-              return const EmptyWidget(
+              return const EmptyStateWidget(
+                image: AssetPaths.empty,
                 text: 'No account information available',
               );
             }
@@ -158,8 +161,7 @@ class ChangePasswordScreen extends StatelessWidget {
                                 newpassController.text,
                               );
                         },
-                        isLoading: state.updatePassword?.isLoading ?? false,
-                        backgroundColor: AppColors.primaryBlue,
+                        isLoading: state.updatePassword.isLoading ?? false,
                         textColor: AppColors.white,
                       );
                     },

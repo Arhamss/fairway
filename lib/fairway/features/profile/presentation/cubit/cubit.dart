@@ -7,7 +7,20 @@ import 'package:fairway/fairway/features/profile/presentation/cubit/state.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit({required this.repository}) : super(const ProfileState());
+  ProfileCubit({
+    required this.repository,
+  }) : super(const ProfileState()) {
+    // Initialize notification preference from cached user model
+    final userModel = Injector.resolve<AppPreferences>().getUserModel();
+    if (userModel != null) {
+      emit(
+        state.copyWith(
+          userNotificationPreference: userModel.notificationPreference,
+        ),
+      );
+    }
+  }
+
   final ProfileRepository repository;
 
   Future<void> updateUserProfile(String name) async {
@@ -131,17 +144,45 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> updateNotificationPreference(bool notificationPref) async {
     try {
-      emit(state.copyWith(notificationPreference: const DataState.loading()));
+      final previousValue = state.userNotificationPreference;
+      final appPreferences = Injector.resolve<AppPreferences>();
+      final userModel = appPreferences.getUserModel();
+
+      // Immediately update UI (optimistically)
+      emit(
+        state.copyWith(
+          userNotificationPreference: notificationPref,
+          notificationPreference: const DataState.loading(),
+        ),
+      );
 
       // Call API to update notification preference
       final response =
           await repository.updateNotificationPreference(notificationPref);
 
       if (response.isSuccess) {
-        emit(state.copyWith(notificationPreference: const DataState.loaded()));
-      } else {
+        // Update cached user model
+        if (userModel != null) {
+          final updatedUser = userModel.copyWith(
+            notificationPreference: notificationPref,
+          );
+          appPreferences.setUserModel(updatedUser);
+        }
+
         emit(
           state.copyWith(
+            notificationPreference: const DataState.loaded(),
+          ),
+        );
+      } else {
+        // Revert everything on failure
+        if (userModel != null) {
+          appPreferences.setUserModel(userModel); // Restore original model
+        }
+
+        emit(
+          state.copyWith(
+            userNotificationPreference: previousValue,
             notificationPreference: DataState.failure(
               error: response.message ?? 'Failed to update preference',
             ),
@@ -152,11 +193,20 @@ class ProfileCubit extends Cubit<ProfileState> {
       AppLogger.error('Update notification preference failed: $e');
       emit(
         state.copyWith(
+          userNotificationPreference: !notificationPref, // Revert
           notificationPreference: DataState.failure(
             error: 'Failed to update preference: $e',
           ),
         ),
       );
     }
+  }
+
+  void toggleCheckBox() {
+    emit(
+      state.copyWith(
+        checkBoxChecked: !state.checkBoxChecked,
+      ),
+    );
   }
 }

@@ -10,10 +10,9 @@ class RestaurantState extends Equatable {
     this.restaurants = const DataState.initial(),
     this.bestPartnerRestaurants = const DataState.initial(),
     this.nearbyRestaurants = const DataState.initial(),
-    this.searchResults = const DataState.initial(),
-    this.searchSuggestions = const DataState.initial(),
+    this.searchSuggestions = const DataState
+        .initial(), // This will now handle all search functionality
     this.recentSearchesData = const DataState.initial(),
-    this.recentSearches = const [],
     this.selectedFilter = 'Nearby',
     this.selectedSortOption = SortByOption.mostPopular,
     this.nearbyCurrentPage = 1,
@@ -28,10 +27,9 @@ class RestaurantState extends Equatable {
   final DataState<RestaurantResponseModel> restaurants;
   final DataState<RestaurantResponseModel> bestPartnerRestaurants;
   final DataState<RestaurantResponseModel> nearbyRestaurants;
-  final DataState<RestaurantResponseModel> searchResults;
   final DataState<SearchSuggestionsModel> searchSuggestions;
   final DataState<RecentSearchesModel> recentSearchesData;
-  final List<String> recentSearches;
+
   final String selectedFilter;
   final SortByOption selectedSortOption;
 
@@ -51,16 +49,14 @@ class RestaurantState extends Equatable {
   int get currentPage => nearbyCurrentPage;
   bool get hasMoreRestaurants => hasMoreNearbyRestaurants;
   bool get isLoadingMore => isLoadingMoreNearby;
-  bool get isIdle => searchSuggestions.isInitial && searchResults.isInitial;
+  bool get isIdle => searchSuggestions.isInitial && nearbyRestaurants.isInitial;
 
   RestaurantState copyWith({
     DataState<RestaurantResponseModel>? restaurants,
     DataState<RestaurantResponseModel>? bestPartnerRestaurants,
     DataState<RestaurantResponseModel>? nearbyRestaurants,
-    DataState<RestaurantResponseModel>? searchResults,
     DataState<SearchSuggestionsModel>? searchSuggestions,
     DataState<RecentSearchesModel>? recentSearchesData,
-    List<String>? recentSearches,
     String? selectedFilter,
     SortByOption? selectedSortOption,
 
@@ -85,10 +81,8 @@ class RestaurantState extends Equatable {
       bestPartnerRestaurants:
           bestPartnerRestaurants ?? this.bestPartnerRestaurants,
       nearbyRestaurants: nearbyRestaurants ?? this.nearbyRestaurants,
-      searchResults: searchResults ?? this.searchResults,
       searchSuggestions: searchSuggestions ?? this.searchSuggestions,
       recentSearchesData: recentSearchesData ?? this.recentSearchesData,
-      recentSearches: recentSearches ?? this.recentSearches,
       selectedFilter: selectedFilter ?? this.selectedFilter,
       selectedSortOption: selectedSortOption ?? this.selectedSortOption,
 
@@ -116,10 +110,8 @@ class RestaurantState extends Equatable {
         restaurants,
         bestPartnerRestaurants,
         nearbyRestaurants,
-        searchResults,
         searchSuggestions,
         recentSearchesData,
-        recentSearches,
         selectedFilter,
         selectedSortOption,
         nearbyCurrentPage,

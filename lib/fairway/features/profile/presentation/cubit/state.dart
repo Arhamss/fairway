@@ -9,6 +9,8 @@ class ProfileState extends Equatable {
     this.logoutStatus = const DataState.initial(),
     this.deleteAccountStatus = const DataState.initial(),
     this.notificationPreference = const DataState.initial(),
+    this.checkBoxChecked = false,
+    this.userNotificationPreference = false,
   });
 
   final DataState<UserModel> updateProfile;
@@ -16,6 +18,8 @@ class ProfileState extends Equatable {
   final DataState<void> logoutStatus;
   final DataState<void> deleteAccountStatus;
   final DataState<void> notificationPreference;
+  final bool checkBoxChecked;
+  final bool userNotificationPreference;
 
   @override
   List<Object?> get props => [
@@ -24,6 +28,8 @@ class ProfileState extends Equatable {
         logoutStatus,
         deleteAccountStatus,
         notificationPreference,
+        checkBoxChecked,
+        userNotificationPreference,
       ];
 
   ProfileState copyWith({
@@ -32,6 +38,8 @@ class ProfileState extends Equatable {
     DataState<void>? logoutStatus,
     DataState<void>? deleteAccountStatus,
     DataState<void>? notificationPreference,
+    bool? checkBoxChecked,
+    bool? userNotificationPreference,
   }) {
     return ProfileState(
       updateProfile: updateProfile ?? this.updateProfile,
@@ -40,6 +48,9 @@ class ProfileState extends Equatable {
       deleteAccountStatus: deleteAccountStatus ?? this.deleteAccountStatus,
       notificationPreference:
           notificationPreference ?? this.notificationPreference,
+      checkBoxChecked: checkBoxChecked ?? this.checkBoxChecked,
+      userNotificationPreference:
+          userNotificationPreference ?? this.userNotificationPreference,
     );
   }
 }

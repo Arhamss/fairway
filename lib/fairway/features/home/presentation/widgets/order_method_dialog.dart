@@ -104,7 +104,7 @@ class OrderMethodDialog extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? AppColors.primaryBlue : AppColors.greyShade5,
+            color: isSelected ? AppColors.primaryBlue : AppColors.greyShade2,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(12),
