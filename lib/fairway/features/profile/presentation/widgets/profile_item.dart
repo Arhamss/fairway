@@ -76,14 +76,23 @@ class ProfileItem extends StatelessWidget {
                   ),
                   if (type == ProfileItemType.notification)
                     Transform.scale(
-                      scale: 0.6,
-                      child: Switch(
-                        // activeColor: AppColors.black,
-                        // inactiveTrackColor: AppColors.greyShade5,
-                        activeTrackColor: AppColors.drawerBackground,
-                        thumbColor: WidgetStateProperty.all(AppColors.white),
-                        value: switchValue ?? false,
-                        onChanged: onSwitchChanged,
+                      scale: 0.8,
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          switchTheme: SwitchThemeData(
+                            trackOutlineColor:
+                                WidgetStateProperty.all(Colors.transparent),
+                            splashRadius: 0,
+                          ),
+                        ),
+                        child: Switch(
+                          inactiveThumbColor: AppColors.white,
+                          inactiveTrackColor: AppColors.messageBorder,
+                          activeTrackColor: AppColors.drawerBackground,
+                          thumbColor: WidgetStateProperty.all(AppColors.white),
+                          value: switchValue ?? false,
+                          onChanged: onSwitchChanged,
+                        ),
                       ),
                     )
                   else if (type == ProfileItemType.normal)
