@@ -15,17 +15,19 @@ class FairwayDropDown extends StatefulWidget {
     this.prefixPath,
     this.onSelected,
     this.onFieldTap,
+    this.hintText,
     super.key,
   });
 
   final String? initialValue;
   final String labelText;
-  final Future<List<Map<String, String>>> Function() dataLoader;
+  final Future<List<Map<String, dynamic>>> Function() dataLoader;
   final String displayKey;
-  final void Function(Map<String, String>)? onSelected;
+  final void Function(Map<String, dynamic>)? onSelected;
   final TextEditingController controller;
   final String? prefixPath;
   final void Function()? onFieldTap;
+  final String? hintText;
 
   @override
   State<FairwayDropDown> createState() => _FairwayDropDownState();
@@ -33,8 +35,9 @@ class FairwayDropDown extends StatefulWidget {
 
 class _FairwayDropDownState extends State<FairwayDropDown> {
   bool _isOpen = false;
-  List<Map<String, String>> _filteredData = [];
-  List<Map<String, String>>? _cachedData;
+  List<Map<String, dynamic>>? _cachedData;
+  List<Map<String, dynamic>> _filteredData = [];
+
   bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -55,6 +58,15 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
   }
 
   @override
+  void didUpdateWidget(covariant FairwayDropDown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.controller.text != _searchController.text) {
+      _searchController.text = widget.controller.text;
+    }
+  }
+
+  @override
   void dispose() {
     _focusNode.dispose();
     super.dispose();
@@ -66,14 +78,13 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
 
   void _filterData() {
     if (_cachedData == null) return;
+    final query = _searchController.text.toLowerCase();
+
     setState(() {
-      _filteredData = _cachedData!
-          .where(
-            (item) => item[widget.displayKey]!.toLowerCase().contains(
-                  _searchController.text.toLowerCase(),
-                ),
-          )
-          .toList();
+      _filteredData = _cachedData!.where((item) {
+        final value = item[widget.displayKey];
+        return value is String && value.toLowerCase().contains(query);
+      }).toList();
     });
   }
 
@@ -97,10 +108,10 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
     }
   }
 
-  void _selectItem(Map<String, String> item) {
+  void _selectItem(Map<String, dynamic> item) {
     setState(() {
-      widget.controller.text = item[widget.displayKey]!;
-      _searchController.text = item[widget.displayKey]!;
+      widget.controller.text = item[widget.displayKey] as String;
+      _searchController.text = item[widget.displayKey] as String;
       _isOpen = false;
       _valueChanged = true;
     });
@@ -116,17 +127,15 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
     final setEnabledColor = isFocused || hasText;
 
     final borderColor =
-        _valueChanged ? AppColors.greenPrimary : AppColors.disabled;
+        _valueChanged ? AppColors.primaryBlue : AppColors.disabled;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           widget.labelText,
-          style: GoogleFonts.urbanist(
-            color: AppColors.black,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
+          style: context.b1.copyWith(
+            fontWeight: FontWeight.w500,
           ),
         ),
         const SizedBox(height: 8),
@@ -146,13 +155,16 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
           child: Container(
             height: _isOpen ? 250 : 50,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(_isOpen ? 24 : 100),
-              border: Border.all(
-                color: setEnabledColor ? borderColor : AppColors.disabled,
-              ),
+              color: _isOpen ? AppColors.white : AppColors.greyShade5,
+              borderRadius: BorderRadius.circular(16),
+              border: _isOpen
+                  ? Border.all(
+                      color: setEnabledColor ? borderColor : AppColors.disabled,
+                    )
+                  : null,
             ),
             child: Padding(
-              padding: const EdgeInsets.only(left: 8, right: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Column(
                 children: [
                   Row(
@@ -162,7 +174,7 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
                           widget.prefixPath ?? '',
                           colorFilter: setEnabledColor
                               ? const ColorFilter.mode(
-                                  AppColors.greenPrimary,
+                                  AppColors.primaryBlue,
                                   BlendMode.srcIn,
                                 )
                               : null,
@@ -175,7 +187,7 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
                           focusNode: _focusNode,
                           cursorWidth: 1,
                           decoration: InputDecoration(
-                            hintText: widget.labelText.toLowerCase(),
+                            hintText: widget.hintText ?? widget.labelText,
                             hintStyle: GoogleFonts.urbanist(
                               color: AppColors.disabled,
                             ),
@@ -208,7 +220,7 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
                             : AssetPaths.arrowDownIcon,
                         colorFilter: setEnabledColor
                             ? const ColorFilter.mode(
-                                AppColors.greenPrimary,
+                                AppColors.primaryBlue,
                                 BlendMode.srcIn,
                               )
                             : null,
@@ -241,7 +253,7 @@ class _FairwayDropDownState extends State<FairwayDropDown> {
                             itemBuilder: (context, index) {
                               final item = _filteredData[index];
                               return DropdownRow(
-                                dropdownText: item[widget.displayKey]!,
+                                dropdownText: item[widget.displayKey] as String,
                                 isSelected: widget.controller.text ==
                                     item[widget.displayKey]!,
                                 onTap: () {

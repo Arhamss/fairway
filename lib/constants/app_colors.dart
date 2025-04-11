@@ -3,10 +3,15 @@ import 'dart:ui';
 abstract class AppColors {
   ///new
 
-  static const amberPrimary = Color(0xFFFFBF00);
-  static const amberSecondary = Color(0xFFFFFFEA);
+  static const primaryBlue = Color(0xFF24BBC4);
+  static Color primaryDisabled = const Color(0xFF24BBC4).withValues(alpha: 0.5);
+  static const secondaryBlue = Color(0xFF2C599D);
+  static const tertiaryBlue = Color(0xFF172B4D);
+  static const primaryAmber = Color(0xFFEF9F27);
+  static const textGrey = Color(0xFF7A869A);
   static const amberTertiary = Color(0xFFFFFBC5);
   static const black = Color(0xFF000000);
+  static const grey = Color(0xFF979797);
   static const white = Color(0xFFFFFFFF);
   static const greenPrimary = Color(0xFF14B82C);
   static const greenSecondary = Color(0xFF042F0C);
@@ -41,12 +46,20 @@ abstract class AppColors {
   static const messageBorder = Color(0xFFD1D1D1);
   static const messageTimeStamp = Color(0xFF757575);
   static const onGoingClassColor = Color(0x9914B82C);
-  static const greyShade1 = Color(0xFFB0B0B0);
   static const greenShade1 = Color(0xFF042F0C);
   static const yellowShade1 = Color(0xFFFFED46);
   static const yellowShade2 = Color(0xFFFFFFEA);
+
+  static const greyShade1 = Color(0xFFB0B0B0);
   static const greyShade2 = Color(0xFF2a2d38);
   static const greyShade3 = Color(0xFFF6F6F6);
   static const greyShade4 = Color(0xFFB0B0B0);
+  static const drawerTileBackground = Color(0xFFE9F8F9);
+  static const greyShade5 = Color.fromRGBO(244, 245, 247, 1);
+
   static const redShade1 = Color(0xFFF04438);
+
+  static const darkWhiteBackground = Color(0xFFF2F3F6);
+
+  static const drawerBackground = Color.fromRGBO(54, 90, 153, 1);
 }

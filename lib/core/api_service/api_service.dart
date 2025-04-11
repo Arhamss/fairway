@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fairway/core/api_service/app_api_exception.dart';
 import 'package:fairway/core/api_service/authentication_interceptor.dart';
 import 'package:fairway/core/api_service/log_interceptor.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
@@ -12,9 +13,9 @@ class ApiService {
   ApiService._internal() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: '${Endpoints.baseUrl}/${Endpoints.apiVersion}',
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
+        baseUrl: '${Endpoints.baseUrl}/${Endpoints.apiVersion}/',
+        connectTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(seconds: 60),
         headers: {'Content-Type': 'application/json'},
       ),
     );
@@ -72,42 +73,48 @@ class ApiService {
     try {
       return await request();
     } on DioException catch (e) {
-      return _handleDioError(e);
+      throw _handleDioError(e);
     } catch (e) {
       debugPrint('Unhandled error: $e');
-      throw Exception('Unexpected error occurred.');
+      throw AppApiException('Unexpected error occurred');
     }
   }
 
-  /// Standardized API Error Handling
-  Response<dynamic> _handleDioError(DioException e) {
+  AppApiException _handleDioError(DioException e) {
     var errorMessage = 'An unknown error occurred';
+    int? statusCode;
 
     if (e.response != null) {
-      switch (e.response?.statusCode) {
-        case 400:
-          errorMessage = 'Bad request';
-        case 401:
-          errorMessage = 'Unauthorized - Token may be expired';
-        case 403:
-          errorMessage = 'Forbidden access';
-        case 404:
-          errorMessage = 'Resource not found';
-        case 500:
-          errorMessage = 'Internal server error';
-        default:
-          errorMessage = 'Unexpected error: ${e.response?.statusMessage}';
+      statusCode = e.response?.statusCode;
+      final responseData = e.response?.data;
+
+      if (responseData is Map<String, dynamic>) {
+        final serverMessage = responseData['error']?['message'];
+        if (serverMessage is String && serverMessage.isNotEmpty) {
+          errorMessage = serverMessage;
+        } else {
+          // Fallbacks
+          switch (statusCode) {
+            case 400:
+              errorMessage = 'Bad request';
+            case 401:
+              errorMessage = 'Unauthorized';
+            case 403:
+              errorMessage = 'Forbidden';
+            case 404:
+              errorMessage = 'Not found';
+            case 500:
+              errorMessage = 'Internal server error';
+            default:
+              errorMessage = 'Unexpected error: ${e.response?.statusMessage}';
+          }
+        }
       }
     } else {
       errorMessage = e.message ?? 'Network error';
     }
 
     debugPrint('❌ API Error: $errorMessage');
-    throw DioException(
-      requestOptions: e.requestOptions,
-      error: errorMessage,
-      response: e.response,
-      type: e.type,
-    );
+    throw AppApiException(errorMessage, statusCode: statusCode);
   }
 }

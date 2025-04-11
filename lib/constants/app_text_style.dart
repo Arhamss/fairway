@@ -1,125 +1,121 @@
 import 'package:fairway/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 extension AppTextStyle on BuildContext {
-  TextStyle get h1 => GoogleFonts.urbanist(
+  // Headlines
+  TextStyle get h1 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 32,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w700, // bold
         color: AppColors.black,
       );
 
-  TextStyle get h2 => GoogleFonts.urbanist(
+  TextStyle get h2 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 28,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w600, // semi
         color: AppColors.black,
       );
 
-  TextStyle get h3 => GoogleFonts.urbanist(
+  TextStyle get h3 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 24,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w500, // medium
         color: AppColors.black,
       );
 
-  /// Title styles
-  TextStyle get t1 => GoogleFonts.urbanist(
+  // Titles
+  TextStyle get t1 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 20,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w600, // semi
         color: AppColors.black,
       );
 
-  TextStyle get t2 => GoogleFonts.urbanist(
+  TextStyle get t2 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 18,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w500, // medium
         color: AppColors.black,
       );
 
-  TextStyle get t3 => GoogleFonts.urbanist(
+  TextStyle get t3 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 16,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w500, // medium
         color: AppColors.black,
       );
 
-  /// Body styles
-  TextStyle get b1 => GoogleFonts.urbanist(
+  // Body
+  TextStyle get b1 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 16,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w400, // book
         color: AppColors.black,
       );
 
-  TextStyle get b2 => GoogleFonts.urbanist(
+  TextStyle get b2 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 14,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w400, // book
         color: AppColors.black,
       );
 
-  TextStyle get b3 => GoogleFonts.urbanist(
+  TextStyle get b3 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 12,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w400, // book
         color: AppColors.black,
       );
 
-  /// Label styles
-  TextStyle get l1 => GoogleFonts.urbanist(
+  // Labels
+  TextStyle get l1 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 14,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w600, // semi
         color: AppColors.black,
       );
 
-  TextStyle get l2 => GoogleFonts.urbanist(
+  TextStyle get l2 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 12,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w500, // medium
         color: AppColors.black,
       );
 
-  TextStyle get l3 => GoogleFonts.urbanist(
+  TextStyle get l3 => const TextStyle(
+        fontFamily: 'Urbanist',
         fontSize: 10,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w400, // book
         color: AppColors.black,
       );
-}
 
-extension TextStyleModifiers on TextStyle {
-  /// Font weight modifiers
-  TextStyle get bold => copyWith(fontWeight: FontWeight.bold);
+  TextStyle get thickText => const TextStyle(
+        fontFamily: 'Urbanist',
+        fontSize: 18,
+        fontWeight: FontWeight.w800, // thick
+        color: AppColors.black,
+      );
 
-  TextStyle get medium => copyWith(fontWeight: FontWeight.w500);
+  TextStyle get lightText => const TextStyle(
+        fontFamily: 'Urbanist',
+        fontSize: 18,
+        fontWeight: FontWeight.w300, // lig
+        color: AppColors.black,
+      );
 
-  TextStyle get regular => copyWith(fontWeight: FontWeight.w400);
+  TextStyle get extraLightText => const TextStyle(
+        fontFamily: 'Urbanist',
+        fontSize: 18,
+        fontWeight: FontWeight.w200, // xlig
+        color: AppColors.black,
+      );
 
-  TextStyle get light => copyWith(fontWeight: FontWeight.w300);
-
-  /// Color modifiers
-  TextStyle withColor(Color color) => copyWith(color: color);
-
-  /// Predefined color modifier for secondary text
-  TextStyle get secondary => copyWith(color: AppColors.textSecondary);
-
-  // TextStyle get regular => copyWith(fontWeight: FontWeight.normal);
-
-  /// Size modifiers
-  TextStyle withSize(double size) => copyWith(fontSize: size);
-
-  /// Letter spacing modifiers
-  TextStyle withLetterSpacing(double spacing) =>
-      copyWith(letterSpacing: spacing);
-
-  /// Custom copyWith for multiple attributes
-  TextStyle customCopyWith({
-    FontWeight? fontWeight,
-    double? fontSize,
-    Color? color,
-    double? letterSpacing,
-    TextDecoration? decoration,
-    FontStyle? fontStyle,
-  }) {
-    return copyWith(
-      fontWeight: fontWeight ?? this.fontWeight,
-      fontSize: fontSize ?? this.fontSize,
-      color: color ?? this.color,
-      letterSpacing: letterSpacing ?? this.letterSpacing,
-      decoration: decoration ?? this.decoration,
-      fontStyle: fontStyle ?? this.fontStyle,
-    );
-  }
+  TextStyle get italicBody => const TextStyle(
+        fontFamily: 'Urbanist',
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        fontStyle: FontStyle.italic, // bookoblique, semioblique, etc.
+        color: AppColors.black,
+      );
 }

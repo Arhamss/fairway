@@ -1,4 +1,5 @@
 import 'package:fairway/export.dart';
+import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FairwayButton extends StatelessWidget {
@@ -7,15 +8,13 @@ class FairwayButton extends StatelessWidget {
     required this.onPressed,
     required this.isLoading,
     super.key,
-    this.backgroundColor = AppColors.amberPrimary,
+    this.backgroundColor = AppColors.primaryBlue,
     this.textColor = AppColors.black,
-    this.disabledTextColor = AppColors.disabled,
-    this.disabledBorderColor = AppColors.disabled,
-    this.disabledBackgroundColor = AppColors.greenChipColor,
+    this.disabledTextColor = AppColors.white,
+    this.disabledBackgroundColor,
     this.borderRadius = 100,
     this.padding = const EdgeInsets.symmetric(vertical: 12.5, horizontal: 16),
     this.fontWeight = FontWeight.w500,
-    this.borderColor = AppColors.black,
     this.splashColor = Colors.black12,
     this.fontSize = 16,
     this.prefixIcon,
@@ -25,6 +24,8 @@ class FairwayButton extends StatelessWidget {
     this.iconSpacing,
     this.disabled = false,
     this.loadingColor = AppColors.black,
+    this.borderColor,
+    this.borderWidth = 1.0,
   });
 
   final String text;
@@ -35,7 +36,6 @@ class FairwayButton extends StatelessWidget {
   final double borderRadius;
   final EdgeInsets padding;
   final FontWeight fontWeight;
-  final Color borderColor;
   final Color splashColor;
   final double fontSize;
   final Widget? prefixIcon;
@@ -45,21 +45,33 @@ class FairwayButton extends StatelessWidget {
   final double? iconSpacing;
   final bool disabled;
   final Color disabledTextColor;
-  final Color disabledBorderColor;
-  final Color disabledBackgroundColor;
+  final Color? disabledBackgroundColor;
   final Color loadingColor;
+  final Color? borderColor;
+  final double borderWidth;
 
   @override
   Widget build(BuildContext context) {
+    // Use provided disabled background color or derive from background color
+    final effectiveDisabledBackgroundColor =
+        disabledBackgroundColor ?? backgroundColor.withOpacity(0.5);
+
     final button = TextButton(
       onPressed: (isLoading || disabled) ? null : onPressed,
       style: TextButton.styleFrom(
         minimumSize: Size.zero,
         padding: EdgeInsets.zero,
-        backgroundColor: disabled ? disabledBackgroundColor : backgroundColor,
+        backgroundColor:
+            disabled ? effectiveDisabledBackgroundColor : backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),
-          side: BorderSide(color: disabled ? disabledBorderColor : borderColor),
+          side: borderColor != null
+              ? BorderSide(
+                  color:
+                      disabled ? borderColor!.withOpacity(0.5) : borderColor!,
+                  width: borderWidth,
+                )
+              : BorderSide.none,
         ),
         splashFactory: InkRipple.splashFactory,
         overlayColor: splashColor,
@@ -70,11 +82,8 @@ class FairwayButton extends StatelessWidget {
             ? SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 1,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    loadingColor,
-                  ),
+                child: LoadingWidget(
+                  color: textColor,
                 ),
               )
             : Row(
