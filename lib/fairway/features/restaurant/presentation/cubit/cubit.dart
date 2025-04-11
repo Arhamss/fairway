@@ -1,44 +1,78 @@
 import 'dart:async';
 
+import 'package:fairway/constants/constants.dart';
 import 'package:fairway/core/enums/order_method.dart';
 import 'package:fairway/core/enums/restaurant_filter.dart';
 import 'package:fairway/core/enums/sort_options_enum.dart';
+import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
 import 'package:fairway/fairway/features/restaurant/domain/repository/restaurant_repository.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
-import 'package:fairway/fairway/models/saved_locations/saved_location_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 import 'package:fairway/utils/helpers/toast_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RestaurantCubit extends Cubit<RestaurantState> {
-  RestaurantCubit({required this.repository}) : super(const RestaurantState());
+  RestaurantCubit({required this.repository}) : super(const RestaurantState()) {
+    loadBestPartners();
+    getNearbyRestaurant();
+  }
 
   final RestaurantRepository repository;
   Timer? _debounceTimer;
 
-  Future<void> getRestaurants() async {
-    emit(
-      state.copyWith(
-        restaurants: const DataState.loading(),
-        nearbyCurrentPage: 1,
-      ),
-    );
-
-    final response = await repository.getRestaurants();
-
-    if (response.isSuccess && response.data != null) {
-      final hasMore = response.data!.restaurants.length >= 5;
+  Future<void> getNearbyRestaurant({
+    int page = 1,
+    int limit = AppConstants.paginationPageLimit,
+    SortByOption? sortBy,
+    bool showLoading = true,
+  }) async {
+    if (showLoading && page == 1) {
       emit(
         state.copyWith(
-          restaurants: DataState.loaded(data: response.data),
+          nearbyRestaurants: const DataState.loading(),
           nearbyCurrentPage: 1,
-          hasMoreNearbyRestaurants: hasMore,
+        ),
+      );
+    } else if (page > 1) {
+      emit(
+        state.copyWith(
+          nearbyRestaurants:
+              DataState.pageLoading(data: state.nearbyRestaurants.data),
+        ),
+      );
+    }
+
+    final response = await repository.getRestaurants(
+      filter: RestaurantTag.nearby,
+      page: page,
+      limit: limit,
+      sortBy: sortBy,
+    );
+
+    if (response.isSuccess && response.data != null) {
+      final newRestaurants = response.data!;
+
+      final previousList = state.nearbyRestaurants.isLoaded ||
+              state.nearbyRestaurants.isPageLoading
+          ? state.nearbyRestaurants.data?.restaurants ?? []
+          : <RestaurantModel>[];
+
+      final combined = page == 1
+          ? newRestaurants.restaurants
+          : [...previousList, ...newRestaurants.restaurants];
+
+      final updatedResponse = newRestaurants.copyWith(restaurants: combined);
+
+      emit(
+        state.copyWith(
+          nearbyRestaurants: DataState.loaded(data: updatedResponse),
+          nearbyCurrentPage: page,
         ),
       );
     } else {
       emit(
         state.copyWith(
-          restaurants: DataState.failure(
+          nearbyRestaurants: DataState.failure(
             error: response.message ?? 'Failed to load restaurants',
           ),
         ),
@@ -46,59 +80,239 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     }
   }
 
-  Future<void> loadMoreRestaurants() async {
-    if (state.isLoadingMoreNearby || !state.hasMoreNearbyRestaurants) {
-      return;
+  Future<void> getDiscountRestaurants({
+    int page = 1,
+    int limit = AppConstants.paginationPageLimit,
+    SortByOption? sortBy,
+    bool showLoading = true,
+  }) async {
+    if (showLoading && page == 1) {
+      emit(
+        state.copyWith(
+          discountRestaurants: const DataState.loading(),
+          discountCurrentPage: 1,
+        ),
+      );
+    } else if (page > 1) {
+      emit(
+        state.copyWith(
+          discountRestaurants:
+              DataState.pageLoading(data: state.discountRestaurants.data),
+        ),
+      );
     }
 
-    emit(state.copyWith(isLoadingMoreNearby: true));
-
-    final nextPage = state.nearbyCurrentPage + 1;
-
-    final response = await repository.getRestaurants(page: nextPage);
+    final response = await repository.getRestaurants(
+      filter: RestaurantTag.discounts,
+      page: page,
+      limit: limit,
+      sortBy: sortBy,
+    );
 
     if (response.isSuccess && response.data != null) {
-      final newData = response.data!;
-      final currentData = state.restaurants.data!;
+      final newRestaurants = response.data!;
 
-      final hasMore = newData.restaurants.length >= 5;
+      final previousList = state.discountRestaurants.isLoaded ||
+              state.discountRestaurants.isPageLoading
+          ? state.discountRestaurants.data?.restaurants ?? []
+          : <RestaurantModel>[];
 
-      final combinedRestaurants = [
-        ...currentData.restaurants,
-        ...newData.restaurants,
-      ];
+      final combined = page == 1
+          ? newRestaurants.restaurants
+          : [...previousList, ...newRestaurants.restaurants];
 
-      final updatedData = currentData.copyWith(
-        restaurants: combinedRestaurants,
-        currentPage: nextPage,
-      );
+      final updatedResponse = newRestaurants.copyWith(restaurants: combined);
 
       emit(
         state.copyWith(
-          restaurants: DataState.loaded(data: updatedData),
-          nearbyCurrentPage: nextPage,
-          hasMoreNearbyRestaurants: hasMore,
-          isLoadingMoreNearby: false,
+          discountRestaurants: DataState.loaded(data: updatedResponse),
+          discountCurrentPage: page,
         ),
       );
     } else {
       emit(
         state.copyWith(
-          isLoadingMoreNearby: false,
+          discountRestaurants: DataState.failure(
+            error: response.message ?? 'Failed to load discount restaurants',
+          ),
         ),
-      );
-
-      ToastHelper.showErrorToast(
-        response.message ?? 'Failed to load more restaurants',
       );
     }
   }
+
+  Future<void> getExpressRestaurants({
+    int page = 1,
+    int limit = AppConstants.paginationPageLimit,
+    SortByOption? sortBy,
+    bool showLoading = true,
+  }) async {
+    if (showLoading && page == 1) {
+      emit(
+        state.copyWith(
+          expressRestaurants: const DataState.loading(),
+          expressCurrentPage: 1,
+        ),
+      );
+    } else if (page > 1) {
+      emit(
+        state.copyWith(
+          expressRestaurants:
+              DataState.pageLoading(data: state.expressRestaurants.data),
+        ),
+      );
+    }
+
+    final response = await repository.getRestaurants(
+      filter: RestaurantTag.express,
+      page: page,
+      limit: limit,
+      sortBy: sortBy,
+    );
+
+    if (response.isSuccess && response.data != null) {
+      final newRestaurants = response.data!;
+
+      final previousList = state.expressRestaurants.isLoaded ||
+              state.expressRestaurants.isPageLoading
+          ? state.expressRestaurants.data?.restaurants ?? []
+          : <RestaurantModel>[];
+
+      final combined = page == 1
+          ? newRestaurants.restaurants
+          : [...previousList, ...newRestaurants.restaurants];
+
+      final updatedResponse = newRestaurants.copyWith(restaurants: combined);
+
+      emit(
+        state.copyWith(
+          expressRestaurants: DataState.loaded(data: updatedResponse),
+          expressCurrentPage: page,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          expressRestaurants: DataState.failure(
+            error: response.message ?? 'Failed to load express restaurants',
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> getDrinksRestaurants({
+    int page = 1,
+    int limit = AppConstants.paginationPageLimit,
+    SortByOption? sortBy,
+    bool showLoading = true,
+  }) async {
+    if (showLoading && page == 1) {
+      emit(
+        state.copyWith(
+          drinksRestaurants: const DataState.loading(),
+          drinksCurrentPage: 1,
+        ),
+      );
+    } else if (page > 1) {
+      emit(
+        state.copyWith(
+          drinksRestaurants:
+              DataState.pageLoading(data: state.drinksRestaurants.data),
+        ),
+      );
+    }
+
+    final response = await repository.getRestaurants(
+      filter: RestaurantTag.drinks,
+      page: page,
+      limit: limit,
+      sortBy: sortBy,
+    );
+
+    if (response.isSuccess && response.data != null) {
+      final newRestaurants = response.data!;
+
+      final previousList = state.drinksRestaurants.isLoaded ||
+              state.drinksRestaurants.isPageLoading
+          ? state.drinksRestaurants.data?.restaurants ?? []
+          : <RestaurantModel>[];
+
+      final combined = page == 1
+          ? newRestaurants.restaurants
+          : [...previousList, ...newRestaurants.restaurants];
+
+      final updatedResponse = newRestaurants.copyWith(restaurants: combined);
+
+      emit(
+        state.copyWith(
+          drinksRestaurants: DataState.loaded(data: updatedResponse),
+          drinksCurrentPage: page,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          drinksRestaurants: DataState.failure(
+            error: response.message ?? 'Failed to load drink spots',
+          ),
+        ),
+      );
+    }
+  }
+
+  // Future<void> loadMoreRestaurants() async {
+  //   if (state.isLoadingMoreNearby || !state.hasMoreNearbyRestaurants) {
+  //     return;
+  //   }
+  //
+  //   emit(state.copyWith(isLoadingMoreNearby: true));
+  //
+  //   final nextPage = state.nearbyCurrentPage + 1;
+  //
+  //   final response = await repository.getRestaurants(page: nextPage);
+  //
+  //   if (response.isSuccess && response.data != null) {
+  //     final newData = response.data!;
+  //     final currentData = state.restaurants.data!;
+  //
+  //     final hasMore = newData.restaurants.length >= 5;
+  //
+  //     final combinedRestaurants = [
+  //       ...currentData.restaurants,
+  //       ...newData.restaurants,
+  //     ];
+  //
+  //     final updatedData = currentData.copyWith(
+  //       restaurants: combinedRestaurants,
+  //       currentPage: nextPage,
+  //     );
+  //
+  //     emit(
+  //       state.copyWith(
+  //         restaurants: DataState.loaded(data: updatedData),
+  //         nearbyCurrentPage: nextPage,
+  //         hasMoreNearbyRestaurants: hasMore,
+  //         isLoadingMoreNearby: false,
+  //       ),
+  //     );
+  //   } else {
+  //     emit(
+  //       state.copyWith(
+  //         isLoadingMoreNearby: false,
+  //       ),
+  //     );
+  //
+  //     ToastHelper.showErrorToast(
+  //       response.message ?? 'Failed to load more restaurants',
+  //     );
+  //   }
+  // }
 
   Future<void> loadBestPartners({int limit = 5}) async {
     emit(
       state.copyWith(
         bestPartnerRestaurants: const DataState.loading(),
-        bestPartnersCurrentPage: 1, // Reset page number
+        bestPartnersCurrentPage: 1,
       ),
     );
 
@@ -111,7 +325,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
           state.copyWith(
             bestPartnerRestaurants: DataState.loaded(data: response.data),
             bestPartnersCurrentPage: 1,
-            hasMoreBestPartners: hasMore,
           ),
         );
       } else {
@@ -133,7 +346,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   }
 
   Future<void> loadMoreBestPartners({int limit = 5}) async {
-    if (state.isLoadingMoreBestPartners || !state.hasMoreBestPartners) {
+    if (state.isLoadingMoreBestPartners) {
       return;
     }
 
@@ -164,7 +377,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
             state.copyWith(
               bestPartnerRestaurants: DataState.loaded(data: updatedData),
               bestPartnersCurrentPage: nextPage,
-              hasMoreBestPartners: hasMore,
               isLoadingMoreBestPartners: false,
             ),
           );
@@ -181,70 +393,13 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     }
   }
 
-  void resetNearbyPagination() {
-    emit(
-      state.copyWith(
-        nearbyCurrentPage: 1,
-        hasMoreNearbyRestaurants: true,
-        isLoadingMoreNearby: false,
-      ),
-    );
-  }
-
   void resetBestPartnersPagination() {
     emit(
       state.copyWith(
         bestPartnersCurrentPage: 1,
-        hasMoreBestPartners: true,
         isLoadingMoreBestPartners: false,
       ),
     );
-  }
-
-  Future<void> loadNearbyRestaurants({
-    required List<SavedLocation>? savedLocations,
-    String? airport,
-    int limit = 5,
-  }) async {
-    emit(state.copyWith(nearbyRestaurants: const DataState.loading()));
-
-    try {
-      final userAirport = airport ??
-          savedLocations
-              ?.firstWhere((loc) => loc.isCurrent, orElse: SavedLocation.empty)
-              .airportName;
-
-      final response = await repository.getRestaurants();
-
-      if (response.isSuccess && response.data != null) {
-        emit(
-          state.copyWith(
-            nearbyRestaurants: DataState.loaded(data: response.data),
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            nearbyRestaurants: DataState.failure(
-              error: response.message ?? 'Failed to load nearby restaurants',
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      emit(
-        state.copyWith(
-          nearbyRestaurants: DataState.failure(error: e.toString()),
-        ),
-      );
-    }
-  }
-
-  Future<void> loadAllRestaurantsData({
-    required List<SavedLocation>? savedLocations,
-  }) async {
-    await loadBestPartners();
-    await loadNearbyRestaurants(savedLocations: savedLocations);
   }
 
   Future<void> searchRestaurants(String query) async {

@@ -1,7 +1,7 @@
 enum RestaurantTag {
   nearby,
   discounts,
-  quickServe,
+  express,
   drinks,
 }
 
@@ -16,8 +16,8 @@ extension RestaurantTagExtension on RestaurantTag {
         return 'Nearby';
       case RestaurantTag.discounts:
         return 'Discounts';
-      case RestaurantTag.quickServe:
-        return 'Quick Serve';
+      case RestaurantTag.express:
+        return 'Express';
       case RestaurantTag.drinks:
         return 'Drinks';
     }

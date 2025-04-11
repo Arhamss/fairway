@@ -1,6 +1,6 @@
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
-import 'package:fairway/fairway/features/restaurant/presentation/widget/restaurant_card_image/restaurant_card_image.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/widget/restaurant_card/restaurant_card_image.dart';
 import 'package:fairway/utils/helpers/restaurant_helper.dart';
 
 class BestPartnerRestaurantCard extends StatelessWidget {

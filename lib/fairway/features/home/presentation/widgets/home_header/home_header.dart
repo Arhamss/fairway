@@ -4,7 +4,6 @@ import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/animated_tabs.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/category_item.dart';
-import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/order_method_dialog.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
 import 'package:fairway/fairway/models/saved_locations/saved_location_model.dart';
@@ -208,6 +207,12 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 16),
                               child: AnimatedTabs(
+                                tabTitles: const [
+                                  'Restaurants',
+                                  'Sort by',
+                                  'Price',
+                                ],
+                                isHomeHeader: true,
                                 selectedIndex: state.selectedTabIndex,
                                 onTabChanged: (index) {
                                   context

@@ -5,8 +5,7 @@ import 'package:fairway/fairway/features/home/presentation/widgets/drawer/drawer
 import 'package:fairway/fairway/features/home/presentation/widgets/flight_alert_banner.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/home_header.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/best_partners_section.dart';
-import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/nearby_restaurants_section.dart';
-import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/home_restaurant_list.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,26 +17,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _loadHomeData();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 200) {
-        final state = context.read<RestaurantCubit>().state;
-        if (!state.isLoadingMoreNearby && state.hasMoreNearbyRestaurants) {
-          context.read<RestaurantCubit>().loadMoreRestaurants();
-        }
-      }
-    });
   }
 
   Future<void> _loadHomeData() async {
     final homeCubit = context.read<HomeCubit>();
-    final restaurantCubit = context.read<RestaurantCubit>();
     await homeCubit.loadUserProfile();
     final user = homeCubit.state.userProfile;
     final hasCurrentLocation =
@@ -47,10 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!hasCurrentLocation) {
       context.goNamed(AppRouteNames.selectLocation);
     }
-
-    await restaurantCubit.loadAllRestaurantsData(
-      savedLocations: user.data?.savedLocations,
-    );
   }
 
   @override
@@ -88,7 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           return CustomScrollView(
-            controller: _scrollController,
             slivers: [
               SliverToBoxAdapter(
                 child: HomeHeader(

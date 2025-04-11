@@ -36,7 +36,7 @@ class _BestPartnersSectionState extends State<BestPartnersSection> {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       final state = context.read<RestaurantCubit>().state;
-      if (!state.isLoadingMoreBestPartners && state.hasMoreBestPartners) {
+      if (!state.isLoadingMoreBestPartners) {
         context.read<RestaurantCubit>().loadMoreBestPartners();
       }
     }

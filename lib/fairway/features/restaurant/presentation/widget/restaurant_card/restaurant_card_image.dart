@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fairway/fairway/features/restaurant/presentation/widget/restaurant_card_image/restaurant_card_placeholder.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/widget/restaurant_card/restaurant_card_placeholder.dart';
 import 'package:flutter/material.dart';
 
 class RestaurantCardImage extends StatelessWidget {
