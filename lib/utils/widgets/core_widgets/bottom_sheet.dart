@@ -20,7 +20,7 @@ class BammbuuBottomSheet extends StatelessWidget {
     this.buttonTwoPrefix,
     this.buttonTwoIsLoading = false,
     this.isLoading = false,
-    this.buttonColor = AppColors.amberPrimary,
+    this.buttonColor = AppColors.primaryBlue,
     this.textBelowButton,
     this.onTapTextBelowButton,
     this.titleAlignment,
@@ -65,7 +65,7 @@ class BammbuuBottomSheet extends StatelessWidget {
     String? subtitle,
     Widget? richTextWidget,
     bool isLoading = false,
-    Color buttonColor = AppColors.amberPrimary,
+    Color buttonColor = AppColors.primaryBlue,
     String? textBelowButton,
     VoidCallback? onTapTextBelowButton,
     bool showTwoButtons = false,
@@ -171,7 +171,7 @@ class BammbuuBottomSheet extends StatelessWidget {
             Text(
               subtitle!,
               textAlign: TextAlign.center,
-              style: context.b2.secondary.copyWith(
+              style: context.b2.copyWith(
                 fontSize: 13,
               ),
             ),
@@ -179,7 +179,7 @@ class BammbuuBottomSheet extends StatelessWidget {
             Text(
               noteText!,
               textAlign: TextAlign.center,
-              style: context.h1.secondary.copyWith(
+              style: context.h1.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: Colors.black,
@@ -193,7 +193,6 @@ class BammbuuBottomSheet extends StatelessWidget {
               children: [
                 Expanded(
                   child: FairwayButton(
-                    borderColor: AppColors.disabled,
                     prefixIcon: buttonOnePrefix,
                     text: buttonOneText ?? '',
                     onPressed: buttonOneOnTap,
@@ -204,12 +203,11 @@ class BammbuuBottomSheet extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: FairwayButton(
-                    borderColor: AppColors.disabled,
                     prefixIcon: buttonTwoPrefix,
                     text: buttonTwoText ?? '',
                     onPressed: buttonTwoOnTap,
                     isLoading: buttonTwoIsLoading,
-                    backgroundColor: buttonTwoColor ?? AppColors.amberPrimary,
+                    backgroundColor: buttonTwoColor ?? AppColors.primaryBlue,
                   ),
                 ),
               ],
@@ -228,7 +226,7 @@ class BammbuuBottomSheet extends StatelessWidget {
               onTap: onTapTextBelowButton,
               child: Text(
                 textBelowButton ?? '',
-                style: context.b2.secondary,
+                style: context.b2,
               ),
             ),
             const SizedBox(height: 16),
@@ -258,7 +256,7 @@ class BammbuuBottomSheetAddClasses extends StatelessWidget {
     this.buttonTwoPrefix,
     this.buttonTwoIsLoading = false,
     this.isLoading = false,
-    this.buttonColor = AppColors.amberPrimary,
+    this.buttonColor = AppColors.primaryBlue,
     this.textBelowButton,
     this.onTapTextBelowButton,
     this.titleAlignment,
@@ -300,7 +298,7 @@ class BammbuuBottomSheetAddClasses extends StatelessWidget {
     String? subtitle,
     Widget? richTextWidget,
     bool isLoading = false,
-    Color buttonColor = AppColors.amberPrimary,
+    Color buttonColor = AppColors.primaryBlue,
     String? textBelowButton,
     VoidCallback? onTapTextBelowButton,
     bool showTwoButtons = false,

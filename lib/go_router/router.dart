@@ -40,7 +40,92 @@ class AppRouter {
         path: AppRoutes.splash,
         name: AppRouteNames.splash,
         builder: (context, state) => const SplashScreen(),
-      )
+      ),
+      GoRoute(
+        path: AppRoutes.introScreen,
+        name: AppRouteNames.introScreen,
+        builder: (context, state) => const IntroScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.signIn,
+        name: AppRouteNames.signIn,
+        builder: (context, state) => const SignInScreen(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.forgotPassword,
+            name: AppRouteNames.forgotPassword,
+            builder: (context, state) => const ForgotPasswordScreen(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.resetPasswordCode,
+                name: AppRouteNames.resetPasswordCode,
+                builder: (context, state) => const PasswordCode(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.resetPassword,
+                    name: AppRouteNames.resetPassword,
+                    builder: (context, state) => const ResetPasswordScreen(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        path: AppRoutes.passwordRecovered,
+        name: AppRouteNames.passwordRecovered,
+        builder: (context, state) => const PasswordRecoveredScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.signUp,
+        name: AppRouteNames.signUp,
+        builder: (context, state) => const SignUpScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.selectLocation,
+        name: AppRouteNames.selectLocation,
+        builder: (context, state) => const SelectLocationScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.userLocation,
+        name: AppRouteNames.userLocation,
+        builder: (context, state) => const UserLocationScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.homeScreen,
+        name: AppRouteNames.homeScreen,
+        builder: (context, state) => const HomeScreen(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.searchScreen,
+            name: AppRouteNames.searchScreen,
+            builder: (context, state) => const SearchScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.profileScreen,
+            name: AppRouteNames.profileScreen,
+            builder: (context, state) => const ProfileScreen(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.accountInformation,
+                name: AppRouteNames.accountInformation,
+                builder: (context, state) => const AccountInformationScreen(),
+              ),
+              GoRoute(
+                path: AppRoutes.changePassword,
+                name: AppRouteNames.changePassword,
+                builder: (context, state) => const ChangePasswordScreen(),
+              ),
+              GoRoute(
+                path: AppRoutes.deleteAccount,
+                name: AppRouteNames.deleteAccount,
+                builder: (context, state) => const DeleteAccountScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
     ],
   );
 }

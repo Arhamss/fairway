@@ -47,6 +47,27 @@ class PermissionManager {
     }
   }
 
+  static Future<void> requestLocationPermission({
+    required void Function() grantedCallback,
+    void Function()? deniedCallback,
+  }) async {
+    final isPermissionPermanentlyDenied =
+        await isPermanentlyDenied(Permission.location);
+
+    if (isPermissionPermanentlyDenied) {
+      deniedCallback?.call();
+    } else {
+      final locationPermissionGranted = await requestPermission(
+        Permission.location,
+      );
+      if (locationPermissionGranted) {
+        grantedCallback.call();
+      } else {
+        deniedCallback?.call();
+      }
+    }
+  }
+
   // Request a specific permission
   static Future<bool> requestPermission(Permission permission) async {
     final status = await permission.request();

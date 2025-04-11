@@ -20,10 +20,12 @@ class DropdownRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Container(
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFFE6FDE9) : null,
+            color: isSelected
+                ? AppColors.primaryBlue.withValues(alpha: 0.2)
+                : null,
             borderRadius: BorderRadius.circular(8),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 27, vertical: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
           child: Text(
             dropdownText,
             style: context.b1.copyWith(
