@@ -139,6 +139,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
               TextButton(
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  splashFactory: NoSplash.splashFactory,
+                ),
                 onPressed: () =>
                     context.read<RestaurantCubit>().clearRecentSearches(),
                 child: Text(
@@ -163,7 +167,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: RecentSearchList(
                     queries: recentSearches,
                     onTap: (query) {
-                      print('Tapped on $query');
+                      _searchController.text = query;
+                      _onSearchSubmitted(query);
                     },
                   ),
                 ),
