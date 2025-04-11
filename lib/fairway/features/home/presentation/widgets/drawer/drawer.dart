@@ -89,6 +89,7 @@ class HomeDrawer extends StatelessWidget {
                         assetPath: AssetPaths.myAccount,
                         label: 'My Account',
                         onTap: () {
+                          Navigator.pop(context);
                           context.goNamed(
                             AppRouteNames.profileScreen,
                           );
@@ -97,22 +98,30 @@ class HomeDrawer extends StatelessWidget {
                       DrawerTile(
                         assetPath: AssetPaths.myOrders,
                         label: 'My Orders',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
                       ),
                       DrawerTile(
                         assetPath: AssetPaths.subscriptionDrawer,
                         label: 'Subscription',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
                       ),
                       DrawerTile(
                         assetPath: AssetPaths.helpCenter,
                         label: 'Help Center',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
                       ),
                       DrawerTile(
                         assetPath: AssetPaths.termsOfService,
                         label: 'Terms of Service',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
                       ),
                     ],
                   ),
