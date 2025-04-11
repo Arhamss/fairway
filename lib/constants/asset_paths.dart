@@ -24,6 +24,7 @@ class AssetPaths {
   static const intro3 = 'assets/images/intro3.png';
   static const passwordRecovery = 'assets/images/password_recovery.png';
   static const location = 'assets/images/location.png';
+  static const empty = 'assets/images/empty.png';
 
   static const sandwich = 'assets/svgs/sandwich.svg';
   static const burger = 'assets/svgs/burger.svg';

@@ -1,17 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/search_suggestions_model.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
+import 'package:fairway/utils/helpers/restaurant_helper.dart';
 
 class SuggestionTile extends StatelessWidget {
   const SuggestionTile({
     required this.suggestion,
-    required this.onTap,
     super.key,
   });
 
   final SuggestionItem suggestion;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,13 @@ class SuggestionTile extends StatelessWidget {
           ),
         ],
       ),
-      onTap: onTap,
+      onTap: () {
+        context.read<RestaurantCubit>().searchRestaurants(suggestion.name);
+        RestaurantHelper.showOrderMethodDialog(
+          context,
+          suggestion.website,
+        );
+      },
     );
   }
 }

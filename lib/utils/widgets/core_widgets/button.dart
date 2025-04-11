@@ -11,7 +11,7 @@ class FairwayButton extends StatelessWidget {
     this.backgroundColor = AppColors.primaryBlue,
     this.textColor = AppColors.black,
     this.disabledTextColor = AppColors.white,
-    this.disabledBackgroundColor = AppColors.primaryBlue,
+    this.disabledBackgroundColor,
     this.borderRadius = 100,
     this.padding = const EdgeInsets.symmetric(vertical: 12.5, horizontal: 16),
     this.fontWeight = FontWeight.w500,
@@ -24,6 +24,8 @@ class FairwayButton extends StatelessWidget {
     this.iconSpacing,
     this.disabled = false,
     this.loadingColor = AppColors.black,
+    this.borderColor,
+    this.borderWidth = 1.0,
   });
 
   final String text;
@@ -43,21 +45,33 @@ class FairwayButton extends StatelessWidget {
   final double? iconSpacing;
   final bool disabled;
   final Color disabledTextColor;
-  final Color disabledBackgroundColor;
+  final Color? disabledBackgroundColor;
   final Color loadingColor;
+  final Color? borderColor;
+  final double borderWidth;
 
   @override
   Widget build(BuildContext context) {
+    // Use provided disabled background color or derive from background color
+    final effectiveDisabledBackgroundColor =
+        disabledBackgroundColor ?? backgroundColor.withOpacity(0.5);
+
     final button = TextButton(
       onPressed: (isLoading || disabled) ? null : onPressed,
       style: TextButton.styleFrom(
         minimumSize: Size.zero,
         padding: EdgeInsets.zero,
-        backgroundColor: disabled
-            ? disabledBackgroundColor.withValues(alpha: 0.5)
-            : backgroundColor,
+        backgroundColor:
+            disabled ? effectiveDisabledBackgroundColor : backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),
+          side: borderColor != null
+              ? BorderSide(
+                  color:
+                      disabled ? borderColor!.withOpacity(0.5) : borderColor!,
+                  width: borderWidth,
+                )
+              : BorderSide.none,
         ),
         splashFactory: InkRipple.splashFactory,
         overlayColor: splashColor,

@@ -246,44 +246,26 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   }
 
   Future<void> searchRestaurants(String query) async {
-    emit(state.copyWith(searchResults: const DataState.loading()));
-
-    try {
-      final response = await repository.searchRestaurants(query);
-
-      if (response.isSuccess && response.data != null) {
-        emit(
-          state.copyWith(
-            searchResults: DataState.loaded(data: response.data),
-          ),
-        );
-
-        await loadRecentSearches();
-      } else {
-        emit(
-          state.copyWith(
-            searchResults: DataState.failure(
-              error: response.message ?? 'No results found',
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      emit(
-        state.copyWith(
-          searchResults: DataState.failure(error: e.toString()),
-        ),
-      );
-    }
+    await repository.searchRestaurants(query);
   }
 
   Future<void> getSearchSuggestions(String query) async {
     if (query.isEmpty) {
-      emit(state.copyWith(searchSuggestions: const DataState.initial()));
+      emit(
+        state.copyWith(
+          searchSuggestions: const DataState.initial(),
+
+        ),
+      );
       return;
     }
 
-    emit(state.copyWith(searchSuggestions: const DataState.loading()));
+    emit(
+      state.copyWith(
+        searchSuggestions: const DataState.loading(),
+
+      ),
+    );
 
     final response = await repository.getSearchSuggestions(query);
 
@@ -291,12 +273,14 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       emit(
         state.copyWith(
           searchSuggestions: DataState.loaded(data: response.data),
+          
         ),
       );
     } else {
       emit(
         state.copyWith(
           searchSuggestions: DataState.failure(error: response.message),
+          
         ),
       );
     }
@@ -315,7 +299,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       emit(
         state.copyWith(
           recentSearchesData: DataState.loaded(data: response.data),
-          recentSearches: response.data?.recentSearches,
         ),
       );
     } else {
@@ -334,7 +317,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       emit(
         state.copyWith(
           searchSuggestions: const DataState.initial(),
-          searchResults: const DataState.initial(),
+          
         ),
       );
       return;
@@ -349,23 +332,46 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     emit(
       state.copyWith(
         searchSuggestions: const DataState.loading(),
+        
       ),
     );
 
     final response = await repository.getSearchSuggestions(query);
 
     if (response.isSuccess && response.data != null) {
-      emit(state.copyWith(
-        searchSuggestions: DataState.loaded(data: response.data),
-        searchResults: const DataState.initial(), // clear previous results
-      ));
-    } else {
-      emit(state.copyWith(
-        searchSuggestions: DataState.failure(
-          error: response.message ?? 'Failed to fetch suggestions',
+      emit(
+        state.copyWith(
+          searchSuggestions: DataState.loaded(data: response.data),
         ),
-      ));
+      );
+    } else {
+      emit(
+        state.copyWith(
+          searchSuggestions: DataState.failure(
+            error: response.message ?? 'Failed to fetch suggestions',
+          ),
+        ),
+      );
     }
+  }
+
+  void clearSearch() {
+    emit(
+      state.copyWith(
+        searchSuggestions: const DataState.initial(),
+        
+      ),
+    );
+  }
+
+  /// Resets all search-related state when leaving the search screen
+  void resetSearchState() {
+    emit(
+      state.copyWith(
+        searchSuggestions: const DataState.initial(),
+
+      ),
+    );
   }
 
   @override
@@ -375,7 +381,33 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   }
 
   void clearRecentSearches() {
-    emit(state.copyWith(recentSearches: []));
+    emit(
+      state.copyWith(
+        recentSearchesData: const DataState.initial(),
+      ),
+    );
+
+    repository.clearRecentSearch().then((response) {
+      if (response.isSuccess) {
+        emit(
+          state.copyWith(
+            recentSearchesData: const DataState.initial(),
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            recentSearchesData: DataState.failure(error: response.message),
+          ),
+        );
+      }
+    }).catchError((error) {
+      emit(
+        state.copyWith(
+          recentSearchesData: DataState.failure(error: error.toString()),
+        ),
+      );
+    });
   }
 
   void selectOrderMethod(String method) {

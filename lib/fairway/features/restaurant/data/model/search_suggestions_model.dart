@@ -58,7 +58,7 @@ class SuggestionItem {
 
   factory SuggestionItem.fromJson(Map<String, dynamic> json) {
     return SuggestionItem(
-      id: json['id'] as String,
+      id: (json['id'] ?? json['_id']) as String,
       name: json['name'] as String,
       website: json['website'] as String? ?? '',
       images: json['images'] as String? ?? '',
@@ -95,7 +95,7 @@ class Category {
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
-      id: json['id'] as String,
+      id: (json['id'] ?? json['_id']) as String,
       name: json['name'] as String,
       picture: json['picture'] as String? ?? '',
     );

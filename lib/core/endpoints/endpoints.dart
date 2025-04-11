@@ -27,6 +27,8 @@ class Endpoints {
   static const String searchSuggestions =
       'customers/restaurants/search-suggestions';
   static const String recentSearches = 'customers/recent-searchs';
+  
+  static const String deleteRecentSearches = 'customers/recent-searches';
   static const String airports = 'customers/airports';
   static const String customerLocation = 'customers/my-locations';
   static const String setCurrentLocation = 'customers/set-current-location';

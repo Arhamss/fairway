@@ -171,7 +171,7 @@ class CustomDialog {
               color: AppColors.white,
               borderRadius: BorderRadius.circular(30),
             ),
-            padding: const EdgeInsets.fromLTRB(24, 48, 24, 16),
+            padding: const EdgeInsets.fromLTRB(24, 48, 24, 48),
             child: Column(
               mainAxisSize: MainAxisSize.min, // Important: use min size
               children: [
@@ -203,6 +203,7 @@ class CustomDialog {
                     borderRadius: 16,
                   ),
                 ),
+                const SizedBox(height: 16),
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).pop();

@@ -18,10 +18,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     _loadHomeData();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        final state = context.read<RestaurantCubit>().state;
+        if (!state.isLoadingMoreNearby && state.hasMoreNearbyRestaurants) {
+          context.read<RestaurantCubit>().loadMoreRestaurants();
+        }
+      }
+    });
   }
 
   Future<void> _loadHomeData() async {
@@ -76,30 +87,49 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                HomeHeader(
+          return CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              SliverToBoxAdapter(
+                child: HomeHeader(
                   userData: userData,
                   scaffoldKey: _scaffoldKey,
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 16),
-                      FlightAlertNegativeBanner(),
-                      SizedBox(height: 16),
-                      BestPartnersSection(),
-                      SizedBox(height: 16),
-                      NearbyRestaurantsSection(),
-                      SizedBox(height: 32),
-                    ],
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 16),
+              ),
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                sliver: SliverToBoxAdapter(
+                  child: FlightAlertNegativeBanner(),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 16),
+              ),
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                sliver: SliverToBoxAdapter(
+                  child: BestPartnersSection(),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 16),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => const NearbyRestaurantsSection(),
+                    childCount: 1,
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 32),
+              ),
+            ],
           );
         },
       ),

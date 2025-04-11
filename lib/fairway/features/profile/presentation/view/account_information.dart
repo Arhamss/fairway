@@ -12,23 +12,26 @@ class AccountInformationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<ProfileCubit, ProfileState>(
       listener: (context, state) {
-        if (state.updateProfile?.isLoaded ?? false) {
+        if (state.updateProfile.isLoaded ?? false) {
           ToastHelper.showSuccessToast(
             'Profile updated successfully',
           );
-        } else if (state.updateProfile?.isFailure ?? false) {
+        } else if (state.updateProfile.isFailure ?? false) {
           ToastHelper.showErrorToast(
-            state.updateProfile?.errorMessage ?? 'Failed to update profile',
+            state.updateProfile.errorMessage ?? 'Failed to update profile',
           );
         }
       },
       child: Scaffold(
-        appBar: fairwayAppBar(
-          title: '',
-          centerTitle: true,
-          context: context,
-          leadingIcon: const Icon(Icons.arrow_back_ios),
-          onLeadingPressed: () => context.pop(),
+        appBar: AppBar(
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          forceMaterialTransparency: true,
+          leading: GestureDetector(
+            onTap: () => context.pop(),
+            child: const Icon(Icons.arrow_back_ios),
+          ),
         ),
         body: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
@@ -60,7 +63,8 @@ class AccountInformationScreen extends StatelessWidget {
             }
 
             if (userProfile.data == null) {
-              return const EmptyWidget(
+              return const EmptyStateWidget(
+                image: AssetPaths.empty,
                 text: 'No account information available',
               );
             }
@@ -130,8 +134,7 @@ class AccountInformationScreen extends StatelessWidget {
                                 nameController.text,
                               );
                         },
-                        isLoading: state.updateProfile?.isLoading ?? false,
-                        backgroundColor: AppColors.primaryBlue,
+                        isLoading: state.updateProfile.isLoading ?? false,
                         textColor: AppColors.white,
                       );
                     },

@@ -26,4 +26,6 @@ abstract class RestaurantRepository {
   );
 
   Future<RepositoryResponse<RecentSearchesModel>> getRecentSearches();
+
+  Future<RepositoryResponse<void>> clearRecentSearch();
 }

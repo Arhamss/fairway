@@ -1,4 +1,5 @@
 import 'package:fairway/export.dart';
+import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/best_partner_restaurant_card.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
@@ -58,7 +59,8 @@ class _BestPartnersSectionState extends State<BestPartnersSection> {
             children: [
               Text(
                 'Best Partners',
-                style: context.b1.copyWith(fontWeight: FontWeight.w700),
+                style: context.b1
+                    .copyWith(fontWeight: FontWeight.w700, fontSize: 16),
               ),
               TextButton(
                 onPressed: () {
@@ -126,98 +128,15 @@ class _BestPartnersSectionState extends State<BestPartnersSection> {
                         child: Center(child: LoadingWidget()),
                       );
                     }
-                    return _buildRestaurantCard(context, restaurants[index]);
+                    return BestPartnerRestaurantCard(
+                      restaurant: restaurants[index],
+                    );
                   },
                 ),
               );
             },
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildRestaurantCard(
-    BuildContext context,
-    RestaurantModel restaurant,
-  ) {
-    return InkWell(
-      onTap: () => UrlHelper.launchWebsite(restaurant.website),
-      child: Padding(
-        padding: const EdgeInsets.only(right: 16),
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.7,
-          child: Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  flex: 5,
-                  child: ClipRRect(
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(8)),
-                    child: restaurant.images.isNotEmpty
-                        ? Image.network(
-                            restaurant.images,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const ColoredBox(
-                                color: AppColors.greyShade2,
-                                child: Center(
-                                  child: Icon(
-                                    Icons.restaurant,
-                                    size: 40,
-                                    color: AppColors.greyShade5,
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                        : const ColoredBox(
-                            color: AppColors.greyShade2,
-                            child: Center(
-                              child: Icon(
-                                Icons.restaurant,
-                                size: 40,
-                                color: AppColors.greyShade5,
-                              ),
-                            ),
-                          ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        restaurant.name,
-                        textAlign: TextAlign.start,
-                        style: context.b1.copyWith(fontWeight: FontWeight.w600),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      // Add a subtle website hint
-                      Text(
-                        'Tap to visit website',
-                        style: context.l3.copyWith(
-                          color: AppColors.greyShade5,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

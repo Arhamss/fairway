@@ -184,4 +184,28 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
       );
     }
   }
+  
+  @override
+  Future<RepositoryResponse<void>> clearRecentSearch() async {
+    try {
+      final response = await _apiService.delete(Endpoints.deleteRecentSearches);
+
+      if (response.statusCode == 200) {
+        return RepositoryResponse(
+          isSuccess: true,
+          data: null,
+        );
+      } else {
+        return RepositoryResponse(
+          isSuccess: false,
+          message: 'Failed to clear recent searches',
+        );
+      }
+    } catch (e) {
+      return RepositoryResponse(
+        isSuccess: false,
+        message: 'Failed to clear recent searches: $e',
+      );
+    }
+  }
 }

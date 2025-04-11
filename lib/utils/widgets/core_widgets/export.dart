@@ -5,7 +5,7 @@ export 'cached_network_image.dart';
 export 'chips.dart';
 export 'dropdown.dart';
 export 'dropdown_row.dart';
-export 'empty_widget.dart';
+export 'empty_state_widget.dart';
 export 'icon_button.dart';
 export 'image_picker.dart';
 export 'loading_widget.dart';
