@@ -2,7 +2,10 @@ import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 
 typedef ItemBuilder<T> = Widget Function(
-    BuildContext context, T item, int index);
+  BuildContext context,
+  T item,
+  int index,
+);
 typedef LoadMoreCallback = Future<void> Function();
 
 class PaginatedListView<T> extends StatefulWidget {
@@ -15,6 +18,7 @@ class PaginatedListView<T> extends StatefulWidget {
     this.hasMore = true,
     this.padding = const EdgeInsets.symmetric(vertical: 8),
     this.scrollPhysics,
+    this.scrollDirection = Axis.vertical,
     this.separator,
   });
 
@@ -25,6 +29,7 @@ class PaginatedListView<T> extends StatefulWidget {
   final bool hasMore;
   final EdgeInsets padding;
   final ScrollPhysics? scrollPhysics;
+  final Axis scrollDirection;
   final Widget? separator;
 
   @override
@@ -64,6 +69,7 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
 
     return ListView.separated(
       controller: _controller,
+      scrollDirection: widget.scrollDirection,
       physics: widget.scrollPhysics ?? const BouncingScrollPhysics(),
       padding: widget.padding,
       itemCount: itemCount,

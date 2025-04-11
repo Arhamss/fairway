@@ -35,6 +35,7 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
       if (limit != null) queryParams['limit'] = limit.toString();
       if (sortBy != null) queryParams['sortBy'] = sortBy.backendValue;
       if (filter != null) queryParams['filter'] = filter.toEnumName();
+      queryParams['bestPartner'] = 'false';
 
       final response = await _apiService.get(
         Endpoints.restaurants,
@@ -103,16 +104,23 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
   @override
   Future<RepositoryResponse<RestaurantResponseModel>>
       getBestPartnerRestaurants({
-    int page = 1,
-    int limit = 5,
+    int? page,
+    int? limit,
+    SortByOption? sortBy,
+    RestaurantTag? filter,
   }) async {
     try {
+      final queryParams = <String, String>{};
+
+      if (page != null) queryParams['page'] = page.toString();
+      if (limit != null) queryParams['limit'] = limit.toString();
+      if (sortBy != null) queryParams['sortBy'] = sortBy.backendValue;
+      if (filter != null) queryParams['filter'] = filter.toEnumName();
+      queryParams['bestPartner'] = 'true';
+
       final response = await _apiService.get(
-        Endpoints.bestPartnerRestaurants,
-        queryParams: {
-          'page': page.toString(),
-          'limit': limit.toString(),
-        },
+        Endpoints.restaurants,
+        queryParams: queryParams,
       );
 
       final result = RestaurantResponseModel.parseResponse(response);
@@ -203,7 +211,6 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
       if (response.statusCode == 200) {
         return RepositoryResponse(
           isSuccess: true,
-          data: null,
         );
       } else {
         return RepositoryResponse(

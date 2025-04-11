@@ -1,46 +1,18 @@
 import 'package:fairway/export.dart';
+import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
+import 'package:fairway/fairway/features/restaurant/data/model/restaurant_response_model.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/widget/best_partner_restaurant_card.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/widget/best_partner_shimmer_card.dart';
+import 'package:fairway/utils/widgets/core_widgets/empty_state_widget.dart';
 import 'package:fairway/utils/widgets/core_widgets/fairway_text_button.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
+import 'package:fairway/utils/widgets/core_widgets/paginated_list_view.dart';
 import 'package:fairway/utils/widgets/core_widgets/retry_widget.dart';
 
-class BestPartnersSection extends StatefulWidget {
+class BestPartnersSection extends StatelessWidget {
   const BestPartnersSection({super.key});
-
-  @override
-  State<BestPartnersSection> createState() => _BestPartnersSectionState();
-}
-
-class _BestPartnersSectionState extends State<BestPartnersSection> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-
-    context.read<RestaurantCubit>().loadBestPartners();
-  }
-
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      final state = context.read<RestaurantCubit>().state;
-      if (!state.isLoadingMoreBestPartners) {
-        context.read<RestaurantCubit>().loadMoreBestPartners();
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,30 +25,30 @@ class _BestPartnersSectionState extends State<BestPartnersSection> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 16,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Best Partners',
-                  style: context.t2.copyWith(
-                    fontWeight: FontWeight.w800,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 FairwayTextButton(
                   onPressed: () {
-                    print('See all partners');
+                    context.read<RestaurantCubit>().loadBestPartners();
                   },
-                  text: 'See All',
+                  text: 'See all',
                 ),
               ],
             ),
           ),
-          const Divider(
-            color: AppColors.dividerColor,
-            height: 1,
-          ),
-          const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.only(
               left: 16,
@@ -85,17 +57,17 @@ class _BestPartnersSectionState extends State<BestPartnersSection> {
             ),
             child: BlocBuilder<RestaurantCubit, RestaurantState>(
               builder: (context, state) {
-                final restaurants =
-                    state.bestPartnerRestaurants.data?.restaurants ?? [];
-
                 if (state.bestPartnerRestaurants.isLoading &&
                     state.bestPartnersCurrentPage == 1) {
-                  return const Center(
-                    child: SizedBox(
-                      height: 150,
-                      child: Center(
-                        child: LoadingWidget(),
-                      ),
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: 3, // Show 3 shimmer cards
+                      itemBuilder: (context, index) {
+                        return const BestPartnerShimmerCard();
+                      },
                     ),
                   );
                 }
@@ -104,44 +76,41 @@ class _BestPartnersSectionState extends State<BestPartnersSection> {
                     state.bestPartnersCurrentPage == 1) {
                   return RetryWidget(
                     message: state.bestPartnerRestaurants.errorMessage ??
-                        'An error occurred fetching features restaurants',
-                    onRetry: () {
-                      context.read<RestaurantCubit>().loadBestPartners();
-                    },
+                        'Failed to load restaurants',
+                    onRetry: () =>
+                        context.read<RestaurantCubit>().loadBestPartners(),
                   );
                 }
 
+                final restaurants =
+                    state.bestPartnerRestaurants.data?.restaurants ?? [];
+
                 if (restaurants.isEmpty) {
-                  return const SizedBox(
-                    height: 150,
-                    child: Center(
-                      child: Text('No partners available'),
-                    ),
+                  return const EmptyStateWidget(
+                    image: 'assets/images/empty_state.svg',
+                    text: 'No partners available',
+                    spacing: 16,
+                    imageSize: 80,
                   );
                 }
 
                 return SizedBox(
                   height: MediaQuery.of(context).size.height * 0.25,
-                  child: ListView.builder(
-                    controller: _scrollController,
+                  child: PaginatedListView<RestaurantModel>(
+                    items: restaurants,
                     scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
+                    scrollPhysics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    itemCount: restaurants.length +
-                        (state.isLoadingMoreBestPartners ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == restaurants.length) {
-                        return const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(
-                            child: LoadingWidget(),
-                          ),
-                        );
-                      }
+                    itemBuilder: (context, restaurant, index) {
                       return BestPartnerRestaurantCard(
-                        restaurant: restaurants[index],
+                        restaurant: restaurant,
                       );
                     },
+                    onLoadMore: () =>
+                        context.read<RestaurantCubit>().loadMoreBestPartners(),
+                    isLoadingMore: state.bestPartnerRestaurants.isPageLoading,
+                    hasMore: state.bestPartnersCurrentPage <
+                        (state.bestPartnerRestaurants.data?.totalPages ?? 0),
                   ),
                 );
               },
