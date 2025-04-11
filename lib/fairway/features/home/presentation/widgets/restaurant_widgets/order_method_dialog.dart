@@ -82,6 +82,7 @@ class OrderMethodDialog extends StatelessWidget {
                 FairwayTextButton(
                   onPressed: () {
                     print('Cancel Pressed');
+                    Navigator.pop(context);
                   },
                   text: 'Cancel',
                 ),
