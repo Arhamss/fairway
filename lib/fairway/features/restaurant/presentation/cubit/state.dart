@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:fairway/core/enums/order_method.dart';
+import 'package:fairway/core/enums/restaurant_filter.dart';
 import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/recent_searches_model.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_response_model.dart';
@@ -10,10 +12,9 @@ class RestaurantState extends Equatable {
     this.restaurants = const DataState.initial(),
     this.bestPartnerRestaurants = const DataState.initial(),
     this.nearbyRestaurants = const DataState.initial(),
-    this.searchSuggestions = const DataState
-        .initial(), // This will now handle all search functionality
+    this.searchSuggestions = const DataState.initial(),
     this.recentSearchesData = const DataState.initial(),
-    this.selectedFilter = 'Nearby',
+    this.selectedFilter = RestaurantTag.nearby,
     this.selectedSortOption = SortByOption.mostPopular,
     this.nearbyCurrentPage = 1,
     this.hasMoreNearbyRestaurants = true,
@@ -30,22 +31,19 @@ class RestaurantState extends Equatable {
   final DataState<SearchSuggestionsModel> searchSuggestions;
   final DataState<RecentSearchesModel> recentSearchesData;
 
-  final String selectedFilter;
+  final RestaurantTag selectedFilter;
   final SortByOption selectedSortOption;
 
-  // Nearby restaurants pagination
   final int nearbyCurrentPage;
   final bool hasMoreNearbyRestaurants;
   final bool isLoadingMoreNearby;
 
-  // Best partners pagination
   final int bestPartnersCurrentPage;
   final bool hasMoreBestPartners;
   final bool isLoadingMoreBestPartners;
 
-  final String? selectedOrderMethod; // 'Pick Yourself' or 'Concierge'
+  final OrderMethod? selectedOrderMethod;
 
-  // Maintaining backward compatibility
   int get currentPage => nearbyCurrentPage;
   bool get hasMoreRestaurants => hasMoreNearbyRestaurants;
   bool get isLoadingMore => isLoadingMoreNearby;
@@ -57,7 +55,7 @@ class RestaurantState extends Equatable {
     DataState<RestaurantResponseModel>? nearbyRestaurants,
     DataState<SearchSuggestionsModel>? searchSuggestions,
     DataState<RecentSearchesModel>? recentSearchesData,
-    String? selectedFilter,
+    RestaurantTag? selectedFilter,
     SortByOption? selectedSortOption,
 
     // Nearby restaurants pagination
@@ -74,7 +72,7 @@ class RestaurantState extends Equatable {
     int? currentPage,
     bool? hasMoreRestaurants,
     bool? isLoadingMore,
-    String? selectedOrderMethod,
+    OrderMethod? selectedOrderMethod,
   }) {
     return RestaurantState(
       restaurants: restaurants ?? this.restaurants,
@@ -85,8 +83,6 @@ class RestaurantState extends Equatable {
       recentSearchesData: recentSearchesData ?? this.recentSearchesData,
       selectedFilter: selectedFilter ?? this.selectedFilter,
       selectedSortOption: selectedSortOption ?? this.selectedSortOption,
-
-      // Use the legacy fields or new fields
       nearbyCurrentPage:
           nearbyCurrentPage ?? currentPage ?? this.nearbyCurrentPage,
       hasMoreNearbyRestaurants: hasMoreNearbyRestaurants ??
@@ -94,13 +90,11 @@ class RestaurantState extends Equatable {
           this.hasMoreNearbyRestaurants,
       isLoadingMoreNearby:
           isLoadingMoreNearby ?? isLoadingMore ?? this.isLoadingMoreNearby,
-
       bestPartnersCurrentPage:
           bestPartnersCurrentPage ?? this.bestPartnersCurrentPage,
       hasMoreBestPartners: hasMoreBestPartners ?? this.hasMoreBestPartners,
       isLoadingMoreBestPartners:
           isLoadingMoreBestPartners ?? this.isLoadingMoreBestPartners,
-
       selectedOrderMethod: selectedOrderMethod ?? this.selectedOrderMethod,
     );
   }

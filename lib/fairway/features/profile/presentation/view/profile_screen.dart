@@ -5,6 +5,7 @@ import 'package:fairway/fairway/features/profile/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/profile/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/profile/presentation/widgets/account_type_widget.dart';
 import 'package:fairway/fairway/features/profile/presentation/widgets/profile_item.dart';
+import 'package:fairway/fairway/features/profile/presentation/widgets/user_avatar.dart';
 import 'package:fairway/utils/widgets/core_widgets/custom_dialog.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
 import 'package:fairway/utils/widgets/core_widgets/retry_widget.dart';
@@ -16,9 +17,13 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
-        // Handle successful logout
         if (state.logoutStatus.isLoaded) {
           context.goNamed(AppRouteNames.signIn);
+        } else if (state.logoutStatus.isFailure) {
+          ToastHelper.showErrorToast(
+            state.logoutStatus.errorMessage ??
+                'An unexpected error occurred while logging out. Please try again',
+          );
         }
       },
       builder: (context, profileState) {
@@ -27,7 +32,6 @@ class ProfileScreen extends StatelessWidget {
           appBar: AppBar(
             systemOverlayStyle: SystemUiOverlayStyle.dark,
             backgroundColor: Colors.transparent,
-            elevation: 0,
             forceMaterialTransparency: true,
             title: Text(
               'Profile',
@@ -44,11 +48,12 @@ class ProfileScreen extends StatelessWidget {
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.notifications, color: AppColors.black),
-                onPressed: () {
-                  // Handle notifications
-                },
+                onPressed: () {},
+                icon: SvgPicture.asset(
+                  AssetPaths.notificationIcon,
+                ),
               ),
+              const SizedBox(width: 8),
             ],
           ),
           body: BlocBuilder<HomeCubit, HomeState>(
@@ -56,7 +61,7 @@ class ProfileScreen extends StatelessWidget {
               final userProfile = homeState.userProfile.data;
 
               if (homeState.userProfile.isLoading) {
-                return const Center(child: LoadingWidget());
+                return const LoadingWidget();
               }
 
               if (homeState.userProfile.isFailure) {
@@ -71,183 +76,179 @@ class ProfileScreen extends StatelessWidget {
 
               return ColoredBox(
                 color: AppColors.darkWhiteBackground,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // Profile section (truly no padding)
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: const BoxDecoration(
-                          color: AppColors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 1),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: const BoxDecoration(
+                            color: AppColors.white,
+                          ),
+                          child: Column(
+                            children: [
+                              UserAvatar(
+                                showEditIcon: true,
+                                imageUrl: userProfile?.image,
+                                onEditTap: () {
+                                  print('Edit icon tapped');
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                userProfile?.name ?? 'User',
+                                style: context.h2.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
                         ),
-                        child: Column(
-                          children: [
-                            // Profile picture
-                            const CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                AppConstants
-                                    .placeholderUserAvatar, // Replace with actual image
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-
-                            // Name
-                            Text(
-                              userProfile?.name ?? 'User',
-                              style: context.h2.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-
-                            // Email
-                            // Text(
-                            //   userProfile?.email ?? 'email@example.com',
-                            //   style: context.b2.copyWith(
-                            //     color: AppColors.greyShade4,
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Add padding for sections below
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (userProfile?.signupType == 'google')
-                              const AccountTypeWidget(
-                                accountType: AccountType.google,
-                              ),
-
-                            if (userProfile?.signupType == 'apple')
-                              const AccountTypeWidget(
-                                accountType: AccountType.apple,
-                              ),
-
-                            // Account section
-                            Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              padding: const EdgeInsets.all(16),
-                              margin: const EdgeInsets.only(bottom: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      'General',
-                                      style: context.b1.copyWith(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppColors.black,
+                        const SizedBox(height: 24),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (userProfile?.signupType?.toLowerCase() ==
+                                  'google')
+                                const AccountTypeWidget(
+                                  accountType: AccountType.google,
+                                ),
+                              if (userProfile?.signupType?.toLowerCase() ==
+                                  'apple')
+                                const AccountTypeWidget(
+                                  accountType: AccountType.apple,
+                                ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                margin: const EdgeInsets.only(bottom: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: Text(
+                                        'General',
+                                        style: context.b1.copyWith(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.black,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  ProfileItem(
-                                    title: 'Account Information',
-                                    subtitle: 'Change your Account information',
-                                    onTap: () => context.pushNamed(
-                                      AppRouteNames.accountInformation,
+                                    const Divider(
+                                      color: AppColors.greyShade5,
+                                      thickness: 1,
                                     ),
-                                    iconPath: AssetPaths.accountInfoLogo,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  if (userProfile?.signupType == 'email')
                                     ProfileItem(
-                                      iconPath: AssetPaths.passwordIcon,
-                                      title: 'Password',
-                                      subtitle: 'Change your Password',
+                                      title: 'Account Information',
+                                      subtitle:
+                                          'Change your Account information',
                                       onTap: () => context.pushNamed(
-                                        AppRouteNames.changePassword,
+                                        AppRouteNames.accountInformation,
+                                      ),
+                                      iconPath: AssetPaths.accountInfoLogo,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    if (userProfile?.signupType == 'email')
+                                      ProfileItem(
+                                        iconPath: AssetPaths.passwordIcon,
+                                        title: 'Password',
+                                        subtitle: 'Change your Password',
+                                        onTap: () => context.pushNamed(
+                                          AppRouteNames.changePassword,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                margin: const EdgeInsets.only(bottom: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                      ),
+                                      child: Text(
+                                        'Notifications',
+                                        style: context.b1.copyWith(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.black,
+                                        ),
                                       ),
                                     ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-
-                            // Preferences section
-                            Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              padding: const EdgeInsets.all(16),
-                              margin: const EdgeInsets.only(bottom: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      'Notifications',
-                                      style: context.b1.copyWith(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppColors.black,
-                                      ),
+                                    const Divider(
+                                      color: AppColors.greyShade5,
+                                      thickness: 1,
                                     ),
-                                  ),
-                                  const SizedBox(height: 12),
-
-                                  // Notifications items
-                                  ProfileItem(
-                                    title: 'Notifications',
-                                    subtitle: 'Manage notifications settings',
-                                    switchValue:
-                                        profileState.userNotificationPreference,
-                                    onSwitchChanged: (value) {
-                                      context
-                                          .read<ProfileCubit>()
-                                          .updateNotificationPreference(value);
-                                    },
-                                    iconPath: AssetPaths.notificationSwitchLogo,
-                                    type: ProfileItemType.notification,
-                                  ),
-                                ],
+                                    ProfileItem(
+                                      title: 'Notifications',
+                                      subtitle: 'Manage notifications settings',
+                                      switchValue: profileState
+                                          .userNotificationPreference,
+                                      onSwitchChanged: (value) {
+                                        context
+                                            .read<ProfileCubit>()
+                                            .updateNotificationPreference(
+                                                value);
+                                      },
+                                      iconPath:
+                                          AssetPaths.notificationSwitchLogo,
+                                      type: ProfileItemType.notification,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-
-                            // Logout button
-                            ProfileItem(
-                              title: 'Log Out',
-                              onTap: () => _showLogoutDialog(
-                                context,
-                                profileState.logoutStatus.isLoading,
+                              const SizedBox(height: 8),
+                              ProfileItem(
+                                title: 'Log Out',
+                                onTap: () => _showLogoutDialog(
+                                  context,
+                                  profileState.logoutStatus.isLoading,
+                                ),
+                                iconPath: AssetPaths.logoutIcon,
                               ),
-                              iconPath: AssetPaths.logoutIcon,
-                            ),
-                            const SizedBox(height: 24),
-
-                            // Delete account button
-                            FairwayButton(
-                              borderColor: AppColors.error,
-                              borderRadius: 12,
-                              text: 'Delete Account',
-                              onPressed: () =>
-                                  context.goNamed(AppRouteNames.deleteAccount),
-                              backgroundColor: Colors.white,
-                              textColor: AppColors.error,
-                              isLoading:
-                                  profileState.deleteAccountStatus.isLoading,
-                            ),
-
-                            const SizedBox(height: 24),
-                          ],
+                              const SizedBox(height: 24),
+                              FairwayButton(
+                                borderColor: AppColors.error,
+                                borderRadius: 12,
+                                text: 'Delete Account',
+                                fontWeight: FontWeight.bold,
+                                onPressed: () => context
+                                    .goNamed(AppRouteNames.deleteAccount),
+                                backgroundColor: Colors.transparent,
+                                textColor: AppColors.error,
+                                isLoading:
+                                    profileState.deleteAccountStatus.isLoading,
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.06),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );

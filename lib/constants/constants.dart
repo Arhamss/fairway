@@ -7,8 +7,7 @@ class AppConstants {
 
   static final AppConstants _singleton = AppConstants._internal();
 
-  static const placeholderUserAvatar =
-      'https://fairways-backend.onrender.com/bunny.jpg';
+  static const placeholderUserAvatar = 'assets/images/user_avatar.png';
   static const placeholderUserName = 'Unknown User';
   static const placeholderUserEmail = 'Unknown Email';
   static const restaurantPlaceHolder =

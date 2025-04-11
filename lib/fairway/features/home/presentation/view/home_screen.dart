@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
-                    (context, index) => const NearbyRestaurantsSection(),
+                    (context, index) => const HomeRestaurantList(),
                     childCount: 1,
                   ),
                 ),

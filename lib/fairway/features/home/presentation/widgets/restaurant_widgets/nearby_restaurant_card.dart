@@ -1,9 +1,10 @@
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/widget/restaurant_card_image/restaurant_card_image.dart';
 import 'package:fairway/utils/helpers/restaurant_helper.dart';
 
-class NearbyRestaurantCard extends StatelessWidget {
-  const NearbyRestaurantCard({
+class RestaurantCard extends StatelessWidget {
+  const RestaurantCard({
     required this.restaurant,
     super.key,
   });
@@ -36,37 +37,13 @@ class NearbyRestaurantCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(12)),
-              child: _buildRestaurantImage(),
+              child: RestaurantCardImage(
+                imageUrl: restaurant.images,
+                height: 180,
+              ),
             ),
             _buildRestaurantDetails(context),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRestaurantImage() {
-    return restaurant.images.isNotEmpty
-        ? Image.network(
-            restaurant.images,
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) =>
-                _buildPlaceholderImage(),
-          )
-        : _buildPlaceholderImage();
-  }
-
-  Widget _buildPlaceholderImage() {
-    return Container(
-      height: 180,
-      color: AppColors.greyShade2,
-      child: const Center(
-        child: Icon(
-          Icons.restaurant,
-          size: 40,
-          color: AppColors.greyShade5,
         ),
       ),
     );

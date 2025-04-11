@@ -54,4 +54,5 @@ class AssetPaths {
   static const accountInfoLogo = 'assets/svgs/account_information.svg';
   static const notificationSwitchLogo = 'assets/svgs/notification_tile.svg';
   static const passwordIcon = 'assets/svgs/password.svg';
+  static const editIcon = 'assets/svgs/edit_icon.svg';
 }

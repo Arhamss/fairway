@@ -1,10 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/drawer/drawer_tile.dart';
+import 'package:fairway/fairway/features/profile/presentation/widgets/user_avatar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shimmer/shimmer.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -46,24 +45,9 @@ class HomeDrawer extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: AppConstants.placeholderUserAvatar,
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Shimmer.fromColors(
-                            baseColor: Colors.grey.shade300,
-                            highlightColor: Colors.grey.shade100,
-                            child: Container(
-                              width: 80,
-                              height: 80,
-                              color: Colors.white,
-                            ),
-                          ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
+                      UserAvatar(
+                        imageUrl: state.userProfile.data?.image,
+                        size: 80,
                       ),
                       const SizedBox(width: 16),
                       Expanded(

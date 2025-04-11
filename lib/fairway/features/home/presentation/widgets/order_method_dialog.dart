@@ -1,5 +1,5 @@
+import 'package:fairway/core/enums/order_method.dart';
 import 'package:fairway/export.dart';
-import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/utils/widgets/core_widgets/button.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -40,20 +40,24 @@ class OrderMethodDialog extends StatelessWidget {
                   context,
                   label: 'Pick Yourself',
                   iconPath: AssetPaths.pickYourselfIcon,
-                  isSelected: state.selectedOrderMethod == 'Pick Yourself',
-                  onTap: () => cubit.selectOrderMethod('Pick Yourself'),
+                  isSelected:
+                      state.selectedOrderMethod == OrderMethod.pickYourself,
+                  onTap: () =>
+                      cubit.selectOrderMethod(OrderMethod.pickYourself),
                 ),
                 _buildOption(
                   context,
                   label: 'Concierge',
                   iconPath: AssetPaths.conciergeIcon,
-                  isSelected: state.selectedOrderMethod == 'Concierge',
-                  onTap: () => cubit.selectOrderMethod('Concierge'),
+                  isSelected:
+                      state.selectedOrderMethod == OrderMethod.concierge,
+                  onTap: () => cubit.selectOrderMethod(
+                    OrderMethod.concierge,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 24),
-            // Replace Column with Row and remove Expanded widgets
             Flexible(
               child: FairwayButton(
                 text: 'Confirm',

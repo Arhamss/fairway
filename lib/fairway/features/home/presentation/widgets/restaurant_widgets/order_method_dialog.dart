@@ -1,7 +1,9 @@
+import 'package:fairway/core/enums/order_method.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
 import 'package:fairway/utils/widgets/core_widgets/button.dart';
+import 'package:fairway/utils/widgets/core_widgets/fairway_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderMethodDialog extends StatelessWidget {
@@ -15,77 +17,73 @@ class OrderMethodDialog extends StatelessWidget {
       builder: (context, state) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(24),
           ),
-          // Remove SingleChildScrollView and ConstrainedBox - they're causing the issue
           child: Container(
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: AppColors.white,
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(24),
             ),
-            padding: const EdgeInsets.all(24),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Important: use min size
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   'Select Order Method',
                   style: context.h2.copyWith(fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildOption(
                       context,
                       label: 'Pick Yourself',
                       iconPath: AssetPaths.pickYourselfIcon,
-                      isSelected: state.selectedOrderMethod == 'Pick Yourself',
+                      isSelected:
+                          state.selectedOrderMethod == OrderMethod.pickYourself,
                       onTap: () => context
                           .read<RestaurantCubit>()
-                          .selectOrderMethod('Pick Yourself'),
+                          .selectOrderMethod(OrderMethod.pickYourself),
                     ),
                     _buildOption(
                       context,
                       label: 'Concierge',
                       iconPath: AssetPaths.conciergeIcon,
-                      isSelected: state.selectedOrderMethod == 'Concierge',
+                      isSelected:
+                          state.selectedOrderMethod == OrderMethod.concierge,
                       onTap: () => context
                           .read<RestaurantCubit>()
-                          .selectOrderMethod('Concierge'),
+                          .selectOrderMethod(OrderMethod.concierge),
                     ),
                   ],
                 ),
                 const SizedBox(height: 24),
-                // Replace Column with Row and remove Expanded widgets
-                Flexible(
-                  child: FairwayButton(
-                    text: 'Confirm',
-                    borderRadius: 16,
-                    onPressed: state.selectedOrderMethod != null
-                        ? () async {
-                            Navigator.of(context).pop();
-                            if (await canLaunchUrl(Uri.parse(restaurantLink))) {
-                              await launchUrl(Uri.parse(restaurantLink));
-                            } else {
-                              ToastHelper.showErrorToast(
-                                'Could not launch the website',
-                              );
-                            }
+                FairwayButton(
+                  text: 'Confirm',
+                  borderRadius: 12,
+                  onPressed: state.selectedOrderMethod != null
+                      ? () async {
+                          Navigator.of(context).pop();
+                          final uri = Uri.parse(restaurantLink);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri);
+                          } else {
+                            ToastHelper.showErrorToast(
+                                'Could not launch the website');
                           }
-                        : null,
-                    textColor: AppColors.white,
-                    disabled: state.selectedOrderMethod == null,
-                    isLoading: false,
-                  ),
+                        }
+                      : null,
+                  textColor: AppColors.white,
+                  disabled: state.selectedOrderMethod == null,
+                  isLoading: false,
                 ),
-                Flexible(
-                  child: TextButton(
-                    onPressed: () {
-                      context.read<RestaurantCubit>().clearOrderMethod();
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel'),
-                  ),
+                const SizedBox(height: 8),
+                FairwayTextButton(
+                  onPressed: () {
+                    print('Cancel Pressed');
+                  },
+                  text: 'Cancel',
                 ),
               ],
             ),
@@ -102,25 +100,29 @@ class OrderMethodDialog extends StatelessWidget {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    // This function is fine as is
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        width: 120,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         decoration: BoxDecoration(
           border: Border.all(
             color: isSelected ? AppColors.primaryBlue : AppColors.greyShade5,
             width: 2,
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
+          color: isSelected
+              ? AppColors.primaryBlue.withValues(alpha: 0.03)
+              : AppColors.white,
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             SvgPicture.asset(
               iconPath,
-              height: 100,
+              height: 72,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Text(
               label,
               style: context.b2.copyWith(

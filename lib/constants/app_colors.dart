@@ -1,8 +1,6 @@
 import 'dart:ui';
 
 abstract class AppColors {
-  ///new
-
   static const primaryBlue = Color(0xFF24BBC4);
   static Color primaryDisabled = const Color(0xFF24BBC4).withValues(alpha: 0.5);
   static const secondaryBlue = Color(0xFF2C599D);
@@ -30,15 +28,12 @@ abstract class AppColors {
   static const textFaded = Color(0xFF9E9E9E);
   static const iconBackground = Color(0xFFF6F6F6);
   static const languageExpertChipBackground = Color(0xFFEDEDED);
-
+  static const dividerColor = Color(0xFFF4F5F7);
   static const yellowAccent = Color(0xFFFFF885);
-
   static const bluePrimary = Color(0xFF00247D);
   static const blueSecondary = Color(0xFFedf2ff);
-
   static const redPrimary = Color(0xFFAD141E);
   static const redSecondary = Color(0xFFfef1f1);
-
   static const textDark = Color(0xFF3D3D3D);
   static const disabled = Color(0xFF888888);
   static const disabledSecondary = Color(0xFF454545);
@@ -49,17 +44,13 @@ abstract class AppColors {
   static const greenShade1 = Color(0xFF042F0C);
   static const yellowShade1 = Color(0xFFFFED46);
   static const yellowShade2 = Color(0xFFFFFFEA);
-
   static const greyShade1 = Color(0xFFB0B0B0);
   static const greyShade2 = Color(0xFF2a2d38);
   static const greyShade3 = Color(0xFFF6F6F6);
   static const greyShade4 = Color(0xFFB0B0B0);
   static const drawerTileBackground = Color(0xFFE9F8F9);
   static const greyShade5 = Color.fromRGBO(244, 245, 247, 1);
-
   static const redShade1 = Color(0xFFF04438);
-
   static const darkWhiteBackground = Color(0xFFF2F3F6);
-
-  static const drawerBackground = Color.fromRGBO(54, 90, 153, 1);
+  static const drawerBackground = Color(0xFF365A99);
 }

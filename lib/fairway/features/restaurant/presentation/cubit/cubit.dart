@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:fairway/core/enums/order_method.dart';
+import 'package:fairway/core/enums/restaurant_filter.dart';
 import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/fairway/features/restaurant/domain/repository/restaurant_repository.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
@@ -254,7 +256,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       emit(
         state.copyWith(
           searchSuggestions: const DataState.initial(),
-
         ),
       );
       return;
@@ -263,7 +264,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     emit(
       state.copyWith(
         searchSuggestions: const DataState.loading(),
-
       ),
     );
 
@@ -273,14 +273,12 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       emit(
         state.copyWith(
           searchSuggestions: DataState.loaded(data: response.data),
-          
         ),
       );
     } else {
       emit(
         state.copyWith(
           searchSuggestions: DataState.failure(error: response.message),
-          
         ),
       );
     }
@@ -317,7 +315,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       emit(
         state.copyWith(
           searchSuggestions: const DataState.initial(),
-          
         ),
       );
       return;
@@ -332,7 +329,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     emit(
       state.copyWith(
         searchSuggestions: const DataState.loading(),
-        
       ),
     );
 
@@ -359,7 +355,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     emit(
       state.copyWith(
         searchSuggestions: const DataState.initial(),
-        
       ),
     );
   }
@@ -369,7 +364,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     emit(
       state.copyWith(
         searchSuggestions: const DataState.initial(),
-
       ),
     );
   }
@@ -410,8 +404,12 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     });
   }
 
-  void selectOrderMethod(String method) {
-    emit(state.copyWith(selectedOrderMethod: method));
+  void selectOrderMethod(OrderMethod method) {
+    emit(
+      state.copyWith(
+        selectedOrderMethod: method,
+      ),
+    );
   }
 
   void clearOrderMethod() {
@@ -426,7 +424,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     );
   }
 
-  void setSelectedFilter(String filter) {
+  void setSelectedFilter(RestaurantTag filter) {
     emit(
       state.copyWith(selectedFilter: filter),
     );

@@ -3,11 +3,15 @@ import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_wi
 
 class RestaurantHelper {
   static void showOrderMethodDialog(
-      BuildContext context, String restaurantUrl) {
-    showDialog(
+    BuildContext context,
+    String restaurantUrl,
+  ) {
+    showDialog<dynamic>(
       context: context,
-      barrierColor: AppColors.black.withOpacity(0.7),
-      builder: (context) => OrderMethodDialog(restaurantLink: restaurantUrl),
+      barrierColor: AppColors.black.withValues(alpha: 0.7),
+      builder: (context) => OrderMethodDialog(
+        restaurantLink: restaurantUrl,
+      ),
     );
   }
 }

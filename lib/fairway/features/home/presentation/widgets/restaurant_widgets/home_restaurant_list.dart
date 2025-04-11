@@ -1,33 +1,26 @@
+import 'package:fairway/core/enums/restaurant_filter.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/nearby_restaurant_card.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/restaurant_filter_tab.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
-import 'package:fairway/utils/helpers/url_helper.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 
-class NearbyRestaurantsSection extends StatefulWidget {
-  const NearbyRestaurantsSection({super.key});
+class HomeRestaurantList extends StatefulWidget {
+  const HomeRestaurantList({super.key});
 
   @override
-  State<NearbyRestaurantsSection> createState() =>
-      _NearbyRestaurantsSectionState();
+  State<HomeRestaurantList> createState() => _HomeRestaurantListState();
 }
 
-class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
+class _HomeRestaurantListState extends State<HomeRestaurantList> {
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-
-    // Initial load
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<RestaurantCubit>().getRestaurants();
-    });
-
-    // Add scroll listener to detect when to load more
+    context.read<RestaurantCubit>().getRestaurants();
     _scrollController.addListener(_onScroll);
   }
 
@@ -70,10 +63,10 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildFilterTab(context, 'Nearby'),
-                    _buildFilterTab(context, 'Sales'),
-                    _buildFilterTab(context, 'Rate'),
-                    _buildFilterTab(context, 'Fast'),
+                    _buildFilterTab(context, RestaurantTag.nearby),
+                    _buildFilterTab(context, RestaurantTag.discounts),
+                    _buildFilterTab(context, RestaurantTag.quickServe),
+                    _buildFilterTab(context, RestaurantTag.drinks),
                   ],
                 ),
               );
@@ -81,19 +74,22 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
           ),
           const SizedBox(height: 16),
 
-          // Wrap the content with BlocBuilder too
           BlocBuilder<RestaurantCubit, RestaurantState>(
             buildWhen: (previous, current) =>
                 previous.selectedFilter != current.selectedFilter,
             builder: (context, state) {
-              if (state.selectedFilter == 'Nearby') {
+              if (state.selectedFilter == RestaurantTag.nearby) {
                 return _buildNearbyRestaurants(context);
-              } else if (state.selectedFilter == 'Sales') {
-                return _buildEmptySection('Sales');
-              } else if (state.selectedFilter == 'Rate') {
-                return _buildEmptySection('Rate');
+              } else if (state.selectedFilter == RestaurantTag.discounts) {
+                return _buildEmptySection(
+                  RestaurantTag.discounts.toCapitalized(),
+                );
+              } else if (state.selectedFilter == RestaurantTag.quickServe) {
+                return _buildEmptySection(
+                  RestaurantTag.quickServe.toCapitalized(),
+                );
               } else {
-                return _buildEmptySection('Fast');
+                return _buildEmptySection(RestaurantTag.drinks.toCapitalized());
               }
             },
           ),
@@ -102,16 +98,16 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
     );
   }
 
-  Widget _buildFilterTab(BuildContext context, String label) {
+  Widget _buildFilterTab(BuildContext context, RestaurantTag label) {
     final isSelected =
         context.read<RestaurantCubit>().state.selectedFilter == label;
 
     return RestaurantFilterTab(
-      label: label,
+      label: label.toCapitalized(),
       isSelected: isSelected,
       onTap: () {
         context.read<RestaurantCubit>().setSelectedFilter(label);
-        if (label == 'Nearby') {
+        if (label == RestaurantTag.nearby) {
           context.read<RestaurantCubit>().resetNearbyPagination();
           context.read<RestaurantCubit>().getRestaurants();
         }
@@ -119,7 +115,6 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
     );
   }
 
-  // Build nearby restaurants section with pagination
   Widget _buildNearbyRestaurants(BuildContext context) {
     return BlocBuilder<RestaurantCubit, RestaurantState>(
       builder: (context, state) {
@@ -141,7 +136,7 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
         return Column(
           children: [
             ...restaurants.map(
-              (restaurant) => NearbyRestaurantCard(
+              (restaurant) => RestaurantCard(
                 restaurant: restaurant,
               ),
             ),
@@ -174,6 +169,6 @@ class _NearbyRestaurantsSectionState extends State<NearbyRestaurantsSection> {
     BuildContext context,
     RestaurantModel restaurant,
   ) {
-    return NearbyRestaurantCard(restaurant: restaurant);
+    return RestaurantCard(restaurant: restaurant);
   }
 }
