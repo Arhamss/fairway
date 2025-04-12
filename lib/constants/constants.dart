@@ -12,5 +12,5 @@ class AppConstants {
   static const placeholderUserEmail = 'Unknown Email';
   static const restaurantPlaceHolder =
       'assets/images/placeholder_restaurant.png';
-  static const paginationPageLimit = 15;
+  static const paginationPageLimit = 5;
 }

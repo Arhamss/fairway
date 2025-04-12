@@ -59,8 +59,8 @@ class ProfileRepositoryImplementation implements ProfileRepository {
       final response = await _apiService.post(
         endpoint: Endpoints.changePassword,
         data: {
-          'old_password': oldPassword,
-          'new_password': newPassword,
+          'oldPassword': oldPassword,
+          'newPassword': newPassword,
         },
       );
 
