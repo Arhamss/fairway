@@ -21,8 +21,10 @@ abstract class RestaurantRepository {
 
   Future<RepositoryResponse<RestaurantResponseModel>>
       getBestPartnerRestaurants({
-    int page = 1,
-    int limit = 5,
+    int? page,
+    int? limit,
+    SortByOption? sortBy,
+    RestaurantTag? filter,
   });
 
   Future<RepositoryResponse<SearchSuggestionsModel>> getSearchSuggestions(

@@ -107,16 +107,7 @@ class AppRouter {
             name: AppRouteNames.profileScreen,
             builder: (context, state) => const ProfileScreen(),
             routes: [
-              GoRoute(
-                path: AppRoutes.accountInformation,
-                name: AppRouteNames.accountInformation,
-                builder: (context, state) => const AccountInformationScreen(),
-              ),
-              GoRoute(
-                path: AppRoutes.changePassword,
-                name: AppRouteNames.changePassword,
-                builder: (context, state) => const ChangePasswordScreen(),
-              ),
+              
               GoRoute(
                 path: AppRoutes.deleteAccount,
                 name: AppRouteNames.deleteAccount,

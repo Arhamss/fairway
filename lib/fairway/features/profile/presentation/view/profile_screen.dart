@@ -3,6 +3,8 @@ import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/profile/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/profile/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/profile/presentation/widget/account_information_sheet.dart';
+import 'package:fairway/fairway/features/profile/presentation/widget/change_password_sheet.dart';
 import 'package:fairway/fairway/features/profile/presentation/widgets/account_type_widget.dart';
 import 'package:fairway/fairway/features/profile/presentation/widgets/profile_item.dart';
 import 'package:fairway/fairway/features/profile/presentation/widgets/user_avatar.dart';
@@ -107,7 +109,7 @@ class ProfileScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 48),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
@@ -136,7 +138,8 @@ class ProfileScreen extends StatelessWidget {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 16),
+                                        horizontal: 16,
+                                      ),
                                       child: Text(
                                         'General',
                                         style: context.b1.copyWith(
@@ -154,9 +157,8 @@ class ProfileScreen extends StatelessWidget {
                                       title: 'Account Information',
                                       subtitle:
                                           'Change your Account information',
-                                      onTap: () => context.pushNamed(
-                                        AppRouteNames.accountInformation,
-                                      ),
+                                      onTap: () =>
+                                          _showAccountInformationSheet(context),
                                       iconPath: AssetPaths.accountInfoLogo,
                                     ),
                                     const SizedBox(height: 8),
@@ -165,14 +167,13 @@ class ProfileScreen extends StatelessWidget {
                                         iconPath: AssetPaths.passwordIcon,
                                         title: 'Password',
                                         subtitle: 'Change your Password',
-                                        onTap: () => context.pushNamed(
-                                          AppRouteNames.changePassword,
-                                        ),
+                                        onTap: () =>
+                                            _showChangePasswordSheet(context),
                                       ),
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 24),
+                              const SizedBox(height: 8),
                               Container(
                                 decoration: BoxDecoration(
                                   color: AppColors.white,
@@ -210,7 +211,8 @@ class ProfileScreen extends StatelessWidget {
                                         context
                                             .read<ProfileCubit>()
                                             .updateNotificationPreference(
-                                                value);
+                                              value,
+                                            );
                                       },
                                       iconPath:
                                           AssetPaths.notificationSwitchLogo,
@@ -242,8 +244,9 @@ class ProfileScreen extends StatelessWidget {
                                     profileState.deleteAccountStatus.isLoading,
                               ),
                               SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.06),
+                                height:
+                                    MediaQuery.of(context).size.height * 0.06,
+                              ),
                             ],
                           ),
                         ),
@@ -270,6 +273,24 @@ class ProfileScreen extends StatelessWidget {
       onConfirm: () {
         context.read<ProfileCubit>().logout();
       },
+    );
+  }
+
+  void _showAccountInformationSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const AccountInformationSheet(),
+    );
+  }
+
+  void _showChangePasswordSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const ChangePasswordSheet(),
     );
   }
 }

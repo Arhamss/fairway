@@ -1,8 +1,14 @@
+import 'dart:async';
+
+import 'package:fairway/export.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 
 typedef ItemBuilder<T> = Widget Function(
-    BuildContext context, T item, int index);
+  BuildContext context,
+  T item,
+  int index,
+);
 typedef LoadMoreCallback = Future<void> Function();
 
 class PaginatedListView<T> extends StatefulWidget {
@@ -15,6 +21,7 @@ class PaginatedListView<T> extends StatefulWidget {
     this.hasMore = true,
     this.padding = const EdgeInsets.symmetric(vertical: 8),
     this.scrollPhysics,
+    this.scrollDirection = Axis.vertical,
     this.separator,
   });
 
@@ -25,6 +32,7 @@ class PaginatedListView<T> extends StatefulWidget {
   final bool hasMore;
   final EdgeInsets padding;
   final ScrollPhysics? scrollPhysics;
+  final Axis scrollDirection;
   final Widget? separator;
 
   @override
@@ -33,14 +41,27 @@ class PaginatedListView<T> extends StatefulWidget {
 
 class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
   final ScrollController _controller = ScrollController();
+  Timer? _debounce;
 
   void _onScroll() {
-    if (_controller.position.pixels >=
-        _controller.position.maxScrollExtent - 100) {
-      if (widget.hasMore && !widget.isLoadingMore) {
-        widget.onLoadMore();
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 100), () {
+      if (!mounted) return;
+
+      final maxScroll = _controller.position.maxScrollExtent;
+      final currentScroll = _controller.position.pixels;
+      const threshold = 200.0;
+
+      AppLogger.info('Current Scroll: $currentScroll, Max Scroll: $maxScroll');
+      AppLogger.info('Threshold: $threshold');
+      if (currentScroll >= maxScroll - threshold) {
+        AppLogger.info('Loading more items...');
+        if (widget.hasMore && !widget.isLoadingMore) {
+          widget.onLoadMore();
+        }
       }
-    }
+    });
   }
 
   @override
@@ -51,9 +72,9 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
 
   @override
   void dispose() {
-    _controller
-      ..removeListener(_onScroll)
-      ..dispose();
+    _debounce?.cancel();
+    _controller.removeListener(_onScroll);
+    _controller.dispose();
     super.dispose();
   }
 
@@ -63,7 +84,9 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
         widget.items.length + (widget.isLoadingMore && widget.hasMore ? 1 : 0);
 
     return ListView.separated(
+      shrinkWrap: true,
       controller: _controller,
+      scrollDirection: widget.scrollDirection,
       physics: widget.scrollPhysics ?? const BouncingScrollPhysics(),
       padding: widget.padding,
       itemCount: itemCount,
