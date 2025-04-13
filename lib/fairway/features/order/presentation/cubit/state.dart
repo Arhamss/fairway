@@ -1,21 +1,23 @@
 import 'package:equatable/equatable.dart';
+import 'package:fairway/core/enums/order_method.dart';
 
 class OrderState extends Equatable {
   const OrderState({
-    this.isLoading = false,
+    this.selectedOrderMethod,
   });
 
-  final bool isLoading;
+  final OrderMethod? selectedOrderMethod;
 
-  OrderState copyWith({bool? isLoading}) {
-    bool? isLoading;
+  OrderState copyWith({
+    OrderMethod? selectedOrderMethod,
+  }) {
     return OrderState(
-      isLoading: isLoading ?? this.isLoading,
+      selectedOrderMethod: selectedOrderMethod ?? this.selectedOrderMethod,
     );
   }
 
   @override
   List<Object?> get props => [
-        isLoading,
+        selectedOrderMethod,
       ];
 }

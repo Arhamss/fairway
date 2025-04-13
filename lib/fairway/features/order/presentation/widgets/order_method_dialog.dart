@@ -1,19 +1,19 @@
 import 'package:fairway/core/enums/order_method.dart';
 import 'package:fairway/export.dart';
-import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
-import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/order/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/order/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/order/presentation/view/order_details_sheet.dart';
 import 'package:fairway/utils/widgets/core_widgets/button.dart';
 import 'package:fairway/utils/widgets/core_widgets/fairway_text_button.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class OrderMethodDialog extends StatelessWidget {
-  const OrderMethodDialog({required this.restaurantLink, super.key});
+  const OrderMethodDialog({required this.restaurantId, super.key});
 
-  final String restaurantLink;
+  final String restaurantId;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RestaurantCubit, RestaurantState>(
+    return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) {
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -43,7 +43,7 @@ class OrderMethodDialog extends StatelessWidget {
                       isSelected:
                           state.selectedOrderMethod == OrderMethod.pickYourself,
                       onTap: () => context
-                          .read<RestaurantCubit>()
+                          .read<OrderCubit>()
                           .selectOrderMethod(OrderMethod.pickYourself),
                     ),
                     _buildOption(
@@ -53,7 +53,7 @@ class OrderMethodDialog extends StatelessWidget {
                       isSelected:
                           state.selectedOrderMethod == OrderMethod.concierge,
                       onTap: () => context
-                          .read<RestaurantCubit>()
+                          .read<OrderCubit>()
                           .selectOrderMethod(OrderMethod.concierge),
                     ),
                   ],
@@ -64,14 +64,19 @@ class OrderMethodDialog extends StatelessWidget {
                   borderRadius: 12,
                   onPressed: state.selectedOrderMethod != null
                       ? () async {
+                          AppLogger.info(
+                            'Selected Order Method: ${state.selectedOrderMethod}',
+                          );
+
                           Navigator.of(context).pop();
-                          final uri = Uri.parse(restaurantLink);
-                          if (await canLaunchUrl(uri)) {
-                            await launchUrl(uri);
-                          } else {
-                            ToastHelper.showErrorToast(
-                                'Could not launch the website');
-                          }
+
+                          await showModalBottomSheet(
+                            context: context,
+                            builder: (context) => const OrderDetailsSheet(),
+                            isScrollControlled: true,
+                            isDismissible: false,
+                            backgroundColor: Colors.transparent,
+                          );
                         }
                       : null,
                   textColor: AppColors.white,

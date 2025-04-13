@@ -589,18 +589,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     });
   }
 
-  void selectOrderMethod(OrderMethod method) {
-    emit(
-      state.copyWith(
-        selectedOrderMethod: method,
-      ),
-    );
-  }
-
-  void clearOrderMethod() {
-    emit(state.copyWith());
-  }
-
   void setSelectedSortOption(SortByOption option) {
     emit(
       state.copyWith(

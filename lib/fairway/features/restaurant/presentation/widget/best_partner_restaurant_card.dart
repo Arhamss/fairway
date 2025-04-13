@@ -23,7 +23,7 @@ class BestPartnerRestaurantCard extends StatelessWidget {
       onTap: onTap ??
           () => RestaurantHelper.showOrderMethodDialog(
                 context,
-                restaurant.website,
+                restaurant.id,
               ),
       child: Container(
         width: width ?? MediaQuery.of(context).size.width * 0.7,
