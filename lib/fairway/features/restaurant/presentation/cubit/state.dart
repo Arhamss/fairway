@@ -24,7 +24,6 @@ class RestaurantState extends Equatable {
     this.drinksCurrentPage = 1,
     this.bestPartnersCurrentPage = 1,
     this.isLoadingMoreBestPartners = false,
-    this.selectedOrderMethod,
   });
 
   final DataState<RestaurantResponseModel> bestPartnerRestaurants;
@@ -44,8 +43,6 @@ class RestaurantState extends Equatable {
 
   final bool isLoadingMoreBestPartners;
 
-  final OrderMethod? selectedOrderMethod;
-
   bool get isIdle => searchSuggestions.isInitial && nearbyRestaurants.isInitial;
 
   RestaurantState copyWith({
@@ -64,7 +61,6 @@ class RestaurantState extends Equatable {
     int? drinksCurrentPage,
     int? bestPartnersCurrentPage,
     bool? isLoadingMoreBestPartners,
-    OrderMethod? selectedOrderMethod,
   }) {
     return RestaurantState(
       nearbyRestaurants: nearbyRestaurants ?? this.nearbyRestaurants,
@@ -82,7 +78,6 @@ class RestaurantState extends Equatable {
           bestPartnersCurrentPage ?? this.bestPartnersCurrentPage,
       isLoadingMoreBestPartners:
           isLoadingMoreBestPartners ?? this.isLoadingMoreBestPartners,
-      selectedOrderMethod: selectedOrderMethod ?? this.selectedOrderMethod,
       discountCurrentPage: discountCurrentPage ?? this.discountCurrentPage,
       expressCurrentPage: expressCurrentPage ?? this.expressCurrentPage,
       drinksCurrentPage: drinksCurrentPage ?? this.drinksCurrentPage,
@@ -107,6 +102,5 @@ class RestaurantState extends Equatable {
         nearbyCurrentPage,
         bestPartnersCurrentPage,
         isLoadingMoreBestPartners,
-        selectedOrderMethod,
       ];
 }
