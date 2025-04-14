@@ -1,4 +1,5 @@
 import 'package:fairway/export.dart';
+import 'package:fairway/fairway/features/order/data/models/order_item_model.dart';
 
 class FoodDeliveredGrid extends StatelessWidget {
   const FoodDeliveredGrid({
@@ -6,7 +7,7 @@ class FoodDeliveredGrid extends StatelessWidget {
     super.key,
   });
 
-  final List<DeliveredFoodItem> items;
+  final List<OrderItemModel> items;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +48,7 @@ class DeliveredFoodItemTile extends StatelessWidget {
     super.key,
   });
 
-  final DeliveredFoodItem item;
+  final OrderItemModel item;
 
   @override
   Widget build(BuildContext context) {
@@ -59,15 +60,35 @@ class DeliveredFoodItemTile extends StatelessWidget {
           height: 64,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            image: DecorationImage(
-              image: AssetImage(item.imagePath),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              item.image,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return const ColoredBox(
+                  color: AppColors.greyShade2,
+                  child: Icon(
+                    Icons.image_not_supported_outlined,
+                    color: AppColors.greyShade7,
+                  ),
+                );
+              },
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const ColoredBox(
+                  color: AppColors.greyShade2,
+                  child: Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                );
+              },
             ),
           ),
         ),
         const SizedBox(height: 8),
         Text(
-          textAlign: TextAlign.left,
           'x${item.quantity}',
           style: context.b2.copyWith(
             fontSize: 12,
@@ -78,13 +99,4 @@ class DeliveredFoodItemTile extends StatelessWidget {
       ],
     );
   }
-}
-
-class DeliveredFoodItem {
-  const DeliveredFoodItem({
-    required this.imagePath,
-    required this.quantity,
-  });
-  final String imagePath;
-  final int quantity;
 }

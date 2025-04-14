@@ -2,6 +2,7 @@ import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/drawer/drawer_tile.dart';
+import 'package:fairway/fairway/features/order/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/profile/presentation/widgets/user_avatar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -98,8 +99,10 @@ class HomeDrawer extends StatelessWidget {
                       DrawerTile(
                         assetPath: AssetPaths.myOrders,
                         label: 'My Orders',
-                        onTap: () {
-                          Navigator.pop(context);
+                        onTap: () async {
+                          context.pop();
+                          context.goNamed(AppRouteNames.orderHistory);
+                          await context.read<OrderCubit>().getOrderHistory();
                         },
                       ),
                       DrawerTile(

@@ -27,6 +27,7 @@ class AssetPaths {
   static const empty = 'assets/images/empty.png';
   static const locationGroup = 'assets/images/location_group.png';
   static const dummyFood = 'assets/images/dummy_food.png';
+  static const confettiIcon = 'assets/images/confetti.png';
 
   static const sandwich = 'assets/svgs/sandwich.svg';
   static const burger = 'assets/svgs/burger.svg';

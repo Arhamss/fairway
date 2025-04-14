@@ -23,7 +23,6 @@ class DeliveryDetailsRow extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Icon column
             SizedBox(
               width: 24,
               child: SvgPicture.asset(

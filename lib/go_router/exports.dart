@@ -9,6 +9,7 @@ import 'package:fairway/fairway/features/onboarding_flow/presentation/view/passw
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/reset_password_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/sign_in_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/sign_up_screen.dart';
+import 'package:fairway/fairway/features/order/presentation/view/order_history_screen.dart';
 import 'package:fairway/fairway/features/profile/presentation/view/delete_account_screen.dart';
 import 'package:fairway/fairway/features/profile/presentation/view/profile_screen.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/view/search_screen.dart';
