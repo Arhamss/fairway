@@ -73,7 +73,7 @@ class FairwayTextField extends StatefulWidget {
   final Color? hintColor;
   final FairwayTextFieldType type;
   final String? Function(String?)? validator;
-  final String? prefixPath; // Custom SVG path for prefix icon
+  final String? prefixPath;
   final String? suffixPath;
   final EdgeInsetsGeometry? contentPadding;
   final bool? readOnly;
@@ -136,6 +136,8 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
         }
       } else if (widget.type == FairwayTextFieldType.password ||
           widget.type == FairwayTextFieldType.confirmPassword) {
+        final specialCharRegex = RegExp(r'[^\w\s]');
+
         if (value.trim().length < 8) {
           return 'Password must be at least 8 characters';
         }
@@ -149,7 +151,7 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
         if (!value.contains(RegExp('[0-9]'))) {
           return 'Password must contain at least one number';
         }
-        if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+        if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>_]'))) {
           return 'Password must contain at least one special character';
         }
       }

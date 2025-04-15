@@ -3,19 +3,44 @@ import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/order/domain/repositories/order_repository.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/state.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class OrderCubit extends Cubit<OrderState> {
   OrderCubit({required this.repository}) : super(const OrderState());
 
   final OrderRepository repository;
+  IO.Socket? socket;
 
-  // void createOrder() {
-  //   emit(OrderCreating());
-  //   // Simulate order creation process
-  //   Future.delayed(Duration(seconds: 2), () {
-  //     emit(OrderCreated());
-  //   });
-  // }
+  void _initSocket(String userId, String orderId) {
+    socket = IO.io(
+      'http://localhost:5000',
+      <String, dynamic>{
+        'transports': ['websocket'],
+        'autoConnect': false,
+      },
+    );
+
+    socket!.connect();
+
+    socket!.onConnect((_) {
+      debugPrint('🟢 Connected to server with socket id: ${socket!.id}');
+
+      socket!.emit('joinOrderRoom', {
+        'userId': userId,
+        'orderId': orderId,
+      });
+    });
+
+    socket!.on('orderStatusUpdate', (data) {
+      debugPrint('🔁 Order Status Update Received: $data');
+      // You can emit a new state with the update if needed
+      // emit(state.copyWith(orderStatus: data));
+    });
+
+    socket!.onDisconnect((_) {
+      debugPrint('🔴 Disconnected from server');
+    });
+  }
 
   void selectOrderMethod(OrderMethod method) {
     emit(
@@ -50,6 +75,8 @@ class OrderCubit extends Cubit<OrderState> {
           ),
         ),
       );
+      _initSocket(
+          response.data?.order.user ?? '', response.data?.order.id ?? '');
     } else {
       emit(
         state.copyWith(
