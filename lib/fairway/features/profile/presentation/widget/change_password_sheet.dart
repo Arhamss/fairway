@@ -65,8 +65,8 @@ class _ChangePasswordSheetState extends State<ChangePasswordSheet> {
         }
       },
       child: DraggableScrollableSheet(
-        initialChildSize: 0.95,
-        minChildSize: 0.95,
+        initialChildSize: 0.90,
+        minChildSize: 0.90,
         builder: (_, controller) {
           return Container(
             decoration: const BoxDecoration(
@@ -80,7 +80,7 @@ class _ChangePasswordSheetState extends State<ChangePasswordSheet> {
                   height: 5,
                   width: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.greyShade3,
+                    color: AppColors.grey.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -91,7 +91,12 @@ class _ChangePasswordSheetState extends State<ChangePasswordSheet> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(24),
+                          padding: const EdgeInsets.only(
+                            left: 24,
+                            right: 24,
+                            top: 16,
+                            bottom: 24,
+                          ),
                           child: Text(
                             'Change Password',
                             textAlign: TextAlign.center,
@@ -104,25 +109,25 @@ class _ChangePasswordSheetState extends State<ChangePasswordSheet> {
                         ),
                         Container(
                           color: AppColors.dividerColor,
-                          height: 1,
+                          height: 1.5,
                           width: double.infinity,
                         ),
                         Form(
                           key: _formKey,
                           child: Padding(
-                            padding: const EdgeInsets.all(32),
+                            padding: const EdgeInsets.all(24),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Text(
                                   'Password',
                                   style: context.b2.copyWith(
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.bold,
                                     color: AppColors.greyShade6,
                                     fontSize: 14,
                                   ),
                                 ),
-                                const SizedBox(height: 15),
+                                const SizedBox(height: 12),
                                 FairwayTextField(
                                   showPrefixIcon: false,
                                   controller: passController,
@@ -138,21 +143,21 @@ class _ChangePasswordSheetState extends State<ChangePasswordSheet> {
                                     vertical: 12,
                                   ),
                                 ),
-                                const SizedBox(height: 30),
+                                const SizedBox(height: 24),
                                 Container(
                                   color: AppColors.dividerColor,
-                                  height: 1,
+                                  height: 1.5,
                                   width: double.infinity,
                                 ),
-                                const SizedBox(height: 30),
+                                const SizedBox(height: 24),
                                 Text(
                                   'New Password',
                                   style: context.b2.copyWith(
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.bold,
                                     color: AppColors.greyShade6,
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 12),
                                 FairwayTextField(
                                   showPrefixIcon: false,
                                   controller: newpassController,
@@ -168,21 +173,21 @@ class _ChangePasswordSheetState extends State<ChangePasswordSheet> {
                                     vertical: 12,
                                   ),
                                 ),
-                                const SizedBox(height: 30),
+                                const SizedBox(height: 24),
                                 Container(
                                   color: AppColors.dividerColor,
-                                  height: 1,
+                                  height: 1.5,
                                   width: double.infinity,
                                 ),
-                                const SizedBox(height: 30),
+                                const SizedBox(height: 24),
                                 Text(
                                   'Confirm New Password',
                                   style: context.b2.copyWith(
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.bold,
                                     color: AppColors.greyShade6,
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 12),
                                 FairwayTextField(
                                   showPrefixIcon: false,
                                   controller: confirmNewpassController,

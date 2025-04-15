@@ -68,8 +68,8 @@ class _AccountInformationSheetState extends State<AccountInformationSheet> {
         }
       },
       child: DraggableScrollableSheet(
-        initialChildSize: 0.95,
-        minChildSize: 0.95,
+        initialChildSize: 0.90,
+        minChildSize: 0.90,
         builder: (_, controller) {
           return Container(
             decoration: const BoxDecoration(
@@ -86,7 +86,8 @@ class _AccountInformationSheetState extends State<AccountInformationSheet> {
 
                 if (state.userProfile.isFailure) {
                   return RetryWidget(
-                    message: 'Failed to load account information',
+                    message: state.userProfile.errorMessage ??
+                        'Failed to load profile',
                     onRetry: () => context.read<HomeCubit>().loadUserProfile(),
                   );
                 }
@@ -105,7 +106,7 @@ class _AccountInformationSheetState extends State<AccountInformationSheet> {
                       height: 5,
                       width: 40,
                       decoration: BoxDecoration(
-                        color: AppColors.greyShade3,
+                        color: AppColors.grey.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -116,7 +117,12 @@ class _AccountInformationSheetState extends State<AccountInformationSheet> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(24),
+                              padding: const EdgeInsets.only(
+                                left: 24,
+                                right: 24,
+                                top: 16,
+                                bottom: 24,
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
@@ -129,34 +135,33 @@ class _AccountInformationSheetState extends State<AccountInformationSheet> {
                                       fontSize: 24,
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
                                 ],
                               ),
                             ),
-                            // Full-width divider
                             Container(
                               color: AppColors.dividerColor,
-                              height: 1,
+                              height: 1.5,
                               width: double.infinity,
                             ),
+                            const SizedBox(height: 24),
                             Form(
                               key: _formKey,
                               child: Padding(
-                                padding: const EdgeInsets.all(32),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 24),
                                 child: Column(
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
                                   children: [
-                                    const SizedBox(height: 10),
                                     Text(
                                       'Full Name',
                                       style: context.b2.copyWith(
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.bold,
                                         color: AppColors.greyShade6,
                                         fontSize: 14,
                                       ),
                                     ),
-                                    const SizedBox(height: 15),
+                                    const SizedBox(height: 12),
                                     FairwayTextField(
                                       textStyle: context.b1.copyWith(
                                         color: AppColors.black,
@@ -172,21 +177,21 @@ class _AccountInformationSheetState extends State<AccountInformationSheet> {
                                         vertical: 12,
                                       ),
                                     ),
-                                    const SizedBox(height: 30),
+                                    const SizedBox(height: 24),
                                     Container(
                                       color: AppColors.dividerColor,
-                                      height: 1,
+                                      height: 1.5,
                                       width: double.infinity,
                                     ),
-                                    const SizedBox(height: 30),
+                                    const SizedBox(height: 24),
                                     Text(
                                       'Email Address',
                                       style: context.b2.copyWith(
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.bold,
                                         color: AppColors.greyShade6,
                                       ),
                                     ),
-                                    const SizedBox(height: 16),
+                                    const SizedBox(height: 12),
                                     FairwayTextField(
                                       showPrefixIcon: false,
                                       textStyle: context.b1.copyWith(
@@ -219,7 +224,7 @@ class _AccountInformationSheetState extends State<AccountInformationSheet> {
                             valueListenable: _isButtonEnabled,
                             builder: (context, isEnabled, _) {
                               return FairwayButton(
-                                padding: const EdgeInsets.all(18),
+                                padding: const EdgeInsets.all(16),
                                 text: 'Change settings',
                                 fontWeight: FontWeight.w800,
                                 borderRadius: 16,
