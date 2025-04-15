@@ -1,4 +1,5 @@
 import 'package:fairway/app/view/splash_screen.dart';
+import 'package:fairway/fairway/features/home/presentation/view/help_center_screen.dart';
 import 'package:fairway/fairway/features/home/presentation/view/home_screen.dart';
 import 'package:fairway/fairway/features/location/presentation/view/select_location.dart';
 import 'package:fairway/fairway/features/location/presentation/view/user_location.dart';

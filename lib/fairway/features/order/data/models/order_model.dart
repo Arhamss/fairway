@@ -45,6 +45,31 @@ class OrderModel extends Equatable {
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
   }
+
+  OrderModel copyWith({
+    String? status,
+    int? estimatedTime,
+  }) {
+    return OrderModel(
+      id: id,
+      user: user,
+      restaurant: restaurant,
+      items: items,
+      totalPrice: totalPrice,
+      status: status ?? this.status,
+      statusUpdateCount: statusUpdateCount,
+      airport: airport,
+      conciergeName: conciergeName,
+      conciergeId: conciergeId,
+      lockerOrderCode: lockerOrderCode,
+      lockerPin: lockerPin,
+      deliveryMethod: deliveryMethod,
+      estimatedTime: estimatedTime ?? this.estimatedTime,
+      updatedAt: DateTime.now(),
+      createdAt: createdAt,
+    );
+  }
+
   final String id;
   final String user;
   final String? restaurant;

@@ -4,6 +4,34 @@ enum OrderPreparationState {
   delivered,
   pickedByCustomer;
 
+  String get toName {
+    switch (this) {
+      case OrderPreparationState.preparing:
+        return 'preparing';
+      case OrderPreparationState.pickedByConcierge:
+        return 'enroute';
+      case OrderPreparationState.delivered:
+        return 'delivered';
+      case OrderPreparationState.pickedByCustomer:
+        return 'collected';
+    }
+  }
+
+  static OrderPreparationState fromName(String name) {
+    switch (name) {
+      case 'preparing':
+        return OrderPreparationState.preparing;
+      case 'enroute':
+        return OrderPreparationState.pickedByConcierge;
+      case 'delivered':
+        return OrderPreparationState.delivered;
+      case 'collected':
+        return OrderPreparationState.pickedByCustomer;
+      default:
+        throw ArgumentError('Invalid OrderPreparationState name: $name');
+    }
+  }
+
   String get title {
     switch (this) {
       case OrderPreparationState.preparing:

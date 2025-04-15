@@ -116,7 +116,8 @@ class HomeDrawer extends StatelessWidget {
                         assetPath: AssetPaths.helpCenter,
                         label: 'Help Center',
                         onTap: () {
-                          Navigator.pop(context);
+                          context.pop(); // Close drawer
+                          context.pushNamed(AppRouteNames.helpCenter);
                         },
                       ),
                       DrawerTile(

@@ -119,6 +119,11 @@ class AppRouter {
             name: AppRouteNames.orderHistory,
             builder: (context, state) => const OrderHistoryScreen(),
           ),
+          GoRoute(
+            path: AppRoutes.helpCenter,
+            name: AppRouteNames.helpCenter,
+            builder: (context, state) => const HelpCenterScreen(),
+          ),
         ],
       ),
     ],

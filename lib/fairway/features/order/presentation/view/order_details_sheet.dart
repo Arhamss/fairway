@@ -27,7 +27,7 @@ class OrderDetailsSheet extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // Fixed Close button at top
+              
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: Row(
@@ -55,7 +55,9 @@ class OrderDetailsSheet extends StatelessWidget {
                       const EstimatedTime(),
                       const SizedBox(height: 16),
                       OrderPreparationStatus(
-                        currentState: OrderPreparationState.preparing,
+                        currentState: OrderPreparationState.fromName(
+                          state.orderResponseModel.data!.order.status,
+                        ),
                         estimatedTime: state
                             .orderResponseModel.data!.order.estimatedTime
                             .toString(),
