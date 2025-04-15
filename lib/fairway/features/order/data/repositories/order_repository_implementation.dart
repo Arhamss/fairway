@@ -5,6 +5,7 @@ import 'package:fairway/core/endpoints/endpoints.dart';
 import 'package:fairway/fairway/features/order/data/models/order_history/order_history_response_data.dart';
 import 'package:fairway/fairway/features/order/data/models/order_response.dart';
 import 'package:fairway/fairway/features/order/domain/repositories/order_repository.dart';
+import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
 class OrderRepositoryImplementation implements OrderRepository {
@@ -35,18 +36,18 @@ class OrderRepositoryImplementation implements OrderRepository {
         return RepositoryResponse(
           isSuccess: true,
           data: orderResponse,
-          message: 'Order created successfully',
         );
       } else {
         return RepositoryResponse(
           isSuccess: false,
-          message: 'Failed to create order',
+          message: result.response?.error?.message,
         );
       }
-    } catch (e) {
+    } catch (e, s) {
+      AppLogger.error('Error creating order:', e, s);
       return RepositoryResponse(
         isSuccess: false,
-        message: 'An error occurred while creating the order',
+        message: 'An error occurred while creating the order: $e',
       );
     }
   }
@@ -63,13 +64,10 @@ class OrderRepositoryImplementation implements OrderRepository {
         return RepositoryResponse(
           isSuccess: true,
           data: orderHistoryResponse,
-          message: 'Order history retrieved successfully',
         );
       } else {
         return RepositoryResponse(
-          isSuccess: false,
-          message: 'Failed to retrieve order history',
-        );
+            isSuccess: false, message: result.response?.error?.message);
       }
     } catch (e) {
       return RepositoryResponse(

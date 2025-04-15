@@ -13,7 +13,7 @@ class OrderCubit extends Cubit<OrderState> {
 
   void _initSocket(String userId, String orderId) {
     socket = IO.io(
-      'http://localhost:5000',
+      'https://fairways-backend.onrender.com/',
       <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
