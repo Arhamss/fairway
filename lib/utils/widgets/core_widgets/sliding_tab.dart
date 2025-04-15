@@ -50,15 +50,19 @@ class _FairwaySlidingTabState extends State<FairwaySlidingTab> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(50),
-        border: Border.all(
-          color: AppColors.greenSecondary,
-          width: 0.75,
-        ),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
+      padding: const EdgeInsets.all(8),
       width: widget.width ?? double.infinity,
-      height: widget.height ?? 40,
+      height: widget.height != null ? widget.height! + 16 : 48,
       child: Stack(
         children: [
           AnimatedAlign(
@@ -67,11 +71,10 @@ class _FairwaySlidingTabState extends State<FairwaySlidingTab> {
                 ? Alignment.centerLeft
                 : Alignment.centerRight,
             child: Container(
-              width: widget.shortenWidth ? width / 2.2 : width / 2,
-              padding: const EdgeInsets.all(20),
+              width: widget.shortenWidth ? (width - 8) / 2.2 : (width - 8) / 2,
               decoration: BoxDecoration(
                 color: widget.selectedColor ?? AppColors.primaryBlue,
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   color: AppColors.greenSecondary,
                   width: 0.75,
@@ -82,6 +85,7 @@ class _FairwaySlidingTabState extends State<FairwaySlidingTab> {
           // Tab options
           Row(
             children: [
+              // Left Tab
               Expanded(
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
@@ -94,7 +98,12 @@ class _FairwaySlidingTabState extends State<FairwaySlidingTab> {
                   child: Center(
                     child: Text(
                       widget.textOne,
-                      style: widget.textStyle ?? context.b3,
+                      style: (widget.textStyle ?? context.b3).copyWith(
+                        fontSize: 14,
+                        color: selectedIndex == 0 ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
@@ -112,7 +121,12 @@ class _FairwaySlidingTabState extends State<FairwaySlidingTab> {
                   child: Center(
                     child: Text(
                       widget.textTwo,
-                      style: widget.textStyle ?? context.b3,
+                      style: (widget.textStyle ?? context.b3).copyWith(
+                        fontSize: 14,
+                        color: selectedIndex == 1 ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),

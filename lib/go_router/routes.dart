@@ -17,6 +17,7 @@ class AppRoutes {
   static const String changePassword = '/change-password';
   static const String deleteAccount = '/delete-account';
   static const String userLocation = '/user-location';
+  static const String orderHistory = 'order-history';
 }
 
 class AppRouteNames {
@@ -36,4 +37,5 @@ class AppRouteNames {
   static const String changePassword = 'change-password';
   static const String deleteAccount = 'delete-account';
   static const String userLocation = 'user-location';
+  static const String orderHistory = 'order_history';
 }

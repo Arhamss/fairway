@@ -56,4 +56,5 @@ abstract class AppColors {
   static const redShade1 = Color(0xFFF04438);
   static const darkWhiteBackground = Color(0xFFF2F3F6);
   static const drawerBackground = Color(0xFF365A99);
+  static const activeTabColor = Color(0xFF365A99);
 }

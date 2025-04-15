@@ -27,7 +27,7 @@ class Endpoints {
   static const String searchSuggestions =
       'customers/restaurants/search-suggestions';
   static const String recentSearches = 'customers/recent-searchs';
-  
+
   static const String deleteRecentSearches = 'customers/recent-searches';
   static const String airports = 'customers/airports';
   static const String customerLocation = 'customers/my-locations';
@@ -39,6 +39,8 @@ class Endpoints {
   static const String customerProfile = 'customers/profile';
   static const String updateNotificationPreference =
       'customers/notification-preference';
+  static const String orderTypes = 'customers/order-type';
+  static const String orderHistory = 'customers/orders/history';
 
   /// Order Endpoints
   static const String bookOrder = 'orders';

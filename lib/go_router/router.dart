@@ -107,13 +107,17 @@ class AppRouter {
             name: AppRouteNames.profileScreen,
             builder: (context, state) => const ProfileScreen(),
             routes: [
-              
               GoRoute(
                 path: AppRoutes.deleteAccount,
                 name: AppRouteNames.deleteAccount,
                 builder: (context, state) => const DeleteAccountScreen(),
               ),
             ],
+          ),
+          GoRoute(
+            path: AppRoutes.orderHistory,
+            name: AppRouteNames.orderHistory,
+            builder: (context, state) => const OrderHistoryScreen(),
           ),
         ],
       ),

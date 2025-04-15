@@ -5,7 +5,7 @@ class OrderPreparationStatus extends StatelessWidget {
   const OrderPreparationStatus({
     required this.currentState,
     super.key,
-    this.estimatedTime = '20mins',
+    this.estimatedTime = '20',
   });
 
   final OrderPreparationState currentState;
@@ -83,7 +83,7 @@ class OrderPreparationStatus extends StatelessWidget {
                     if (currentState == OrderPreparationState.preparing) ...[
                       const SizedBox(height: 8),
                       Text(
-                        'Time Req. $estimatedTime',
+                        'Time Req. ${estimatedTime}mins',
                         style: context.h3.copyWith(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
