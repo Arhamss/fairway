@@ -55,7 +55,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Your order would be delivered in the\n${state.orderResponseModel.data!.order.estimatedTime} mins almost!',
+                      'Your order would be delivered in the\n${state.orderResponseModel.data!.estimatedTime} mins almost!',
                       textAlign: TextAlign.center,
                       style: context.b1.copyWith(
                         color: AppColors.greyShade7,
@@ -71,13 +71,13 @@ class OrderConfirmationScreen extends StatelessWidget {
                           _OrderDetailItem(
                             label: 'Estimated time',
                             value:
-                                '${state.orderResponseModel.data!.order.estimatedTime}mins',
+                                '${state.orderResponseModel.data!.estimatedTime}mins',
                           ),
                           const SizedBox(height: 12),
                           _OrderDetailItem(
                             label: 'Amount Paid',
                             value:
-                                '\$${state.orderResponseModel.data!.order.totalPrice}',
+                                '\$${state.orderResponseModel.data!.totalPrice}',
                             svgPath: AssetPaths.walletIcon,
                           ),
                         ],
@@ -98,7 +98,9 @@ class OrderConfirmationScreen extends StatelessWidget {
                     context.pop();
                     await showModalBottomSheet(
                       context: context,
-                      builder: (context) => const OrderDetailsSheet(),
+                      builder: (context) => const OrderDetailsSheet(
+
+                      ),
                       isScrollControlled: true,
                       isDismissible: false,
                       backgroundColor: Colors.transparent,

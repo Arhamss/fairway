@@ -40,6 +40,7 @@ class HelpCenterScreen extends StatelessWidget {
         title: Text(
           'Help Center',
           style: context.h2.copyWith(
+            color: AppColors.black,
             fontSize: 32,
             fontWeight: FontWeight.w700,
           ),

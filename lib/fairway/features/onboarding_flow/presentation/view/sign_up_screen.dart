@@ -1,6 +1,7 @@
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/onboarding_flow/presentation/widgets/social_button.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -56,7 +57,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: Form(
                         key: _formKey,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             SvgPicture.asset(AssetPaths.fairwaySignupLogo),
                             const SizedBox(height: 32),
@@ -128,11 +128,51 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           );
                                     } else {
                                       ToastHelper.showInfoToast(
-                                          'Please fill in all fields');
+                                        'Please fill in all fields',
+                                      );
                                     }
                                   },
                                   text: 'Sign up',
                                   isLoading: state.signUp.isLoading,
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 32),
+                            Text(
+                              'OR',
+                              style: context.b2.copyWith(
+                                color: AppColors.greyShade7,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 32),
+                            BlocBuilder<OnboardingFlowCubit,
+                                OnboardingFlowState>(
+                              builder: (context, state) {
+                                return SocialButton(
+                                  onPressed: () {
+                                    context
+                                        .read<OnboardingFlowCubit>()
+                                        .signInWithGoogle();
+                                  },
+                                  text: 'Connect with Google',
+                                  svgPath: AssetPaths.googleIcon,
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            BlocBuilder<OnboardingFlowCubit,
+                                OnboardingFlowState>(
+                              builder: (context, state) {
+                                return SocialButton(
+                                  onPressed: () {
+                                    context
+                                        .read<OnboardingFlowCubit>()
+                                        .signInWithApple();
+                                  },
+                                  text: 'Connect with Apple',
+                                  svgPath: AssetPaths.appleIcon,
                                 );
                               },
                             ),

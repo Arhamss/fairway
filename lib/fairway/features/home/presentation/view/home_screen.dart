@@ -9,6 +9,7 @@ import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_wi
 import 'package:fairway/fairway/features/order/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/order/presentation/view/order_confirmation_screen.dart';
+import 'package:fairway/fairway/features/subscription/presentation/cubit/cubit.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -38,6 +39,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!hasCurrentLocation) {
       context.goNamed(AppRouteNames.selectLocation);
     }
+
+    await context.read<OrderCubit>().getOrderHistory();
+    await context
+        .read<SubscriptionCubit>()
+        .getSubscriptionStatus(user.data!.id);
   }
 
   @override

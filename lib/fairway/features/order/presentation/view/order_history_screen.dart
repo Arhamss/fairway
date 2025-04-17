@@ -4,6 +4,7 @@ import 'package:fairway/fairway/features/order/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/order/presentation/widgets/order_history/in_progress_orders.dart';
 import 'package:fairway/fairway/features/order/presentation/widgets/order_history/completed_orders.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
+import 'package:fairway/utils/widgets/core_widgets/retry_widget.dart';
 import 'package:fairway/utils/widgets/core_widgets/sliding_tab.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
@@ -43,7 +44,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       ),
       body: Column(
         children: [
-          
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 40, 16, 8),
             child: FairwaySlidingTab(
@@ -60,8 +60,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               ),
             ),
           ),
-
-          // Order Lists
           Expanded(
             child: BlocBuilder<OrderCubit, OrderState>(
               builder: (context, state) {
@@ -70,13 +68,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     child: LoadingWidget(),
                   );
                 } else if (state.orderHistoryModel.isFailure) {
-                  return Center(
-                    child: Text(
-                      state.orderHistoryModel.errorMessage ??
-                          'An error occurred',
-                      style:
-                          context.b1.copyWith(color: AppColors.textSecondary),
-                    ),
+                  return RetryWidget(
+                    message: 'Error loading order history',
+                    onRetry: () => context.read<OrderCubit>().getOrderHistory(),
                   );
                 }
 

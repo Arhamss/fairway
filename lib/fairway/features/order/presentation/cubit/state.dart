@@ -8,30 +8,29 @@ import 'package:fairway/utils/helpers/data_state.dart';
 class OrderState extends Equatable {
   const OrderState({
     this.selectedOrderMethod,
-    this.activeOrders = const [],
     this.orderResponseModel = const DataState.initial(),
+    this.activeOrders = const [],
     this.orderHistoryModel = const DataState.initial(),
     this.currentTab = 0,
   });
 
   final OrderMethod? selectedOrderMethod;
-  final List<OrderResponseData> activeOrders;
-  final DataState<OrderResponseData> orderResponseModel;
+  final DataState<OrderModel> orderResponseModel;
+  final List<OrderModel>? activeOrders;
   final DataState<OrderHistoryResponseData> orderHistoryModel;
   final int currentTab;
 
   OrderState copyWith({
     OrderMethod? selectedOrderMethod,
-    List<OrderResponseData>? activeOrders,
-    DataState<OrderResponseData>? orderResponseModel,
+    DataState<OrderModel>? orderResponseModel,
+    List<OrderModel>? activeOrders,
     DataState<OrderHistoryResponseData>? orderHistoryModel,
     int? currentTab,
   }) {
     return OrderState(
       selectedOrderMethod: selectedOrderMethod ?? this.selectedOrderMethod,
-      activeOrders: activeOrders ?? this.activeOrders,
-      
       orderResponseModel: orderResponseModel ?? this.orderResponseModel,
+      activeOrders: activeOrders ?? this.activeOrders,
       orderHistoryModel: orderHistoryModel ?? this.orderHistoryModel,
       currentTab: currentTab ?? this.currentTab,
     );
@@ -40,8 +39,8 @@ class OrderState extends Equatable {
   @override
   List<Object?> get props => [
         selectedOrderMethod,
-        activeOrders,
         orderResponseModel,
+        activeOrders,
         orderHistoryModel,
         currentTab,
       ];

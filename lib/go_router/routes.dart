@@ -19,6 +19,9 @@ class AppRoutes {
   static const String userLocation = '/user-location';
   static const String orderHistory = '/order-history';
   static const String helpCenter = '/help-center';
+  static const String termsOfService = '/terms-of-service';
+  static const String notificationScreen = '/notification-screen';
+  static const String subscriptionScreen = '/subscription-screen';
 }
 
 class AppRouteNames {
@@ -40,4 +43,7 @@ class AppRouteNames {
   static const String userLocation = 'user-location';
   static const String orderHistory = 'order_history';
   static const String helpCenter = 'help_center';
+  static const String termsOfService = 'terms_of_service';
+  static const String notificationScreen = 'notification_screen';
+  static const String subscriptionScreen = 'subscription-screen';
 }

@@ -13,6 +13,10 @@ abstract class OnboardingFlowRepository {
     String password,
   );
 
+  Future<RepositoryResponse<AuthData>> signInWithGoogle();
+  Future<RepositoryResponse<AuthData>> signInWithApple();
+  
+  
   Future<RepositoryResponse<dynamic>> forgotPassword(String email);
 
   Future<RepositoryResponse<dynamic>> resetPassword(

@@ -27,7 +27,6 @@ class OrderDetailsSheet extends StatelessWidget {
           ),
           child: Column(
             children: [
-              
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: Row(
@@ -56,10 +55,10 @@ class OrderDetailsSheet extends StatelessWidget {
                       const SizedBox(height: 16),
                       OrderPreparationStatus(
                         currentState: OrderPreparationState.fromName(
-                          state.orderResponseModel.data!.order.status,
+                          state.orderResponseModel.data!.status,
                         ),
                         estimatedTime: state
-                            .orderResponseModel.data!.order.estimatedTime
+                            .orderResponseModel.data!.estimatedTime
                             .toString(),
                       ),
                       const SizedBox(height: 16),
@@ -69,26 +68,25 @@ class OrderDetailsSheet extends StatelessWidget {
                           children: [
                             DeliveryDetailsRow(
                               label: 'Deliver to',
-                              value: state.orderResponseModel.data!.order
-                                  .airport.airportName,
+                              value: state
+                                  .orderResponseModel.data!.airport.airportName,
                               svgPath: AssetPaths.locationIconOutlined,
                             ),
                             DeliveryDetailsRow(
                               label: 'Terminal',
-                              value: state.orderResponseModel.data!.order
-                                  .airport.terminal,
+                              value: state
+                                  .orderResponseModel.data!.airport.terminal,
                               svgPath: AssetPaths.locationIconOutlined,
                             ),
                             DeliveryDetailsRow(
                               label: 'Gate No',
-                              value: state
-                                  .orderResponseModel.data!.order.airport.gate,
+                              value:
+                                  state.orderResponseModel.data!.airport.gate,
                               svgPath: AssetPaths.locationIconOutlined,
                             ),
                             DeliveryDetailsRow(
                               label: 'Amount Paid',
-                              value: state
-                                  .orderResponseModel.data!.order.totalPrice
+                              value: state.orderResponseModel.data!.totalPrice
                                   .toString(),
                               svgPath: AssetPaths.walletIcon,
                               isCurrency: true,
@@ -103,7 +101,7 @@ class OrderDetailsSheet extends StatelessWidget {
                         color: Colors.transparent,
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: FoodDeliveredGrid(
-                          items: state.orderResponseModel.data!.order.items,
+                          items: state.orderResponseModel.data!.items,
                         ),
                       ),
                     ],

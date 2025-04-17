@@ -32,6 +32,14 @@ class OrderHistoryResponseData extends Equatable {
     );
   }
 
+  OrderHistoryResponseData copyWith({
+    List<OrderModel>? orders,
+  }) {
+    return OrderHistoryResponseData(
+      orders: orders ?? this.orders,
+    );
+  }
+
   @override
   List<Object?> get props => [orders];
 }

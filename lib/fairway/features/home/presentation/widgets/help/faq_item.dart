@@ -44,6 +44,7 @@ class _ExpandableFaqItemState extends State<ExpandableFaqItem> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
+          splashFactory: NoSplash.splashFactory,
           borderRadius: BorderRadius.circular(12),
           onTap: () => setState(() => isExpanded = !isExpanded),
           child: Padding(

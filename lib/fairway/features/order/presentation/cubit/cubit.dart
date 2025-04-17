@@ -1,10 +1,10 @@
 import 'package:fairway/core/enums/order_method.dart';
 import 'package:fairway/export.dart';
+import 'package:fairway/fairway/features/order/data/models/order_history/order_history_response_data.dart';
+import 'package:fairway/fairway/features/order/data/models/order_model.dart';
 import 'package:fairway/fairway/features/order/data/models/order_response.dart';
 import 'package:fairway/fairway/features/order/domain/repositories/order_repository.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/state.dart';
-import 'package:fairway/fairway/features/order/presentation/view/order_confirmation_screen.dart';
-import 'package:fairway/fairway/features/order/presentation/view/order_details_sheet.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -14,10 +14,33 @@ class OrderCubit extends Cubit<OrderState> {
   final OrderRepository repository;
   final Map<String, IO.Socket> _sockets = {};
 
+  void _initializeSocketsForActiveOrders() {
+    for (final socket in _sockets.values) {
+      socket.disconnect();
+      socket.dispose();
+    }
+    _sockets.clear();
+
+    final activeOrders = state.activeOrders!;
+
+    for (final orderData in activeOrders) {
+      _initSocketForOrder(
+        orderData.customer.userId,
+        orderData.id,
+        orderData,
+      );
+    }
+  }
+
+  bool _isOrderActive(String status) {
+    final activeStatuses = ['preparing', 'delivered', 'enroute'];
+    return activeStatuses.contains(status.toLowerCase());
+  }
+
   void _initSocketForOrder(
     String userId,
     String orderId,
-    OrderResponseData orderData,
+    OrderModel orderData,
   ) {
     if (_sockets.containsKey(orderId)) return;
 
@@ -50,6 +73,8 @@ class OrderCubit extends Cubit<OrderState> {
 
     socket.onDisconnect((_) {
       debugPrint('🔴 Disconnected from server for order: $orderId');
+
+      _initSocketForOrder(userId, orderId, orderData);
     });
 
     _sockets[orderId] = socket;
@@ -57,40 +82,27 @@ class OrderCubit extends Cubit<OrderState> {
 
   void handleOrderUpdate(String orderId, dynamic data) {
     try {
-      emit(
-        state.copyWith(
-          orderResponseModel: const DataState.loading(),
-        ),
-      );
       final currentOrders = state.activeOrders;
-      final orderIndex = currentOrders.indexWhere(
-        (order) => order.order.id == orderId,
+      final orderIndex = currentOrders!.indexWhere(
+        (order) => order.id == orderId,
       );
 
-      if (orderIndex == -1) {
-        AppLogger.error('Order with ID $orderId not found in active orders.');
-        return;
+      if (orderIndex != -1) {
+        final updatedOrder = currentOrders[orderIndex];
+        currentOrders[orderIndex] = data as OrderModel;
+
+        // 3. Update active orders in state
+        emit(state.copyWith(activeOrders: currentOrders));
+
+        // 4. Set the updated order as the current response model
+        emit(
+          state.copyWith(
+            orderResponseModel: DataState.loaded(data: updatedOrder),
+          ),
+        );
+
+        AppLogger.info('Updated order $orderId with new data: $data');
       }
-
-      // Create a new order object with updated fields
-      final currentOrder = currentOrders[orderIndex];
-      final updatedOrder = currentOrder.copyWith(
-        order: currentOrder.order.copyWith(
-          estimatedTime:
-              data['estimatedTime'] as int? ?? currentOrder.order.estimatedTime,
-          status: data['status'] as String? ?? currentOrder.order.status,
-        ),
-      );
-
-      currentOrders[orderIndex] = updatedOrder;
-
-      emit(
-        state.copyWith(
-          orderResponseModel: DataState.loaded(data: updatedOrder),
-        ),
-      );
-
-      AppLogger.info('Updated order $orderId with new data: $data');
     } catch (e) {
       AppLogger.error('Error updating order: $e');
     }
@@ -102,34 +114,45 @@ class OrderCubit extends Cubit<OrderState> {
         orderResponseModel: const DataState.loading(),
       ),
     );
+
     final response = await repository.createOrder(
       state.selectedOrderMethod?.toName ?? OrderMethod.pickYourself.toName,
     );
 
     if (response.isSuccess && response.data != null) {
+     
       emit(
         state.copyWith(
-          orderResponseModel: DataState.loaded(
-            data: response.data,
-          ),
+          orderResponseModel: DataState.loaded(data: response.data!.order),
         ),
       );
-      final currentOrders = List<OrderResponseData>.from(state.activeOrders)
-        ..add(response.data!);
 
+      final currentOrders = List<OrderModel>.from(state.activeOrders!)
+        ..add(response.data!.order);
       emit(state.copyWith(activeOrders: currentOrders));
 
+      if (state.orderHistoryModel.data != null) {
+        final historyList =
+            List<OrderModel>.from(state.orderHistoryModel.data!.orders)
+              ..add(response.data!.order);
+        emit(
+          state.copyWith(
+            orderHistoryModel: DataState.loaded(
+              data: state.orderHistoryModel.data!.copyWith(orders: historyList),
+            ),
+          ),
+        );
+      }
+
       _initSocketForOrder(
-        response.data!.order.user,
+        response.data!.order.customer.userId,
         response.data!.order.id,
-        response.data!,
+        response.data!.order,
       );
     } else {
       emit(
         state.copyWith(
-          orderResponseModel: DataState.failure(
-            error: response.message,
-          ),
+          orderResponseModel: DataState.failure(error: response.message),
         ),
       );
       AppLogger.error('Error placing order: ${response.message}');
@@ -142,17 +165,17 @@ class OrderCubit extends Cubit<OrderState> {
     _sockets[orderId]?.dispose();
     _sockets.remove(orderId);
 
-    // Remove from active orders
-    final currentOrders = state.activeOrders
-        .where((orderState) => orderState.order.id != orderId)
+    final currentOrders = state.activeOrders!
+        .where((orderState) => orderState.id != orderId)
         .toList();
 
     emit(state.copyWith(activeOrders: currentOrders));
+
+    AppLogger.info('Order $orderId removed from active orders.');
   }
 
   @override
   Future<void> close() {
-    // Clean up all sockets when cubit is closed
     for (final socket in _sockets.values) {
       socket.disconnect();
       socket.dispose();
@@ -162,17 +185,11 @@ class OrderCubit extends Cubit<OrderState> {
   }
 
   void selectOrderMethod(OrderMethod method) {
-    emit(
-      state.copyWith(
-        selectedOrderMethod: method,
-      ),
-    );
+    emit(state.copyWith(selectedOrderMethod: method));
   }
 
   void clearOrderMethod() {
-    emit(
-      state.copyWith(),
-    );
+    emit(state.copyWith());
   }
 
   Future<void> getOrderHistory() async {
@@ -187,27 +204,29 @@ class OrderCubit extends Cubit<OrderState> {
     if (response.isSuccess) {
       emit(
         state.copyWith(
-          orderHistoryModel: DataState.loaded(
-            data: response.data,
-          ),
+          orderHistoryModel: DataState.loaded(data: response.data),
         ),
       );
+
+      emit(
+        state.copyWith(
+          activeOrders: response.data!.orders
+              .where((order) => _isOrderActive(order.status))
+              .toList(),
+        ),
+      );
+
+      _initializeSocketsForActiveOrders();
     } else {
       emit(
         state.copyWith(
-          orderHistoryModel: DataState.failure(
-            error: response.message,
-          ),
+          orderHistoryModel: DataState.failure(error: response.message),
         ),
       );
     }
   }
 
   void setCurrentTab(int index) {
-    emit(
-      state.copyWith(
-        currentTab: index,
-      ),
-    );
+    emit(state.copyWith(currentTab: index));
   }
 }
