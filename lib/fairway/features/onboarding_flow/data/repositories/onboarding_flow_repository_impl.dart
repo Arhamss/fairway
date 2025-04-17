@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:math';
+import 'package:crypto/crypto.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:fairway/core/api_service/api_service.dart';
 import 'package:fairway/core/api_service/app_api_exception.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
@@ -9,6 +13,7 @@ import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 import 'package:fairway/fairway/models/auth_data_model.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
   OnboardingFlowRepositoryImpl({
@@ -194,6 +199,140 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
         isSuccess: false,
         message: extractApiErrorMessage(e, 'Failed to reset password'),
         data: false,
+      );
+    }
+  }
+
+  @override
+  Future<RepositoryResponse<AuthData>> signInWithApple() async {
+    // try {
+    //   final rawNonce = _generateNonce();
+    //   final nonce = _sha256ofString(rawNonce);
+
+    //   final appleCredential = await SignInWithApple.getAppleIDCredential(
+    //     scopes: [
+    //       AppleIDAuthorizationScopes.email,
+    //       AppleIDAuthorizationScopes.fullName,
+    //     ],
+    //     nonce: nonce,
+    //   );
+
+    //   final authCode = appleCredential.authorizationCode;
+    //   final identityToken = appleCredential.identityToken;
+
+    //   if (identityToken == null) {
+    //     throw AppApiException('Identity token is null');
+    //   }
+
+    //   final response = await _apiService.post(
+    //     endpoint: Endpoints.signinWithApple,
+    //     data: {
+    //       'appleId': identityToken,
+    //       'authorizationCode': authCode,
+    //       'email': appleCredential.email,
+    //       'name': '${appleCredential.givenName} ${appleCredential.familyName}',
+    //     },
+    //   );
+
+    //   final result = AuthData.parseResponse(response);
+    //   final authData = result.response?.data;
+
+    //   if (result.isSuccess && authData != null) {
+    //     _cache
+    //       ..setToken(authData.token)
+    //       ..setUserId(authData.id);
+
+    //     AppLogger.info('Apple Sign in successful: ${authData.name}');
+
+    //     return RepositoryResponse(
+    //       isSuccess: true,
+    //       data: authData,
+    //     );
+    //   } else {
+    //     AppLogger.info('Apple Sign in failed: ${result.error}');
+    //     return RepositoryResponse(
+    //       isSuccess: false,
+    //       message: result.error ?? 'Apple Sign in failed',
+    //     );
+    //   }
+    // } catch (e, s) {
+    //   AppLogger.error('Apple Sign in exception:', e, s);
+
+    //   return RepositoryResponse(
+    //     isSuccess: false,
+    //     message: extractApiErrorMessage(e, 'Apple Sign in failed'),
+    //   );
+    // }
+
+    throw UnimplementedError(
+      'Apple Sign in is not implemented yet.',
+    );
+  }
+
+  String _generateNonce([int length = 32]) {
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+        .join();
+  }
+
+  String _sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
+  @override
+  Future<RepositoryResponse<AuthData>> signInWithGoogle() async {
+    try {
+      final googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+      );
+
+      final account = await googleSignIn.signIn();
+      if (account == null) {
+        throw AppApiException('Google sign in was cancelled');
+      }
+
+      final idToken = account.id;
+      final email = account.email;
+      final displayName = account.displayName;
+
+      final response = await _apiService.post(
+        endpoint: Endpoints.signinWithGoogle,
+        data: {
+          'googleId': idToken,
+          'email': email,
+          'name': displayName,
+        },
+      );
+      final result = AuthData.parseResponse(response);
+      final authData = result.response?.data;
+      if (result.isSuccess && authData != null) {
+        _cache
+          ..setToken(authData.token)
+          ..setUserId(authData.id);
+
+        AppLogger.info('Sign in successful: ${authData.name}');
+
+        return RepositoryResponse(
+          isSuccess: true,
+          data: authData,
+        );
+      } else {
+        AppLogger.info('Sign in failed: ${result.error}');
+        return RepositoryResponse(
+          isSuccess: false,
+          message: result.error ?? 'Sign in failed',
+        );
+      }
+    } catch (e, s) {
+      AppLogger.error('Sign in exception:', e, s);
+
+      return RepositoryResponse(
+        isSuccess: false,
+        message: extractApiErrorMessage(e, 'Sign in failed'),
       );
     }
   }

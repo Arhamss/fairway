@@ -11,6 +11,8 @@ import 'package:fairway/fairway/features/profile/data/repositories/profile_repos
 import 'package:fairway/fairway/features/profile/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/restaurant/data/repository/restaurant_repository_impl.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/subscription/data/repositories/subscription_repository_implementation.dart';
+import 'package:fairway/fairway/features/subscription/presentation/cubit/cubit.dart';
 import 'package:fairway/utils/widgets/core_widgets/export.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,6 +55,11 @@ class App extends StatelessWidget {
         BlocProvider(
           create: (context) => OrderCubit(
             repository: OrderRepositoryImplementation(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => SubscriptionCubit(
+            repository: SubscriptionRepositoryImpl(),
           ),
         ),
       ],

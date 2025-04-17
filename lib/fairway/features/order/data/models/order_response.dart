@@ -23,14 +23,25 @@ class OrderResponseData extends Equatable {
   final dynamic locker;
 
   static ResponseModel<BaseApiResponse<OrderResponseData>> parseResponse(
-      Response response) {
+    Response response,
+  ) {
     return ResponseModel.fromApiResponse<BaseApiResponse<OrderResponseData>>(
       response,
       (json) => BaseApiResponse<OrderResponseData>.fromJson(
-          json, OrderResponseData.fromJson),
+        json,
+        OrderResponseData.fromJson,
+      ),
     );
   }
 
   @override
   List<Object?> get props => [defaultOrderType, order, locker];
+
+  OrderResponseData copyWith({OrderModel? order}) {
+    return OrderResponseData(
+      defaultOrderType: defaultOrderType,
+      order: order ?? this.order,
+      locker: locker,
+    );
+  }
 }

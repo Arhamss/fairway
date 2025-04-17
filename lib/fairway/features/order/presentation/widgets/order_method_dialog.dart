@@ -17,11 +17,15 @@ class OrderMethodDialog extends StatelessWidget {
     return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) {
         return BlocListener<OrderCubit, OrderState>(
+          listenWhen: (previous, current) {
+            return previous.orderResponseModel != current.orderResponseModel &&
+                current.orderResponseModel.isLoaded;
+          },
           listener: (context, state) {
             if (state.orderResponseModel.isLoaded) {
               showModalBottomSheet(
                 context: context,
-                builder: (context) => const OrderConfirmationScreen(),
+                builder: (context) => const OrderDetailsSheet(),
                 isScrollControlled: true,
                 isDismissible: false,
                 backgroundColor: Colors.transparent,

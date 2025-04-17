@@ -119,6 +119,26 @@ class AppRouter {
             name: AppRouteNames.orderHistory,
             builder: (context, state) => const OrderHistoryScreen(),
           ),
+          GoRoute(
+            path: AppRoutes.helpCenter,
+            name: AppRouteNames.helpCenter,
+            builder: (context, state) => const HelpCenterScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.notificationScreen,
+            name: AppRouteNames.notificationScreen,
+            builder: (context, state) => const NotificationScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.termsOfService,
+            name: AppRouteNames.termsOfService,
+            builder: (context, state) => const TermsOfServiceScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.subscriptionScreen,
+            name: AppRouteNames.subscriptionScreen,
+            builder: (context, state) => const SubscriptionScreen(),
+          ),
         ],
       ),
     ],

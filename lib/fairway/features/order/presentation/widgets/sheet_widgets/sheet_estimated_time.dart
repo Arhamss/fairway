@@ -31,7 +31,7 @@ class EstimatedTime extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                '${state.orderResponseModel.data!.order.estimatedTime}mins',
+                '${state.orderResponseModel.data!.estimatedTime}mins',
                 style: const TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 12,

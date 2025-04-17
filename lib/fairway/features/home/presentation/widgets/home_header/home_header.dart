@@ -85,13 +85,7 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                     IconButton(
                       icon: SvgPicture.asset(AssetPaths.notificationIcon),
                       onPressed: () {
-                        // showDialog(
-                        //   context: context,
-                        //   builder: (context) => const OrderMethodDialog(
-                        //     restaurantLink:
-                        //         'https://example.com', // Replace with the actual link
-                        //   ),
-                        // );
+                        context.pushNamed(AppRouteNames.notificationScreen);
                       },
                     ),
                   ],

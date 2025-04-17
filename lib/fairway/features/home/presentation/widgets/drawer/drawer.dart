@@ -2,7 +2,6 @@ import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/drawer/drawer_tile.dart';
-import 'package:fairway/fairway/features/order/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/profile/presentation/widgets/user_avatar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -90,7 +89,7 @@ class HomeDrawer extends StatelessWidget {
                         assetPath: AssetPaths.myAccount,
                         label: 'My Account',
                         onTap: () {
-                          Navigator.pop(context);
+                          context.pop();
                           context.goNamed(
                             AppRouteNames.profileScreen,
                           );
@@ -102,28 +101,30 @@ class HomeDrawer extends StatelessWidget {
                         onTap: () async {
                           context.pop();
                           context.goNamed(AppRouteNames.orderHistory);
-                          await context.read<OrderCubit>().getOrderHistory();
                         },
                       ),
                       DrawerTile(
                         assetPath: AssetPaths.subscriptionDrawer,
                         label: 'Subscription',
                         onTap: () {
-                          Navigator.pop(context);
+                          context.pop();
+                          context.goNamed(AppRouteNames.subscriptionScreen);
                         },
                       ),
                       DrawerTile(
                         assetPath: AssetPaths.helpCenter,
                         label: 'Help Center',
                         onTap: () {
-                          Navigator.pop(context);
+                          context.pop();
+                          context.pushNamed(AppRouteNames.helpCenter);
                         },
                       ),
                       DrawerTile(
                         assetPath: AssetPaths.termsOfService,
                         label: 'Terms of Service',
                         onTap: () {
-                          Navigator.pop(context);
+                          context.pop();
+                          // context.pushNamed(AppRouteNames.termsOfService);
                         },
                       ),
                     ],

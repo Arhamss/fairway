@@ -60,4 +60,5 @@ class AssetPaths {
   static const editIcon = 'assets/svgs/edit_icon.svg';
   static const locationIconOutlined = 'assets/svgs/location_icon_outlined.svg';
   static const walletIcon = 'assets/svgs/wallet.svg';
+  static const checkMarkIcon = 'assets/svgs/check_mark.svg';
 }

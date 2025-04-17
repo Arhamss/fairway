@@ -67,7 +67,9 @@ class OrderRepositoryImplementation implements OrderRepository {
         );
       } else {
         return RepositoryResponse(
-            isSuccess: false, message: result.response?.error?.message);
+          isSuccess: false,
+          message: result.response?.error?.message,
+        );
       }
     } catch (e) {
       return RepositoryResponse(

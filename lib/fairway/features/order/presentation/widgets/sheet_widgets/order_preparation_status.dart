@@ -31,7 +31,7 @@ class OrderPreparationStatus extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Current state
+          
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -97,7 +97,7 @@ class OrderPreparationStatus extends StatelessWidget {
             ],
           ),
 
-          // Next state if available
+         
           if (nextState != null) ...[
             const SizedBox(height: 12),
             Row(
