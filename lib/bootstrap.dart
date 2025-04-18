@@ -41,8 +41,12 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     case Flavor.development:
       firebaseOptions = dev.DefaultFirebaseOptions.currentPlatform;
       name = 'fairwayDev';
-
   }
+
+  await Firebase.initializeApp(
+    name: name,
+    options: firebaseOptions,
+  );
   await Injector.setup();
 
   runApp(await builder());
