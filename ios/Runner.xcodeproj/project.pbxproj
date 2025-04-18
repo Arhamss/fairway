@@ -123,7 +123,6 @@
 				F31DFD78676DC3689C265B59 /* Pods-RunnerTests.profile-staging.xcconfig */,
 				A99D4A6D2E12706695D0D683 /* Pods-RunnerTests.profile-development.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -219,7 +218,7 @@
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
 				BE4A6B6A9ED3279300632576 /* [CP] Check Pods Manifest.lock */,
-				9740EEB61CF901F6004384FC /* Run Script */,
+				9740EEB61CF901F6004384FC /* Copy GoogleService-Info.plist */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
@@ -227,6 +226,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				011D7528309FEC5DCF55C225 /* [CP] Embed Pods Frameworks */,
 				0B5B55DD111D530051DB44AC /* [CP] Copy Pods Resources */,
+				FE39F10B2DB22AA6006E372D /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -307,9 +307,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -324,9 +328,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -349,7 +357,7 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
 		};
-		9740EEB61CF901F6004384FC /* Run Script */ = {
+		9740EEB61CF901F6004384FC /* Copy GoogleService-Info.plist */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -357,12 +365,12 @@
 			);
 			inputPaths = (
 			);
-			name = "Run Script";
+			name = "Copy GoogleService-Info.plist";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "#!/bin/sh\n# Navigate to the project root\nPROJECT_DIR=\"${SRCROOT}/..\"\n\n# Define the location of your firebase configurations\nFIREBASE_CONFIG_DIR=\"${PROJECT_DIR}/firebase\"\n\n# Use $CONFIGURATION to determine the build type\ncase \"${CONFIGURATION}\" in\n    \"Debug-development\"|\"Release-development\")\n        cp \"${FIREBASE_CONFIG_DIR}/development/GoogleService-Info.plist\" \"${PROJECT_DIR}/ios/Runner/GoogleService-Info.plist\"\n        echo \"Development GoogleService-Info.plist copied\"\n    ;;\n    \"Debug-production\"|\"Release-production\")\n        cp \"${FIREBASE_CONFIG_DIR}/production/GoogleService-Info.plist\" \"${PROJECT_DIR}/ios/Runner/GoogleService-Info.plist\"\n        echo \"Production GoogleService-Info.plist copied\"\n    ;;\n    *)\n        echo \"Unknown configuration: $CONFIGURATION\"\n        exit 1\n    ;;\nesac\n";
 		};
 		9C2F15A41BA02B84012F9D48 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -407,6 +415,23 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		FE39F10B2DB22AA6006E372D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
