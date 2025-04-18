@@ -6,21 +6,16 @@ import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 
 class OrderResponseData extends Equatable {
   const OrderResponseData({
-    required this.defaultOrderType,
     required this.order,
-    this.locker,
   });
 
   factory OrderResponseData.fromJson(Map<String, dynamic> json) {
     return OrderResponseData(
-      defaultOrderType: json['defaultOrderType'] as String,
       order: OrderModel.fromJson(json['order'] as Map<String, dynamic>),
-      locker: json['locker'],
     );
   }
-  final String defaultOrderType;
+
   final OrderModel order;
-  final dynamic locker;
 
   static ResponseModel<BaseApiResponse<OrderResponseData>> parseResponse(
     Response response,
@@ -35,13 +30,11 @@ class OrderResponseData extends Equatable {
   }
 
   @override
-  List<Object?> get props => [defaultOrderType, order, locker];
+  List<Object> get props => [order];
 
   OrderResponseData copyWith({OrderModel? order}) {
     return OrderResponseData(
-      defaultOrderType: defaultOrderType,
       order: order ?? this.order,
-      locker: locker,
     );
   }
 }

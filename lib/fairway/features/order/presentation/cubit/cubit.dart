@@ -1,3 +1,4 @@
+import 'package:fairway/app/view/app_page.dart';
 import 'package:fairway/core/enums/order_method.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/order/data/models/order_history/order_history_response_data.dart';
@@ -80,31 +81,51 @@ class OrderCubit extends Cubit<OrderState> {
     _sockets[orderId] = socket;
   }
 
-  void handleOrderUpdate(String orderId, dynamic data) {
+  void handleOrderUpdate(String orderId, dynamic rawData) {
     try {
-      final currentOrders = state.activeOrders;
-      final orderIndex = currentOrders!.indexWhere(
+      emit(
+        state.copyWith(
+          isNew: const DataState.loading(),
+        ),
+      );
+      final orderData = rawData?['data']?['order'] as Map<String, dynamic>?;
+
+      if (orderData == null) {
+        AppLogger.error('Invalid order data structure received');
+        return;
+      }
+
+      final currentOrders = List<OrderModel>.from(state.activeOrders ?? []);
+      final orderIndex = currentOrders.indexWhere(
         (order) => order.id == orderId,
       );
 
       if (orderIndex != -1) {
-        final updatedOrder = currentOrders[orderIndex];
-        currentOrders[orderIndex] = data as OrderModel;
+        final currentOrder = currentOrders[orderIndex];
 
-        // 3. Update active orders in state
+        AppLogger.info(
+          'Updating order $orderId with new status: ${orderData['status']}',
+        );
+        final updatedOrder = currentOrder.copyWith(
+          status: orderData['status'] as String? ?? currentOrder.status,
+          estimatedTime:
+              orderData['estimatedTime'] as int? ?? currentOrder.estimatedTime,
+        );
+
+        currentOrders[orderIndex] = updatedOrder;
+
         emit(state.copyWith(activeOrders: currentOrders));
-
-        // 4. Set the updated order as the current response model
         emit(
           state.copyWith(
             orderResponseModel: DataState.loaded(data: updatedOrder),
+            isNew: const DataState.loaded(data: false),
           ),
         );
 
-        AppLogger.info('Updated order $orderId with new data: $data');
+        AppLogger.info('Updated order $orderId with new data: $orderData');
       }
-    } catch (e) {
-      AppLogger.error('Error updating order: $e');
+    } catch (e, s) {
+      AppLogger.error('Error updating order: $e', e, s);
     }
   }
 
@@ -112,6 +133,7 @@ class OrderCubit extends Cubit<OrderState> {
     emit(
       state.copyWith(
         orderResponseModel: const DataState.loading(),
+        isNew: const DataState.loading(),
       ),
     );
 
@@ -120,10 +142,10 @@ class OrderCubit extends Cubit<OrderState> {
     );
 
     if (response.isSuccess && response.data != null) {
-     
       emit(
         state.copyWith(
           orderResponseModel: DataState.loaded(data: response.data!.order),
+          isNew: const DataState.loaded(data: true),
         ),
       );
 
@@ -160,7 +182,6 @@ class OrderCubit extends Cubit<OrderState> {
   }
 
   void removeOrder(String orderId) {
-    // Clean up socket
     _sockets[orderId]?.disconnect();
     _sockets[orderId]?.dispose();
     _sockets.remove(orderId);

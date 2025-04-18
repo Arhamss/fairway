@@ -9,7 +9,9 @@ import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_wi
 import 'package:fairway/fairway/features/order/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/order/presentation/view/order_confirmation_screen.dart';
+import 'package:fairway/fairway/features/order/presentation/view/order_details_sheet.dart';
 import 'package:fairway/fairway/features/subscription/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/subscription/presentation/view/subscription_bottom_sheet';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -52,13 +54,40 @@ class _HomeScreenState extends State<HomeScreen> {
       listenWhen: (previous, current) =>
           previous.orderResponseModel != current.orderResponseModel,
       listener: (context, state) {
-        if (state.orderResponseModel.isLoaded) {
+        if (state.orderResponseModel.isFailure &&
+            state.orderResponseModel.errorMessage ==
+                'Only subscribed users can place concierge orders') {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => const SubscriptionSheet(),
+            isScrollControlled: true,
+            isDismissible: false,
+            backgroundColor: Colors.transparent,
+          );
+        }
+        if (state.orderResponseModel.isLoaded && state.isNew.data == true) {
           showModalBottomSheet(
             context: context,
             builder: (context) => const OrderConfirmationScreen(),
             isScrollControlled: true,
             isDismissible: false,
             backgroundColor: Colors.transparent,
+          );
+        } else if (state.orderResponseModel.isLoaded &&
+            state.isNew.data == false) {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => const OrderDetailsSheet(),
+            isScrollControlled: true,
+            isDismissible: false,
+            backgroundColor: Colors.transparent,
+          );
+        } else if (state.orderResponseModel.isFailure) {
+          AppLogger.error(
+            '${state.orderResponseModel.errorMessage}',
+          );
+          ToastHelper.showErrorToast(
+            state.orderResponseModel.errorMessage ?? 'An error occurred',
           );
         }
       },

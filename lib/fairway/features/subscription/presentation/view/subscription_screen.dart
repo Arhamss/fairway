@@ -47,8 +47,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           body: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(
+                  height: 32,
+                ),
+                SvgPicture.asset(
+                  AssetPaths.fairwaySignupLogo,
+                  height: 177.03,
+                  width: 160,
+                ),
                 const SizedBox(
                   height: 32,
                 ),

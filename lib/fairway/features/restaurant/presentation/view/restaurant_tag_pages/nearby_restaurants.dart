@@ -37,7 +37,6 @@ class NearbyRestaurants extends StatelessWidget {
         }
 
         return PaginatedListView<RestaurantModel>(
-          
           items: restaurants,
           itemBuilder: (context, restaurant, index) {
             return RestaurantCard(restaurant: restaurant);

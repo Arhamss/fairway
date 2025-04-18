@@ -14,15 +14,15 @@ class HomeRepositoryImpl implements HomeRepository {
   HomeRepositoryImpl({
     ApiService? apiService,
     AppPreferences? baseStorage,
-    //FirebaseNotificationService? notificationService,
+    FirebaseNotificationService? notificationService,
   })  : _apiService = apiService ?? Injector.resolve<ApiService>(),
-        _cache = baseStorage ?? Injector.resolve<AppPreferences>();
-  //notificationService =
-  //  notificationService ?? FirebaseNotificationService();
+        _cache = baseStorage ?? Injector.resolve<AppPreferences>(),
+        notificationService =
+            notificationService ?? FirebaseNotificationService();
 
   final ApiService _apiService;
   final AppPreferences _cache;
-  //final FirebaseNotificationService notificationService;
+  final FirebaseNotificationService notificationService;
 
   @override
   Future<RepositoryResponse<UserModel>> getUserProfile() async {
@@ -49,31 +49,32 @@ class HomeRepositoryImpl implements HomeRepository {
         AppLogger.info('User profile loaded: ${userData.name}');
         _cache.setUserModel(userData);
 
-        // try {
-        //   final fcmToken = await notificationService.getFcmToken();
+        try {
+          final fcmToken = await notificationService.getFcmToken();
 
-        //   if (fcmToken != null) {
-        //     AppLogger.info('FCM Token: $fcmToken');
-        //     final fcmResponse = await _apiService.put(
-        //       Endpoints.fcmToken,
-        //       {'fcmToken': fcmToken},
-        //     );
+          if (fcmToken != null) {
+            AppLogger.info('FCM Token: $fcmToken');
+            final fcmResponse = await _apiService.put(
+              Endpoints.fcmToken,
+              {'fcmToken': fcmToken},
+            );
 
-        //     if (fcmResponse.statusCode == 200) {
-        //       AppLogger.info(
-        //         fcmResponse.data['message'] as String,
-        //       );
-        //     } else {
-        //       AppLogger.error(
-        //         'Failed to update FCM token: ${fcmResponse.statusMessage}',
-        //       );
-        //     }
-        //   } else {
-        //     AppLogger.error('Failed to get FCM token');
-        //   }
-        // } catch (e) {
-        //   AppLogger.error('Error getting FCM token: $e');
-        // }
+            final fcmResult=fcmResponse.data['data'];
+            if (fcmResponse.statusCode == 200) {
+              AppLogger.info(
+                fcmResult['message'] as String,
+              );
+            } else {
+              AppLogger.error(
+                'Failed to update FCM token: ${fcmResponse.statusMessage}',
+              );
+            }
+          } else {
+            AppLogger.error('Failed to get FCM token');
+          }
+        } catch (e) {
+          AppLogger.error('Error getting FCM token: $e');
+        }
 
         return RepositoryResponse(
           isSuccess: true,
