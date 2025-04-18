@@ -10,19 +10,9 @@ class BenefitItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.greyShade4,
-          ),
-          padding: const EdgeInsets.all(4),
-          child: const Icon(
-            Icons.check,
-            color: AppColors.white,
-            size: 14,
-          ),
+        SvgPicture.asset(
+          AssetPaths.checkMarkBulletIcon,
         ),
         const SizedBox(width: 12),
         Expanded(

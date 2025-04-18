@@ -303,8 +303,6 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
         endpoint: Endpoints.signinWithGoogle,
         data: {
           'googleId': idToken,
-          'email': email,
-          'name': displayName,
         },
       );
       final result = AuthData.parseResponse(response);

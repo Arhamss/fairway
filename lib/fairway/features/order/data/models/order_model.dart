@@ -14,12 +14,13 @@ class CustomerModel extends Equatable {
     return CustomerModel(
       userId: json['UserId'] as String,
       name: json['name'] as String,
-      image: json['image'] as String,
+      image: json['image'] as String? ??
+          AppConstants.placeholderUserAvatar as String?,
     );
   }
   final String userId;
   final String name;
-  final String image;
+  final String? image;
 
   @override
   List<Object?> get props => [userId, name, image];

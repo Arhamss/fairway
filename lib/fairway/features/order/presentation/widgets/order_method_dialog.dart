@@ -23,13 +23,13 @@ class OrderMethodDialog extends StatelessWidget {
           },
           listener: (context, state) {
             if (state.orderResponseModel.isLoaded) {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) => const OrderDetailsSheet(),
-                isScrollControlled: true,
-                isDismissible: false,
-                backgroundColor: Colors.transparent,
-              );
+              // showModalBottomSheet(
+              //   context: context,
+              //   builder: (context) => const OrderDetailsSheet(),
+              //   isScrollControlled: true,
+              //   isDismissible: false,
+              //   backgroundColor: Colors.transparent,
+              // );
             } else if (state.orderResponseModel.isFailure) {
               ToastHelper.showErrorToast(
                 state.orderResponseModel.errorMessage ?? 'An error occurred',
@@ -63,9 +63,11 @@ class OrderMethodDialog extends StatelessWidget {
                         iconPath: AssetPaths.pickYourselfIcon,
                         isSelected: state.selectedOrderMethod ==
                             OrderMethod.pickYourself,
-                        onTap: () => context
-                            .read<OrderCubit>()
-                            .selectOrderMethod(OrderMethod.pickYourself),
+                        onTap: () {
+                          context
+                              .read<OrderCubit>()
+                              .selectOrderMethod(OrderMethod.pickYourself);
+                        },
                       ),
                       _buildOption(
                         context,
@@ -73,9 +75,11 @@ class OrderMethodDialog extends StatelessWidget {
                         iconPath: AssetPaths.conciergeIcon,
                         isSelected:
                             state.selectedOrderMethod == OrderMethod.concierge,
-                        onTap: () => context
-                            .read<OrderCubit>()
-                            .selectOrderMethod(OrderMethod.concierge),
+                        onTap: () {
+                          context
+                              .read<OrderCubit>()
+                              .selectOrderMethod(OrderMethod.concierge);
+                        },
                       ),
                     ],
                   ),
@@ -90,6 +94,7 @@ class OrderMethodDialog extends StatelessWidget {
                             );
 
                             await context.read<OrderCubit>().placeOrder();
+                            context.pop();
                           }
                         : null,
                     textColor: AppColors.white,

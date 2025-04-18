@@ -1,5 +1,6 @@
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/order/data/models/order_model.dart';
+import 'package:fairway/fairway/features/order/domain/enums/order_preparation_state.dart';
 import 'package:fairway/fairway/features/order/presentation/widgets/order_history/order_history_card.dart';
 
 class InProgressOrdersList extends StatelessWidget {
@@ -15,7 +16,9 @@ class InProgressOrdersList extends StatelessWidget {
     // Filter orders that are in progress (preparing, ready, enroute)
     final inProgressOrders = orders.where((order) {
       final status = order.status.toLowerCase();
-      return status == 'preparing' || status == 'ready' || status == 'enroute';
+      return status == OrderPreparationState.pickedByConcierge.toName ||
+          status == OrderPreparationState.preparing.toName ||
+          status == OrderPreparationState.delivered.toName;
     }).toList();
 
     if (inProgressOrders.isEmpty) {
@@ -43,7 +46,7 @@ class InProgressOrdersList extends StatelessWidget {
       itemCount: inProgressOrders.length,
       separatorBuilder: (_, __) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
-        final order = inProgressOrders[index];
+        final order = inProgressOrders.reversed.toList()[index];
         return OrderHistoryCard(order: order);
       },
     );

@@ -16,8 +16,8 @@ abstract class AppModule {
     await _setupHive();
     await _setupAppPreferences();
     await _setupAPIService();
-    //await _setupFirebaseNotifications();
-    //await _setupLocalNotificationService();
+    await _setupFirebaseNotifications();
+    await _setupLocalNotificationService();
   }
 
   static Future<void> _setupHive() async {

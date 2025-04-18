@@ -30,19 +30,10 @@ class SubscriptionPlanCard extends StatelessWidget {
         child: Row(
           children: [
             if (isSelected)
-              Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.greenQuinary,
-                ),
-                padding: const EdgeInsets.all(4),
-                child: const Icon(
-                  Icons.check,
-                  color: AppColors.white,
-                  size: 16,
-                ),
+              SvgPicture.asset(
+                AssetPaths.checkMarkSubscriptionIcon,
               ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

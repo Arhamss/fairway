@@ -47,7 +47,7 @@ class OrderRepositoryImplementation implements OrderRepository {
       AppLogger.error('Error creating order:', e, s);
       return RepositoryResponse(
         isSuccess: false,
-        message: 'An error occurred while creating the order: $e',
+        message: e.toString(),
       );
     }
   }

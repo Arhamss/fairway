@@ -11,6 +11,7 @@ class OrderState extends Equatable {
     this.orderResponseModel = const DataState.initial(),
     this.activeOrders = const [],
     this.orderHistoryModel = const DataState.initial(),
+    this.isNew = const DataState.initial(),
     this.currentTab = 0,
   });
 
@@ -18,6 +19,7 @@ class OrderState extends Equatable {
   final DataState<OrderModel> orderResponseModel;
   final List<OrderModel>? activeOrders;
   final DataState<OrderHistoryResponseData> orderHistoryModel;
+  final DataState<bool> isNew;
   final int currentTab;
 
   OrderState copyWith({
@@ -25,6 +27,7 @@ class OrderState extends Equatable {
     DataState<OrderModel>? orderResponseModel,
     List<OrderModel>? activeOrders,
     DataState<OrderHistoryResponseData>? orderHistoryModel,
+    DataState<bool>? isNew,
     int? currentTab,
   }) {
     return OrderState(
@@ -32,6 +35,7 @@ class OrderState extends Equatable {
       orderResponseModel: orderResponseModel ?? this.orderResponseModel,
       activeOrders: activeOrders ?? this.activeOrders,
       orderHistoryModel: orderHistoryModel ?? this.orderHistoryModel,
+      isNew: isNew ?? this.isNew,
       currentTab: currentTab ?? this.currentTab,
     );
   }
@@ -42,6 +46,7 @@ class OrderState extends Equatable {
         orderResponseModel,
         activeOrders,
         orderHistoryModel,
+        isNew,
         currentTab,
       ];
 }

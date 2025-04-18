@@ -2,6 +2,7 @@ import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/order/domain/enums/order_preparation_state.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/order/presentation/view/order_locker_details.dart';
 import 'package:fairway/fairway/features/order/presentation/widgets/sheet_widgets/delivery_details_row.dart';
 import 'package:fairway/fairway/features/order/presentation/widgets/sheet_widgets/food_delivered_grid.dart';
 import 'package:fairway/fairway/features/order/presentation/widgets/sheet_widgets/order_preparation_status.dart';
@@ -20,7 +21,7 @@ class OrderDetailsSheet extends StatelessWidget {
     return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) {
         return Container(
-          height: MediaQuery.of(context).size.height * 0.95,
+          height: MediaQuery.of(context).size.height * 0.9,
           decoration: const BoxDecoration(
             color: AppColors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
@@ -118,7 +119,19 @@ class OrderDetailsSheet extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                   fontSize: 14,
                   borderRadius: 16,
-                  onPressed: () => context.pop(),
+                  // Add this to your button's onPressed handler
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => OrderLockerDetails(
+                        lockerNumber: 'L-32',
+                        passcode: state.orderResponseModel.data!.lockerPin ??
+                            '123456',
+                      ),
+                    );
+                  },
                   textColor: AppColors.white,
                   isLoading: false,
                 ),
