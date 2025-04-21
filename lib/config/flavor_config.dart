@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// App Flavors
-enum Flavor { development, production, staging, qa }
+enum Flavor { development, production }
 
 /// Flavor Configuration Singleton**
 class FlavorConfig {
@@ -24,8 +24,6 @@ class FlavorConfig {
 
   static bool isProd() => instance.flavor == Flavor.production;
   static bool isDev() => instance.flavor == Flavor.development;
-  static bool isStaging() => instance.flavor == Flavor.staging;
-  static bool isQA() => instance.flavor == Flavor.qa;
 
   static Flavor get currentFlavor => instance.flavor;
 }

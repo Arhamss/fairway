@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:fairway/constants/constants.dart';
+import 'package:fairway/fairway/features/location/data/models/airport_model.dart';
 import 'package:fairway/fairway/models/category_model.dart';
 
 class RestaurantModel extends Equatable {
@@ -8,7 +9,7 @@ class RestaurantModel extends Equatable {
     required this.name,
     required this.website,
     required this.images,
-    required this.airports,
+    required this.airport,
     required this.categories,
     required this.recommended,
     required this.popularity,
@@ -20,7 +21,7 @@ class RestaurantModel extends Equatable {
       name: json['name'] as String,
       website: json['website'] as String,
       images: json['images'] as String,
-      airports: json['airport'] as String,
+      airport: [Airport.fromJson(json['airport'] as Map<String, dynamic>)],
       categories: (json['categories'] as List<dynamic>)
           .map((cat) => CategoryModel.fromJson(cat as Map<String, dynamic>))
           .toList(),
@@ -33,7 +34,7 @@ class RestaurantModel extends Equatable {
   final String name;
   final String website;
   final String images;
-  final String airports;
+  final List<Airport> airport;
   final List<CategoryModel> categories;
   final bool recommended;
   final int popularity;
@@ -50,7 +51,7 @@ class RestaurantModel extends Equatable {
         name,
         website,
         images,
-        airports,
+        airport,
         categories,
         recommended,
         popularity,

@@ -22,6 +22,7 @@ class RetryWidget extends StatelessWidget {
             style: context.b2.copyWith(
               color: AppColors.error,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
           OutlinedButton(

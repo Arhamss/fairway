@@ -8,6 +8,7 @@ import 'package:fairway/fairway/features/restaurant/presentation/widget/suggesti
 import 'package:fairway/utils/helpers/restaurant_helper.dart';
 import 'package:fairway/utils/widgets/core_widgets/empty_state_widget.dart';
 import 'package:fairway/utils/widgets/core_widgets/fairway_search_field.dart';
+import 'package:fairway/utils/widgets/core_widgets/fairway_text_button.dart';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 import 'package:fairway/utils/widgets/core_widgets/retry_widget.dart';
 
@@ -138,15 +139,13 @@ class _SearchScreenState extends State<SearchScreen> {
                   fontSize: 16,
                 ),
               ),
-              TextButton(
+              FairwayTextButton(
+                textStyle: context.b2.copyWith(
+                  color: AppColors.secondaryBlue,
+                ),
                 onPressed: () =>
                     context.read<RestaurantCubit>().clearRecentSearches(),
-                child: Text(
-                  'Clear All',
-                  style: context.b2.copyWith(
-                    color: AppColors.secondaryBlue,
-                  ),
-                ),
+                text: 'Clear All',
               ),
             ],
           ),
@@ -163,7 +162,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: RecentSearchList(
                     queries: recentSearches,
                     onTap: (query) {
-                      print('Tapped on $query');
+                      _searchController.text = query;
+                      _onSearchSubmitted(query);
                     },
                   ),
                 ),

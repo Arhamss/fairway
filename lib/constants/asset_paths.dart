@@ -25,6 +25,9 @@ class AssetPaths {
   static const passwordRecovery = 'assets/images/password_recovery.png';
   static const location = 'assets/images/location.png';
   static const empty = 'assets/images/empty.png';
+  static const locationGroup = 'assets/images/location_group.png';
+  static const dummyFood = 'assets/images/dummy_food.png';
+  static const confettiIcon = 'assets/images/confetti.png';
 
   static const sandwich = 'assets/svgs/sandwich.svg';
   static const burger = 'assets/svgs/burger.svg';
@@ -54,4 +57,11 @@ class AssetPaths {
   static const accountInfoLogo = 'assets/svgs/account_information.svg';
   static const notificationSwitchLogo = 'assets/svgs/notification_tile.svg';
   static const passwordIcon = 'assets/svgs/password.svg';
+  static const editIcon = 'assets/svgs/edit_icon.svg';
+  static const locationIconOutlined = 'assets/svgs/location_icon_outlined.svg';
+  static const walletIcon = 'assets/svgs/wallet.svg';
+  static const checkMarkIcon = 'assets/svgs/check_mark.svg';
+  static const checkMarkBulletIcon = 'assets/svgs/checkmark_bullet.svg';
+  static const checkMarkSubscriptionIcon = 'assets/svgs/checkbox.svg';
+  static const lockerIcon = 'assets/svgs/locker_icon.svg';
 }

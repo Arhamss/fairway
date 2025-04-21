@@ -1,21 +1,18 @@
 import 'package:fairway/export.dart';
 
-class AnimatedTabs extends StatefulWidget {
+class AnimatedTabs extends StatelessWidget {
   const AnimatedTabs({
     required this.selectedIndex,
     required this.onTabChanged,
+    required this.tabTitles,
+    this.isHomeHeader = false,
     super.key,
   });
 
   final int selectedIndex;
   final void Function(int index) onTabChanged;
-
-  @override
-  State<AnimatedTabs> createState() => _AnimatedTabsState();
-}
-
-class _AnimatedTabsState extends State<AnimatedTabs> {
-  final tabTitles = ['Category', 'Sort by', 'Price'];
+  final List<String> tabTitles;
+  final bool isHomeHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +25,9 @@ class _AnimatedTabsState extends State<AnimatedTabs> {
           children: [
             Row(
               children: List.generate(tabTitles.length, (index) {
-                final isSelected = index == widget.selectedIndex;
+                final isSelected = index == selectedIndex;
                 return GestureDetector(
-                  onTap: () => widget.onTabChanged(index),
+                  onTap: () => onTabChanged(index),
                   child: SizedBox(
                     width: tabWidth,
                     child: Column(
@@ -56,17 +53,23 @@ class _AnimatedTabsState extends State<AnimatedTabs> {
             Stack(
               children: [
                 Row(
-                  children: List.generate(tabTitles.length, (index) {
-                    return Container(
-                      height: 2,
-                      color: AppColors.grey.withValues(alpha: 0.1),
-                    );
-                  }),
+                  children: List.generate(
+                    tabTitles.length,
+                    (index) {
+                      return Container(
+                        width: tabWidth,
+                        height: 2,
+                        color: isHomeHeader
+                            ? Colors.transparent
+                            : AppColors.grey.withValues(alpha: 0.1),
+                      );
+                    },
+                  ),
                 ),
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
-                  left: widget.selectedIndex * tabWidth,
+                  left: selectedIndex * tabWidth,
                   child: Container(
                     width: tabWidth,
                     alignment: Alignment.center,

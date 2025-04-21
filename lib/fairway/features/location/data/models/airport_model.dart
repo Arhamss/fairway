@@ -28,7 +28,8 @@ class Airport extends Equatable {
       final terminalsJson = json['terminals'] as List<dynamic>;
       terminals = terminalsJson
           .map(
-              (terminal) => Terminal.fromJson(terminal as Map<String, dynamic>))
+            (terminal) => Terminal.fromJson(terminal as Map<String, dynamic>),
+          )
           .toList();
     }
 
@@ -50,7 +51,7 @@ class Airport extends Equatable {
   final String code;
   final double? lat;
   final double? long;
-  final List<Terminal> terminals;
+  final List<Terminal>? terminals;
   final DateTime? createdAt;
 
   Map<String, dynamic> toJson() => {
@@ -59,7 +60,7 @@ class Airport extends Equatable {
         'code': code,
         'lat': lat,
         'long': long,
-        'terminals': terminals.map((terminal) => terminal.toJson()).toList(),
+        'terminals': terminals?.map((terminal) => terminal.toJson()).toList(),
         'createdAt': createdAt?.toIso8601String(),
       };
 

@@ -59,6 +59,64 @@ class OnboardingFlowCubit extends Cubit<OnboardingFlowState> {
     }
   }
 
+  Future<void> signInWithGoogle() async {
+    emit(state.copyWith(signInWithGoogle: const DataState.loading()));
+    try {
+      final response = await repository.signInWithGoogle();
+
+      if (response.isSuccess) {
+        emit(
+          state.copyWith(
+            signInWithGoogle: DataState.loaded(
+              data: response.data,
+            ),
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            signInWithGoogle: DataState.failure(error: response.message),
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          signInWithGoogle: DataState.failure(error: e.toString()),
+        ),
+      );
+    }
+  }
+
+  Future<void> signInWithApple() async {
+    emit(state.copyWith(signInWithApple: const DataState.loading()));
+    try {
+      final response = await repository.signInWithApple();
+
+      if (response.isSuccess) {
+        emit(
+          state.copyWith(
+            signInWithApple: DataState.loaded(
+              data: response.data,
+            ),
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            signInWithApple: DataState.failure(error: response.message),
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          signInWithApple: DataState.failure(error: e.toString()),
+        ),
+      );
+    }
+  }
+
   Future<void> forgotPassword(String email) async {
     emit(state.copyWith(forgotPassword: const DataState.loading()));
     try {

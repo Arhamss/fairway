@@ -56,5 +56,20 @@
 	<string>This app needs access to location to find nearby restaurants.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to location to find nearby restaurants.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+	  <dict>
+	    <key>CFBundleTypeRole</key>
+	    <string>Editor</string>
+	    <key>CFBundleURLSchemes</key>
+	    <array>
+	      <string>your.reverse.domain.identifier</string>
+	    </array>
+	  </dict>
+	</array>
+	<key>com.apple.developer.applesignin</key>
+	<array>
+	  <string>Default</string>
+	</array>
 </dict>
 </plist>

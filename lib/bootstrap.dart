@@ -2,7 +2,11 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:fairway/config/flavor_config.dart';
 import 'package:fairway/core/di/injector.dart';
+import 'package:fairway/firebase_options_dev.dart' as dev;
+import 'package:fairway/firebase_options_prod.dart' as prod;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 
 class AppBlocObserver extends BlocObserver {
@@ -27,7 +31,22 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   };
 
   Bloc.observer = const AppBlocObserver();
+  final flavor = FlavorConfig.instance.flavor;
+  var name = 'fairway';
+  FirebaseOptions firebaseOptions;
+  switch (flavor) {
+    case Flavor.production:
+      firebaseOptions = prod.DefaultFirebaseOptions.currentPlatform;
+      name = 'fairwayProd';
+    case Flavor.development:
+      firebaseOptions = dev.DefaultFirebaseOptions.currentPlatform;
+      name = 'fairwayDev';
+  }
 
+  await Firebase.initializeApp(
+    name: name,
+    options: firebaseOptions,
+  );
   await Injector.setup();
 
   runApp(await builder());

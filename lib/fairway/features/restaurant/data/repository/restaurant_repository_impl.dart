@@ -2,10 +2,13 @@ import 'package:fairway/core/api_service/api_service.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/di/injector.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
+import 'package:fairway/core/enums/restaurant_filter.dart';
+import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/recent_searches_model.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_response_model.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/search_suggestions_model.dart';
 import 'package:fairway/fairway/features/restaurant/domain/repository/restaurant_repository.dart';
+import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
 class RestaurantRepositoryImpl implements RestaurantRepository {
@@ -20,16 +23,23 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
 
   @override
   Future<RepositoryResponse<RestaurantResponseModel>> getRestaurants({
-    int page = 1,
-    int limit = 5,
+    int? page,
+    int? limit,
+    SortByOption? sortBy,
+    RestaurantTag? filter,
   }) async {
     try {
+      final queryParams = <String, String>{};
+
+      if (page != null) queryParams['page'] = page.toString();
+      if (limit != null) queryParams['limit'] = limit.toString();
+      if (sortBy != null) queryParams['sortBy'] = sortBy.backendValue;
+      if (filter != null) queryParams['filter'] = filter.toEnumName();
+      queryParams['bestPartner'] = 'false';
+
       final response = await _apiService.get(
         Endpoints.restaurants,
-        queryParams: {
-          'page': page.toString(),
-          'limit': limit.toString(),
-        },
+        queryParams: queryParams,
       );
 
       final result = RestaurantResponseModel.parseResponse(response);
@@ -39,13 +49,14 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
           isSuccess: true,
           data: result.response!.data,
         );
-      } else {
-        return RepositoryResponse(
-          isSuccess: false,
-          message: result.error ?? 'Failed to fetch restaurants',
-        );
       }
-    } catch (e) {
+
+      return RepositoryResponse(
+        isSuccess: false,
+        message: result.error ?? 'Failed to fetch restaurants',
+      );
+    } catch (e, s) {
+      AppLogger.error('An error occurred fetching restaurants:', e, s);
       return RepositoryResponse(
         isSuccess: false,
         message: 'Failed to fetch restaurants: $e',
@@ -93,16 +104,23 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
   @override
   Future<RepositoryResponse<RestaurantResponseModel>>
       getBestPartnerRestaurants({
-    int page = 1,
-    int limit = 5,
+    int? page,
+    int? limit,
+    SortByOption? sortBy,
+    RestaurantTag? filter,
   }) async {
     try {
+      final queryParams = <String, String>{};
+
+      if (page != null) queryParams['page'] = page.toString();
+      if (limit != null) queryParams['limit'] = limit.toString();
+      if (sortBy != null) queryParams['sortBy'] = sortBy.backendValue;
+      if (filter != null) queryParams['filter'] = filter.toEnumName();
+      queryParams['bestPartner'] = 'true';
+
       final response = await _apiService.get(
-        Endpoints.bestPartnerRestaurants,
-        queryParams: {
-          'page': page.toString(),
-          'limit': limit.toString(),
-        },
+        Endpoints.restaurants,
+        queryParams: queryParams,
       );
 
       final result = RestaurantResponseModel.parseResponse(response);
@@ -184,7 +202,7 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
       );
     }
   }
-  
+
   @override
   Future<RepositoryResponse<void>> clearRecentSearch() async {
     try {
@@ -193,7 +211,6 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
       if (response.statusCode == 200) {
         return RepositoryResponse(
           isSuccess: true,
-          data: null,
         );
       } else {
         return RepositoryResponse(

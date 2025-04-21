@@ -94,7 +94,7 @@ class SuggestionTile extends StatelessWidget {
         context.read<RestaurantCubit>().searchRestaurants(suggestion.name);
         RestaurantHelper.showOrderMethodDialog(
           context,
-          suggestion.website,
+          suggestion.id,
         );
       },
     );

@@ -108,21 +108,36 @@ class AppRouter {
             builder: (context, state) => const ProfileScreen(),
             routes: [
               GoRoute(
-                path: AppRoutes.accountInformation,
-                name: AppRouteNames.accountInformation,
-                builder: (context, state) => const AccountInformationScreen(),
-              ),
-              GoRoute(
-                path: AppRoutes.changePassword,
-                name: AppRouteNames.changePassword,
-                builder: (context, state) => const ChangePasswordScreen(),
-              ),
-              GoRoute(
                 path: AppRoutes.deleteAccount,
                 name: AppRouteNames.deleteAccount,
                 builder: (context, state) => const DeleteAccountScreen(),
               ),
             ],
+          ),
+          GoRoute(
+            path: AppRoutes.orderHistory,
+            name: AppRouteNames.orderHistory,
+            builder: (context, state) => const OrderHistoryScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.helpCenter,
+            name: AppRouteNames.helpCenter,
+            builder: (context, state) => const HelpCenterScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.notificationScreen,
+            name: AppRouteNames.notificationScreen,
+            builder: (context, state) => const NotificationScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.termsOfService,
+            name: AppRouteNames.termsOfService,
+            builder: (context, state) => const TermsOfServiceScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.subscriptionScreen,
+            name: AppRouteNames.subscriptionScreen,
+            builder: (context, state) => const SubscriptionScreen(),
           ),
         ],
       ),
