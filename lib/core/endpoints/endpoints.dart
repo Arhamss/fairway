@@ -14,7 +14,7 @@ class Endpoints {
   static const String changePassword = 'auth/change-password';
   static const String profile = 'auth/profile';
   static const String deleteAccount = 'auth/delete-account';
-  static const String signinWithGoogle = 'auth/google-signin';
+  static const String signinWithGoogle = 'auth/user/google-signin';
   static const String signinWithApple = 'auth/apple-signin';
 
   /// Concierge Endpoints

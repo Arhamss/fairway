@@ -33,17 +33,21 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
         body: BlocListener<OnboardingFlowCubit, OnboardingFlowState>(
           listener: (context, state) {
-            if (state.signIn.isFailure 
-                // state.signInWithApple.isFailure ||
-                // state.signInWithGoogle.isFailure
-                ) {
+            if (state.signIn.isFailure) {
               ToastHelper.showInfoToast(
                 state.signIn.errorMessage ?? 'Failed to sign in user',
               );
-            } else if (state.signIn.isLoaded 
-                // state.signInWithApple.isLoaded ||
-                // state.signInWithGoogle.isLoaded
-                ) {
+            } else if (state.signInWithGoogle.isLoaded) {
+              ToastHelper.showInfoToast(
+                'Successfully signed in with Google',
+              );
+              context.goNamed(AppRouteNames.homeScreen);
+            } else if (state.signInWithGoogle.isFailure) {
+              ToastHelper.showInfoToast(
+                state.signInWithGoogle.errorMessage ??
+                    'Failed to sign in with Google',
+              );
+            } else if (state.signIn.isLoaded) {
               context.goNamed(AppRouteNames.homeScreen);
             }
           },
