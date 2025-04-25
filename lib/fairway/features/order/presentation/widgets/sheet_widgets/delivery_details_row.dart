@@ -36,6 +36,7 @@ class DeliveryDetailsRow extends StatelessWidget {
               width: 90,
               child: Text(
                 label,
+                maxLines: 2,
                 style: context.b2.copyWith(
                   color: AppColors.textSecondary,
                   fontSize: 12,
@@ -54,7 +55,7 @@ class DeliveryDetailsRow extends StatelessWidget {
                 ),
                 textAlign: TextAlign.right,
                 overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+                maxLines: 2,
               ),
             ),
           ],

@@ -33,8 +33,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: BlocListener<OnboardingFlowCubit, OnboardingFlowState>(
             listener: (context, state) {
               if (state.signUp.isFailure) {
-                ToastHelper.showErrorToast(
-                  state.signUp.errorMessage ?? 'Something went wrong',
+                ToastHelper.showInfoToast(
+                  state.signUp.errorMessage ?? 'Failed to sign in user',
+                );
+              } else if (state.signInWithGoogle.isLoaded) {
+                ToastHelper.showInfoToast(
+                  'Successfully signed in with Google',
+                );
+                context.goNamed(AppRouteNames.selectLocation);
+              } else if (state.signInWithGoogle.isFailure) {
+                ToastHelper.showInfoToast(
+                  state.signInWithGoogle.errorMessage ??
+                      'Failed to sign in with Google',
                 );
               } else if (state.signUp.isLoaded) {
                 context.goNamed(AppRouteNames.selectLocation);

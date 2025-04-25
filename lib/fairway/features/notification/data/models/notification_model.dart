@@ -1,13 +1,39 @@
+import 'package:equatable/equatable.dart';
 import 'package:fairway/fairway/features/order/domain/enums/order_preparation_state.dart';
 import 'package:intl/intl.dart';
 
-class NotificationModel {
-  NotificationModel({
+class NotificationModel extends Equatable {
+  const NotificationModel({
     required this.state,
     required this.time,
   });
+
+  factory NotificationModel.fromJson(Map<String, dynamic> json) {
+    return NotificationModel(
+      state: OrderPreparationState.fromName(json['state'] as String),
+      time: DateTime.parse(json['time'] as String),
+    );
+  }
+
   final OrderPreparationState state;
   final DateTime time;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'state': state.toName,
+      'time': time.toIso8601String(),
+    };
+  }
+
+  NotificationModel copyWith({
+    OrderPreparationState? state,
+    DateTime? time,
+  }) {
+    return NotificationModel(
+      state: state ?? this.state,
+      time: time ?? this.time,
+    );
+  }
 
   String get title {
     switch (state) {
@@ -49,4 +75,7 @@ class NotificationModel {
       return 'Just now';
     }
   }
+
+  @override
+  List<Object?> get props => [state, time];
 }

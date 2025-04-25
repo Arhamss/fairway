@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fairway/core/api_service/api_service.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/di/injector.dart';
@@ -27,6 +28,8 @@ class OrderRepositoryImplementation implements OrderRepository {
         Endpoints.orderTypes,
         {'orderType': orderType},
       );
+
+
 
       final result = OrderResponseData.parseResponse(response);
       final orderResponse = result.response?.data;

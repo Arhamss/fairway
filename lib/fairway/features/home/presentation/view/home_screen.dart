@@ -33,19 +33,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadHomeData() async {
     final homeCubit = context.read<HomeCubit>();
     await homeCubit.loadUserProfile();
+    await context.read<OrderCubit>().getOrderHistory();
     final user = homeCubit.state.userProfile;
     final hasCurrentLocation =
-        user.data?.savedLocations.any((location) => !location.isCurrent) ??
+        user.data?.savedLocations.any((location) => location.isCurrent) ??
             false;
 
-    if (!hasCurrentLocation) {
-      context.goNamed(AppRouteNames.selectLocation);
-    }
-
-    await context.read<OrderCubit>().getOrderHistory();
     await context
         .read<SubscriptionCubit>()
         .getSubscriptionStatus(user.data!.id);
+    if (!hasCurrentLocation) {
+      context.goNamed(AppRouteNames.selectLocation);
+    }
   }
 
   @override
