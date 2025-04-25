@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.fairwaydelivers.app</string>
+	<string>com.fairwaydelivers.app.dev</string>
 	<key>PROJECT_ID</key>
 	<string>fairway-delivers</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:506976872536:ios:df12bfba6074d8f858022d</string>
+	<string>1:506976872536:ios:47691e21f703383a58022d</string>
 </dict>
 </plist>
