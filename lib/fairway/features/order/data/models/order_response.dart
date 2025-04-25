@@ -11,7 +11,8 @@ class OrderResponseData extends Equatable {
 
   factory OrderResponseData.fromJson(Map<String, dynamic> json) {
     return OrderResponseData(
-      order: OrderModel.fromJson(json['order'] as Map<String, dynamic>),
+      order: OrderModel.fromJson(
+          json['orderData']['order'] as Map<String, dynamic>),
     );
   }
 

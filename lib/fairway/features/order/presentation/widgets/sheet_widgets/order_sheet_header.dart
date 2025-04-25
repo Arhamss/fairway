@@ -1,4 +1,5 @@
 import 'package:fairway/export.dart';
+import 'package:fairway/fairway/features/order/presentation/cubit/cubit.dart';
 
 class OrderSheetHeader extends StatelessWidget {
   const OrderSheetHeader({super.key});
@@ -30,7 +31,14 @@ class OrderSheetHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Cliff Rogers',
+                context
+                        .read<OrderCubit>()
+                        .state
+                        .orderResponseModel
+                        .data!
+                        .concierge!
+                        .name ??
+                    'Not Assigned',
                 style: context.h2.copyWith(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
