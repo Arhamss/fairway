@@ -287,8 +287,8 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
   Future<RepositoryResponse<AuthData>> signInWithGoogle() async {
     try {
       final googleSignIn = GoogleSignIn(
-        scopes: ['email'],
-      ); 
+        scopes: ['email', 'profile'],
+      );
 
       final account = await googleSignIn.signIn();
       if (account == null) {
@@ -296,11 +296,13 @@ class OnboardingFlowRepositoryImpl implements OnboardingFlowRepository {
       }
 
       final idToken = account.id;
+      final email = account.email;
+      final displayName = account.displayName;
 
       final response = await _apiService.post(
         endpoint: Endpoints.signinWithGoogle,
         data: {
-          'idToken': idToken,
+          'googleId': idToken,
         },
       );
       final result = AuthData.parseResponse(response);

@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/order/data/models/airport_model.dart';
 import 'package:fairway/fairway/features/order/data/models/order_item_model.dart';
+import 'package:fairway/fairway/features/order/data/models/restaurant_model.dart';
 
 class CustomerModel extends Equatable {
   const CustomerModel({
@@ -85,7 +86,7 @@ class OrderModel extends Equatable {
       id: json['id'] as String,
       customer:
           CustomerModel.fromJson(json['customer'] as Map<String, dynamic>),
-      restaurant: json['restaurant'] as String?,
+      restaurant: RestaurantModel.fromJson(json['restaurant'] as Map<String, dynamic>),
       items: (json['items'] as List)
           .map((item) => OrderItemModel.fromJson(item as Map<String, dynamic>))
           .toList(),
@@ -109,7 +110,7 @@ class OrderModel extends Equatable {
   OrderModel copyWith({
     String? id,
     CustomerModel? customer,
-    String? restaurant,
+    RestaurantModel? restaurant,
     List<OrderItemModel>? items,
     double? totalPrice,
     String? status,
@@ -144,7 +145,7 @@ class OrderModel extends Equatable {
 
   final String id;
   final CustomerModel customer;
-  final String? restaurant;
+  final RestaurantModel? restaurant;
   final List<OrderItemModel> items;
   final double totalPrice;
   final String status;

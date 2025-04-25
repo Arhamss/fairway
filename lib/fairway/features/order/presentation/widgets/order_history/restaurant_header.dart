@@ -19,7 +19,7 @@ class RestaurantHeader extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.asset(
-              AppConstants.restaurantPlaceHolder,
+              order.restaurant?.image ?? AppConstants.restaurantPlaceHolder,
               width: 44,
               height: 44,
               fit: BoxFit.cover,
@@ -37,7 +37,7 @@ class RestaurantHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  order.restaurant ?? 'Restaurant',
+                  order.restaurant!.name ?? 'Restaurant',
                   style: context.h3.copyWith(
                     fontWeight: FontWeight.w700,
                     fontSize: 16,
