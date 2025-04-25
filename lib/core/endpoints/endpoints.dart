@@ -14,6 +14,8 @@ class Endpoints {
   static const String changePassword = 'auth/change-password';
   static const String profile = 'auth/profile';
   static const String deleteAccount = 'auth/delete-account';
+  static const String signinWithGoogle = 'auth/google-signin';
+  static const String signinWithApple = 'auth/apple-signin';
 
   /// Concierge Endpoints
   static const String conciergeOrderHistory = 'concierge/orders/history';
@@ -27,7 +29,9 @@ class Endpoints {
   static const String searchSuggestions =
       'customers/restaurants/search-suggestions';
   static const String recentSearches = 'customers/recent-searchs';
-  
+  static const String getSubscriptionStatus = 'customers/get-subscription';
+  static const String updateSubscription = 'customers/set-subscription';
+
   static const String deleteRecentSearches = 'customers/recent-searches';
   static const String airports = 'customers/airports';
   static const String customerLocation = 'customers/my-locations';
@@ -39,8 +43,11 @@ class Endpoints {
   static const String customerProfile = 'customers/profile';
   static const String updateNotificationPreference =
       'customers/notification-preference';
+  static const String orderTypes = 'customers/order-type';
+  static const String fcmToken = 'customers/fcm-token';
 
   /// Order Endpoints
   static const String bookOrder = 'orders';
   static const String orderDetails = 'orders';
+  static const String orderHistory = 'orders/my-orders';
 }

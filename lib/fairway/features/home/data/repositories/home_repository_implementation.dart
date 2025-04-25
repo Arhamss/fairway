@@ -3,7 +3,9 @@ import 'package:fairway/core/api_service/app_api_exception.dart';
 import 'package:fairway/core/app_preferences/app_preferences.dart';
 import 'package:fairway/core/di/injector.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
+import 'package:fairway/core/notifications/firebase_notifications.dart';
 import 'package:fairway/fairway/features/home/domain/repositories/home_repository.dart';
+import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 import 'package:fairway/fairway/models/user_model/user_model.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
@@ -12,11 +14,15 @@ class HomeRepositoryImpl implements HomeRepository {
   HomeRepositoryImpl({
     ApiService? apiService,
     AppPreferences? baseStorage,
+    FirebaseNotificationService? notificationService,
   })  : _apiService = apiService ?? Injector.resolve<ApiService>(),
-        _cache = baseStorage ?? Injector.resolve<AppPreferences>();
+        _cache = baseStorage ?? Injector.resolve<AppPreferences>(),
+        notificationService =
+            notificationService ?? FirebaseNotificationService();
 
   final ApiService _apiService;
   final AppPreferences _cache;
+  final FirebaseNotificationService notificationService;
 
   @override
   Future<RepositoryResponse<UserModel>> getUserProfile() async {
@@ -42,6 +48,34 @@ class HomeRepositoryImpl implements HomeRepository {
       if (result.isSuccess && userData != null) {
         AppLogger.info('User profile loaded: ${userData.name}');
         _cache.setUserModel(userData);
+
+        try {
+          final fcmToken = await notificationService.getFcmToken();
+
+          if (fcmToken != null) {
+            AppLogger.info('FCM Token: $fcmToken');
+            final fcmResponse = await _apiService.put(
+              Endpoints.fcmToken,
+              {'fcmToken': fcmToken},
+            );
+
+            final fcmResult=fcmResponse.data['data'];
+            if (fcmResponse.statusCode == 200) {
+              AppLogger.info(
+                fcmResult['message'] as String,
+              );
+            } else {
+              AppLogger.error(
+                'Failed to update FCM token: ${fcmResponse.statusMessage}',
+              );
+            }
+          } else {
+            AppLogger.error('Failed to get FCM token');
+          }
+        } catch (e) {
+          AppLogger.error('Error getting FCM token: $e');
+        }
+
         return RepositoryResponse(
           isSuccess: true,
           data: userData,

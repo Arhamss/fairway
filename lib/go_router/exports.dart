@@ -1,7 +1,10 @@
 import 'package:fairway/app/view/splash_screen.dart';
+import 'package:fairway/fairway/features/home/presentation/view/help_center_screen.dart';
 import 'package:fairway/fairway/features/home/presentation/view/home_screen.dart';
+import 'package:fairway/fairway/features/home/presentation/view/terms_of_servicr.dart';
 import 'package:fairway/fairway/features/location/presentation/view/select_location.dart';
 import 'package:fairway/fairway/features/location/presentation/view/user_location.dart';
+import 'package:fairway/fairway/features/notification/presentation/view/notification_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/forgot_password_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/intro_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/password_code_screen.dart';
@@ -9,12 +12,11 @@ import 'package:fairway/fairway/features/onboarding_flow/presentation/view/passw
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/reset_password_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/sign_in_screen.dart';
 import 'package:fairway/fairway/features/onboarding_flow/presentation/view/sign_up_screen.dart';
-import 'package:fairway/fairway/features/profile/presentation/view/account_information.dart'
-    show AccountInformationScreen;
-import 'package:fairway/fairway/features/profile/presentation/view/change_password.dart';
+import 'package:fairway/fairway/features/order/presentation/view/order_history_screen.dart';
 import 'package:fairway/fairway/features/profile/presentation/view/delete_account_screen.dart';
 import 'package:fairway/fairway/features/profile/presentation/view/profile_screen.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/view/search_screen.dart';
+import 'package:fairway/fairway/features/subscription/presentation/view/subscription_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 

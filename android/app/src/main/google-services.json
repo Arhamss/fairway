@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "506976872536",
+    "project_id": "fairway-delivers",
+    "storage_bucket": "fairway-delivers.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506976872536:android:cef9a96f67c25f9958022d",
+        "android_client_info": {
+          "package_name": "com.fairwaydelivers.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDb3FNHRq2Z8V2hX44NdzSUacRXPYjR4jk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506976872536:android:024edf06e4bbfbee58022d",
+        "android_client_info": {
+          "package_name": "com.fairwaydelivers.app.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDb3FNHRq2Z8V2hX44NdzSUacRXPYjR4jk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

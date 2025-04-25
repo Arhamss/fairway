@@ -1,0 +1,132 @@
+import 'package:fairway/constants/app_colors.dart';
+import 'package:fairway/export.dart';
+import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/subscription/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/subscription/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/subscription/presentation/widgets/benefit_item.dart';
+import 'package:fairway/fairway/features/subscription/presentation/widgets/subscription_plan_card.dart';
+import 'package:fairway/utils/widgets/core_widgets/button.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+class SubscriptionSheet extends StatelessWidget {
+  const SubscriptionSheet({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, homeState) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.9,
+          decoration: const BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          ),
+          child: Column(
+            children: [
+              // Close button at top
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: const Icon(
+                        Icons.close_rounded,
+                        color: AppColors.greyShade7,
+                        size: 35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        
+                        SvgPicture.asset(
+                          AssetPaths.fairwaySignupLogo,
+                          height: 150,
+                          width: 150,
+                        ),
+                        
+                        const SizedBox(height: 32),
+                        
+                        // Benefits
+                        const BenefitItem(
+                          text: 'Special offers and discounts coupons every week',
+                        ),
+                        const SizedBox(height: 20),
+                        const BenefitItem(
+                          text: 'no delivery charges at all',
+                        ),
+                        
+                        const SizedBox(height: 32),
+                        
+                       
+                        SubscriptionPlanCard(
+                          title: r'Annual $10',
+                          description: '13 days free trial',
+                          isSelected: true,
+                          onTap: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              
+              // Action button at bottom
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 32,
+                ),
+                child: BlocBuilder<SubscriptionCubit, SubscriptionState>(
+                  builder: (context, state) {
+                    final isSubscribed =
+                        state.subscriptionData.data?.userData.subscriber ?? false;
+                    
+                    return FairwayButton(
+                      padding: const EdgeInsets.all(18),
+                      text: isSubscribed ? 'Cancel a Subscription' : 'Subscribe Now',
+                      backgroundColor: isSubscribed ? AppColors.error : AppColors.primaryBlue,
+                      borderRadius: 16,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14, 
+                      disabled: state.isLoading,
+                      onPressed: () {
+                        if (isSubscribed) {
+                          context.read<SubscriptionCubit>().updateSubscription(
+                                false,
+                                homeState.userProfile.data!.id,
+                              );
+                        } else {
+                          context.read<SubscriptionCubit>().updateSubscription(
+                                true,
+                                homeState.userProfile.data!.id,
+                              );
+                        }
+                      },
+                      textColor: AppColors.white,
+                      isLoading: state.isLoading,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

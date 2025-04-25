@@ -62,6 +62,8 @@ class FairwayTextField extends StatefulWidget {
     super.key,
     this.compareValueBuilder,
     this.enabled = true,
+    this.textStyle,
+    this.showPrefixIcon = true,
   });
 
   final TextEditingController controller;
@@ -71,7 +73,7 @@ class FairwayTextField extends StatefulWidget {
   final Color? hintColor;
   final FairwayTextFieldType type;
   final String? Function(String?)? validator;
-  final String? prefixPath; // Custom SVG path for prefix icon
+  final String? prefixPath;
   final String? suffixPath;
   final EdgeInsetsGeometry? contentPadding;
   final bool? readOnly;
@@ -82,7 +84,8 @@ class FairwayTextField extends StatefulWidget {
   final void Function(String)? onChanged;
   final VoidCallback? onClear;
   final String Function()? compareValueBuilder;
-
+  final TextStyle? textStyle;
+  final bool? showPrefixIcon;
   @override
   State<FairwayTextField> createState() => _FairwayTextFieldState();
 }
@@ -133,6 +136,8 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
         }
       } else if (widget.type == FairwayTextFieldType.password ||
           widget.type == FairwayTextFieldType.confirmPassword) {
+        final specialCharRegex = RegExp(r'[^\w\s]');
+
         if (value.trim().length < 8) {
           return 'Password must be at least 8 characters';
         }
@@ -141,6 +146,13 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
         }
         if (!value.contains(RegExp('[a-z]'))) {
           return 'Password must contain at least one lowercase letter';
+        }
+
+        if (!value.contains(RegExp('[0-9]'))) {
+          return 'Password must contain at least one number';
+        }
+        if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>_]'))) {
+          return 'Password must contain at least one special character';
         }
       }
 
@@ -156,7 +168,7 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
     // Get prefix icon based on field type or custom SVG path
     Widget? buildPrefixIcon() {
       // If a custom prefixPath is provided, use it
-      if (widget.prefixPath != null) {
+      if (widget.prefixPath != null && widget.showPrefixIcon == true) {
         return Padding(
           padding: const EdgeInsets.only(left: 16, right: 8),
           child: SizedBox(
@@ -168,8 +180,7 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
         );
       }
 
-      // Otherwise, use default icon based on type
-      if (isLocation) {
+      if (isLocation && widget.showPrefixIcon == true) {
         return Padding(
           padding: const EdgeInsets.only(left: 16, right: 8),
           child: SizedBox(
@@ -179,7 +190,7 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
             ),
           ),
         );
-      } else if (isEmail) {
+      } else if (isEmail && widget.showPrefixIcon == true) {
         return const Padding(
           padding: EdgeInsets.only(left: 16, right: 8),
           child: SizedBox(
@@ -190,7 +201,7 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
             ),
           ),
         );
-      } else if (isPassword) {
+      } else if (isPassword && widget.showPrefixIcon == true) {
         return const Padding(
           padding: EdgeInsets.only(left: 16, right: 8),
           child: SizedBox(
@@ -214,9 +225,10 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
       if (isPassword) {
         return IconButton(
           icon: Icon(
+            color: AppColors.greyShade1,
             state.obscureText
-                ? Icons.visibility_off_outlined
-                : Icons.visibility_outlined,
+                ? Icons.visibility_off_rounded
+                : Icons.visibility_rounded,
           ),
           onPressed: () {
             _cubit.toggleObscureText();
@@ -255,9 +267,10 @@ class _FairwayTextFieldState extends State<FairwayTextField> {
           return Padding(
             padding: widget.padding,
             child: TextFormField(
-              style: context.b2.copyWith(
-                color: AppColors.textDark,
-              ),
+              style: widget.textStyle ??
+                  GoogleFonts.urbanist(
+                    color: AppColors.textDark,
+                  ),
               onChanged: widget.onChanged,
               onTap: widget.onTap,
               readOnly: widget.readOnly ?? false,

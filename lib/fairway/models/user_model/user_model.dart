@@ -28,6 +28,7 @@ class UserModel extends Equatable {
     this.signupType,
     this.googleId,
     this.appleId,
+    this.image,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -74,6 +75,7 @@ class UserModel extends Equatable {
         signupType: userData['signupType'] as String?,
         googleId: userData['googleId'] as String?,
         appleId: userData['appleId'] as String?,
+        image: userData['image'] as String?,
       );
     } catch (e, stackTrace) {
       AppLogger.error(
@@ -146,6 +148,7 @@ class UserModel extends Equatable {
 
   @HiveField(16)
   final String? appleId;
+  final String? image;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -165,6 +168,7 @@ class UserModel extends Equatable {
         'signupType': signupType,
         'googleId': googleId,
         'appleId': appleId,
+        'image': image,
       };
 
   UserModel copyWith({
@@ -185,6 +189,7 @@ class UserModel extends Equatable {
     String? signupType,
     String? googleId,
     String? appleId,
+    String? image,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -205,6 +210,7 @@ class UserModel extends Equatable {
       signupType: signupType ?? this.signupType,
       googleId: googleId ?? this.googleId,
       appleId: appleId ?? this.appleId,
+      image: image ?? this.image,
     );
   }
 
@@ -227,5 +233,6 @@ class UserModel extends Equatable {
         signupType,
         googleId,
         appleId,
+        image,
       ];
 }
