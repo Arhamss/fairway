@@ -1,0 +1,9 @@
+flutter_native_splash:
+
+  background_image: assets/images/pattern.png
+  image: assets/images/fairway_icon.png
+
+  android_12:
+    image: assets/images/fairway_icon.png
+    background_image: assets/images/pattern.png
+
