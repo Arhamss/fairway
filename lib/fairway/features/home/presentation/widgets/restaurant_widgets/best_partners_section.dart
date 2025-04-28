@@ -94,8 +94,7 @@ class BestPartnersSection extends StatelessWidget {
                   );
                 }
 
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.25,
+                return Expanded(
                   child: PaginatedListView<RestaurantModel>(
                     items: restaurants,
                     scrollDirection: Axis.horizontal,

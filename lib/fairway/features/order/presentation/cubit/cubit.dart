@@ -110,6 +110,11 @@ class OrderCubit extends Cubit<OrderState> {
           status: orderData['status'] as String? ?? currentOrder.status,
           estimatedTime:
               orderData['estimatedTime'] as int? ?? currentOrder.estimatedTime,
+          concierge: orderData['concierge'] != null
+              ? ConciergeModel.fromJson(
+                  orderData['concierge'] as Map<String, dynamic>,
+                )
+              : currentOrder.concierge,
         );
 
         currentOrders[orderIndex] = updatedOrder;

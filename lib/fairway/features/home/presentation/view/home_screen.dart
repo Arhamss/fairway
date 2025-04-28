@@ -74,6 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         } else if (state.orderResponseModel.isLoaded &&
             state.isNew.data == false) {
+          
+          Navigator.of(context).popUntil((route) {
+            return route is! ModalBottomSheetRoute;
+          });
           showModalBottomSheet(
             context: context,
             builder: (context) => const OrderDetailsSheet(),
