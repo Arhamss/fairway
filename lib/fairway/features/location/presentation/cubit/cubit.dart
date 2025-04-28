@@ -325,4 +325,12 @@ class LocationCubit extends Cubit<LocationState> {
       state.copyWith(selectedLocationIndex: index),
     );
   }
+
+    void resetUpdateLocation() {
+    emit(
+      state.copyWith(
+        updateLocation: const DataState.initial(),
+      ),
+    );
+  }
 }
