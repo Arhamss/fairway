@@ -66,4 +66,6 @@ class HomeCubit extends Cubit<HomeState> {
       state.copyWith(selectedTabIndex: index),
     );
   }
+
+
 }

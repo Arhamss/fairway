@@ -51,7 +51,7 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
 
       final maxScroll = _controller.position.maxScrollExtent;
       final currentScroll = _controller.position.pixels;
-      const threshold = 200.0;
+      const threshold = 50.0;
 
       AppLogger.info('Current Scroll: $currentScroll, Max Scroll: $maxScroll');
       AppLogger.info('Threshold: $threshold');
@@ -84,12 +84,14 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
         widget.items.length + (widget.isLoadingMore && widget.hasMore ? 1 : 0);
 
     return SizedBox(
-      height: 800,
+      height: widget.scrollDirection == Axis.vertical
+          ? MediaQuery.of(context).size.height*0.7
+          : null,
       child: ListView.separated(
         shrinkWrap: true,
         controller: _controller,
         scrollDirection: widget.scrollDirection,
-        physics: widget.scrollPhysics ?? const BouncingScrollPhysics(),
+        physics: widget.scrollPhysics ?? const AlwaysScrollableScrollPhysics(),
         padding: widget.padding,
         itemCount: itemCount,
         itemBuilder: (context, index) {

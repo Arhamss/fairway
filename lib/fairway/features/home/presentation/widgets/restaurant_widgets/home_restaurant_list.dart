@@ -9,7 +9,9 @@ import 'package:fairway/fairway/features/restaurant/presentation/view/restaurant
 import 'package:fairway/fairway/features/restaurant/presentation/view/restaurant_tag_pages/nearby_restaurants.dart';
 
 class HomeRestaurantList extends StatefulWidget {
-  const HomeRestaurantList({super.key});
+  const HomeRestaurantList({super.key, required this.controller});
+
+  final ScrollController controller;
 
   @override
   State<HomeRestaurantList> createState() => _HomeRestaurantListState();
