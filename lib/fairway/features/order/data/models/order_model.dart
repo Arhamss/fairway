@@ -86,7 +86,8 @@ class OrderModel extends Equatable {
       id: json['id'] as String,
       customer:
           CustomerModel.fromJson(json['customer'] as Map<String, dynamic>),
-      restaurant: RestaurantModel.fromJson(json['restaurant'] as Map<String, dynamic>),
+      restaurant:
+          RestaurantModel.fromJson(json['restaurant'] as Map<String, dynamic>),
       items: (json['items'] as List)
           .map((item) => OrderItemModel.fromJson(item as Map<String, dynamic>))
           .toList(),

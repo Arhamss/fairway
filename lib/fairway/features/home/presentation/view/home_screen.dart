@@ -6,6 +6,8 @@ import 'package:fairway/fairway/features/home/presentation/widgets/flight_alert_
 import 'package:fairway/fairway/features/home/presentation/widgets/home_header/home_header.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/best_partners_section.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/home_restaurant_list.dart';
+import 'package:fairway/fairway/features/location/presentation/cubit/cubit.dart';
+import 'package:fairway/fairway/features/location/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/order/presentation/view/order_confirmation_screen.dart';
@@ -29,6 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadHomeData();
   }
+
+  ScrollController controller = ScrollController();
 
   Future<void> _loadHomeData() async {
     final homeCubit = context.read<HomeCubit>();
@@ -74,6 +78,9 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         } else if (state.orderResponseModel.isLoaded &&
             state.isNew.data == false) {
+          Navigator.of(context).popUntil((route) {
+            return route is! ModalBottomSheetRoute;
+          });
           showModalBottomSheet(
             context: context,
             builder: (context) => const OrderDetailsSheet(),
@@ -90,82 +97,93 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
       },
-      child: Scaffold(
-        backgroundColor: AppColors.darkWhiteBackground,
-        key: _scaffoldKey,
-        drawer: const HomeDrawer(),
-        body: BlocBuilder<HomeCubit, HomeState>(
-          builder: (context, state) {
-            final userData = state.userProfile.data;
+      child: BlocListener<LocationCubit, LocationState>(
+        listener: (context, state) {
+          if(state.updateLocation.isLoaded){
+            context.read<HomeCubit>().loadUserProfile();
 
-            if (state.userProfile.isLoading) {
-              return const Center(child: LoadingWidget());
-            }
+            context.read<LocationCubit>().resetUpdateLocation();
+            
+          }
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.darkWhiteBackground,
+          key: _scaffoldKey,
+          drawer: const HomeDrawer(),
+          body: BlocBuilder<HomeCubit, HomeState>(
+            builder: (context, state) {
+              final userData = state.userProfile.data;
 
-            if (state.userProfile.isFailure) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Error loading profile',
-                      style: context.b1.copyWith(color: AppColors.error),
+              if (state.userProfile.isLoading) {
+                return const Center(child: LoadingWidget());
+              }
+
+              if (state.userProfile.isFailure) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Error loading profile',
+                        style: context.b1.copyWith(color: AppColors.error),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () =>
+                            context.read<HomeCubit>().loadUserProfile(),
+                        child: const Text('Try Again'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: HomeHeader(
+                      userData: userData,
+                      scaffoldKey: _scaffoldKey,
                     ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () =>
-                          context.read<HomeCubit>().loadUserProfile(),
-                      child: const Text('Try Again'),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 16),
+                  ),
+                  const SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverToBoxAdapter(
+                      child: FlightAlertNegativeBanner(),
                     ),
-                  ],
-                ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 16),
+                  ),
+                  const SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverToBoxAdapter(
+                      child: BestPartnersSection(),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 16),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) =>
+                            HomeRestaurantList(controller: controller),
+                        childCount: 1,
+                      ),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 32),
+                  ),
+                ],
               );
-            }
-
-            return CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: HomeHeader(
-                    userData: userData,
-                    scaffoldKey: _scaffoldKey,
-                  ),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 16),
-                ),
-                const SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  sliver: SliverToBoxAdapter(
-                    child: FlightAlertNegativeBanner(),
-                  ),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 16),
-                ),
-                const SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  sliver: SliverToBoxAdapter(
-                    child: BestPartnersSection(),
-                  ),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 16),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => const HomeRestaurantList(),
-                      childCount: 1,
-                    ),
-                  ),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 32),
-                ),
-              ],
-            );
-          },
+            },
+          ),
         ),
       ),
     );

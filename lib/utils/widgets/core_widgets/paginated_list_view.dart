@@ -51,7 +51,7 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
 
       final maxScroll = _controller.position.maxScrollExtent;
       final currentScroll = _controller.position.pixels;
-      const threshold = 200.0;
+      const threshold = 50.0;
 
       AppLogger.info('Current Scroll: $currentScroll, Max Scroll: $maxScroll');
       AppLogger.info('Threshold: $threshold');
@@ -83,22 +83,27 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
     final itemCount =
         widget.items.length + (widget.isLoadingMore && widget.hasMore ? 1 : 0);
 
-    return ListView.separated(
-      shrinkWrap: true,
-      controller: _controller,
-      scrollDirection: widget.scrollDirection,
-      physics: widget.scrollPhysics ?? const BouncingScrollPhysics(),
-      padding: widget.padding,
-      itemCount: itemCount,
-      itemBuilder: (context, index) {
-        if (index < widget.items.length) {
-          return widget.itemBuilder(context, widget.items[index], index);
-        } else {
-          return const LoadingWidget();
-        }
-      },
-      separatorBuilder: (_, __) =>
-          widget.separator ?? const SizedBox(height: 12),
+    return SizedBox(
+      height: widget.scrollDirection == Axis.vertical
+          ? MediaQuery.of(context).size.height*0.7
+          : null,
+      child: ListView.separated(
+        shrinkWrap: true,
+        controller: _controller,
+        scrollDirection: widget.scrollDirection,
+        physics: widget.scrollPhysics ?? const AlwaysScrollableScrollPhysics(),
+        padding: widget.padding,
+        itemCount: itemCount,
+        itemBuilder: (context, index) {
+          if (index < widget.items.length) {
+            return widget.itemBuilder(context, widget.items[index], index);
+          } else {
+            return const LoadingWidget();
+          }
+        },
+        separatorBuilder: (_, __) =>
+            widget.separator ?? const SizedBox(height: 12),
+      ),
     );
   }
 }
