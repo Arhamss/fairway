@@ -14,21 +14,26 @@ class NotificationItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: _getIconBackgroundColor(),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: SvgPicture.asset(
-              color: _getIconColor(),
-              notification.state == OrderPreparationState.delivered ||
-                      notification.state ==
-                          OrderPreparationState.pickedByCustomer
-                  ? AssetPaths.checkMarkIcon
-                  : AssetPaths.notificationIcon,
+        GestureDetector(
+          onTap: () {
+            context.goNamed(AppRouteNames.orderHistory);
+          },
+          child: Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: AppColors.greyShade5,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                color: _getIconColor(),
+                notification.event == OrderPreparationState.delivered.toName ||
+                        notification.event ==
+                            OrderPreparationState.pickedByCustomer.toName
+                    ? AssetPaths.checkMarkIcon
+                    : AssetPaths.notificationIcon,
+              ),
             ),
           ),
         ),
@@ -48,7 +53,7 @@ class NotificationItem extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                notification.description,
+                notification.body,
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -57,7 +62,7 @@ class NotificationItem extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                notification.formattedTime,
+                DateFormatter.getTimeAgo(notification.createdAt),
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -72,38 +77,58 @@ class NotificationItem extends StatelessWidget {
   }
 
   IconData _getIcon() {
-    switch (notification.state) {
-      case OrderPreparationState.delivered:
+    switch (notification.event) {
+      case 'delivered':
         return Icons.check_circle;
-      case OrderPreparationState.preparing:
-      case OrderPreparationState.pickedByConcierge:
+      case 'preparing':
+      case 'pickedByConcierge':
         return Icons.notifications;
-      case OrderPreparationState.pickedByCustomer:
+      case 'pickedByCustomer':
         return Icons.check_circle;
+      default:
+        return Icons.notifications;
     }
   }
 
-  Color _getIconBackgroundColor() {
-    switch (notification.state) {
-      case OrderPreparationState.delivered:
-        return AppColors.greyShade5;
-      case OrderPreparationState.preparing:
-      case OrderPreparationState.pickedByConcierge:
-        return AppColors.greyShade5;
-      case OrderPreparationState.pickedByCustomer:
-        return AppColors.greyShade5;
-    }
-  }
+ 
 
   Color _getIconColor() {
-    switch (notification.state) {
-      case OrderPreparationState.delivered:
+    switch (notification.event) {
+      case 'delivered':
         return AppColors.greenPrimary;
-      case OrderPreparationState.preparing:
-      case OrderPreparationState.pickedByConcierge:
+      case 'preparing':
+      case 'pickedByConcierge':
         return AppColors.primaryAmber;
-      case OrderPreparationState.pickedByCustomer:
+      case 'pickedByCustomer':
         return AppColors.greenPrimary;
+      default:
+        return AppColors.primaryAmber;
+    }
+  }
+}
+
+class DateFormatter {
+  static String getTimeAgo(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inSeconds < 60) {
+      return 'Just now';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} ${difference.inMinutes == 1 ? 'minute' : 'minutes'} ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} ${difference.inHours == 1 ? 'hour' : 'hours'} ago';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} ${difference.inDays == 1 ? 'day' : 'days'} ago';
+    } else if (difference.inDays < 30) {
+      final weeks = (difference.inDays / 7).floor();
+      return '$weeks ${weeks == 1 ? 'week' : 'weeks'} ago';
+    } else if (difference.inDays < 365) {
+      final months = (difference.inDays / 30).floor();
+      return '$months ${months == 1 ? 'month' : 'months'} ago';
+    } else {
+      final years = (difference.inDays / 365).floor();
+      return '$years ${years == 1 ? 'year' : 'years'} ago';
     }
   }
 }

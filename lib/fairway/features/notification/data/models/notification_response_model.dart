@@ -5,12 +5,12 @@ import 'package:fairway/fairway/features/notification/data/models/notification_m
 import 'package:fairway/fairway/models/api_response/api_response_model.dart';
 import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 
-
-
 class NotificationResponseData extends Equatable {
   const NotificationResponseData({
     required this.notifications,
-    required this.totalCount,
+    required this.totalResults,
+    required this.totalPages,
+    required this.currentPage,
     required this.unreadCount,
   });
 
@@ -19,13 +19,17 @@ class NotificationResponseData extends Equatable {
       notifications: (json['notifications'] as List)
           .map((item) => NotificationModel.fromJson(item as Map<String, dynamic>))
           .toList(),
-      totalCount: json['totalCount'] as int,
+      totalResults: json['totalResults'] as int,
+      totalPages: json['totalPages'] as int,
+      currentPage: json['currentPage'] as int,
       unreadCount: json['unreadCount'] as int,
     );
   }
 
   final List<NotificationModel> notifications;
-  final int totalCount;
+  final int totalResults;
+  final int totalPages;
+  final int currentPage;
   final int unreadCount;
 
   static ResponseModel<BaseApiResponse<NotificationResponseData>> parseResponse(
@@ -41,16 +45,26 @@ class NotificationResponseData extends Equatable {
   }
 
   @override
-  List<Object> get props => [notifications, totalCount, unreadCount];
+  List<Object> get props => [
+        notifications,
+        totalResults,
+        totalPages,
+        currentPage,
+        unreadCount,
+      ];
 
   NotificationResponseData copyWith({
     List<NotificationModel>? notifications,
-    int? totalCount,
+    int? totalResults,
+    int? totalPages,
+    int? currentPage,
     int? unreadCount,
   }) {
     return NotificationResponseData(
       notifications: notifications ?? this.notifications,
-      totalCount: totalCount ?? this.totalCount,
+      totalResults: totalResults ?? this.totalResults,
+      totalPages: totalPages ?? this.totalPages,
+      currentPage: currentPage ?? this.currentPage,
       unreadCount: unreadCount ?? this.unreadCount,
     );
   }
