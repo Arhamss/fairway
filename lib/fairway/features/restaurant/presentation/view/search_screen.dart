@@ -99,11 +99,11 @@ class _SearchScreenState extends State<SearchScreen> {
       return const Center(child: LoadingWidget());
     }
 
-    if (state.searchSuggestions.isLoaded) {
+    else if (state.searchSuggestions.isLoaded) {
       return _buildSuggestions(context, state.searchSuggestions.data!);
     }
 
-    if (state.searchSuggestions.isFailure) {
+    else if (state.searchSuggestions.isFailure) {
       return RetryWidget(
         message: state.searchSuggestions.errorMessage ?? 'Search failed',
         onRetry: () {
@@ -151,7 +151,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
         Expanded(
-          child: recentSearches.isEmpty
+          child: recentSearches.isEmpty && !context.read<RestaurantCubit>().state.recentSearchesData.isLoading
               ? const EmptyStateWidget(
                   image: AssetPaths.empty,
                   text: 'No recent searches',

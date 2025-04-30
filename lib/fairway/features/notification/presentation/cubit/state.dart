@@ -7,6 +7,7 @@ class NotificationState extends Equatable {
     this.notifications = const [],
     this.fetchNotifications = const DataState.initial(),
     this.markAsRead = const DataState.initial(),
+    this.collectionStatus = const DataState.initial(),
     this.currentPage = 1,
     this.hasMorePages = true,
     this.totalResults = 0,
@@ -16,6 +17,7 @@ class NotificationState extends Equatable {
   final List<NotificationModel> notifications;
   final DataState<List<NotificationModel>> fetchNotifications;
   final DataState<void> markAsRead;
+  final DataState<void> collectionStatus;
   final int currentPage;
   final bool hasMorePages;
   final int totalResults;
@@ -26,6 +28,7 @@ class NotificationState extends Equatable {
         notifications,
         fetchNotifications,
         markAsRead,
+        collectionStatus,
         currentPage,
         hasMorePages,
         totalResults,
@@ -36,6 +39,7 @@ class NotificationState extends Equatable {
     List<NotificationModel>? notifications,
     DataState<List<NotificationModel>>? fetchNotifications,
     DataState<void>? markAsRead,
+    DataState<void>? collectionStatus,
     int? currentPage,
     bool? hasMorePages,
     int? totalResults,
@@ -45,6 +49,7 @@ class NotificationState extends Equatable {
       notifications: notifications ?? this.notifications,
       fetchNotifications: fetchNotifications ?? this.fetchNotifications,
       markAsRead: markAsRead ?? this.markAsRead,
+      collectionStatus: collectionStatus ?? this.collectionStatus,
       currentPage: currentPage ?? this.currentPage,
       hasMorePages: hasMorePages ?? this.hasMorePages,
       totalResults: totalResults ?? this.totalResults,

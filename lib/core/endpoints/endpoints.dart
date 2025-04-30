@@ -50,6 +50,9 @@ class Endpoints {
   static const String bookOrder = 'orders';
   static const String orderDetails = 'orders';
   static const String orderHistory = 'orders/my-orders';
+  static const String orderStatus = 'orders//customer/status';
+
+  
 
   /// Notification Endpoints
   static const String notifications = 'notifications';

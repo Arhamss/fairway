@@ -563,6 +563,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     emit(
       state.copyWith(
         recentSearchesData: const DataState.initial(),
+        
       ),
     );
 

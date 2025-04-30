@@ -1,77 +1,149 @@
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/notification/data/models/notification_model.dart';
+import 'package:fairway/fairway/features/notification/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/order/data/models/order_model.dart';
 import 'package:fairway/fairway/features/order/domain/enums/order_preparation_state.dart';
+import 'package:fairway/fairway/features/notification/presentation/cubit/cubit.dart';
+import 'package:fairway/utils/widgets/core_widgets/button.dart';
+import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
 
 class NotificationItem extends StatelessWidget {
   const NotificationItem({
     required this.notification,
+    required this.activeOrders,
+    this.onMarkAsCollected,
     super.key,
   });
+
   final NotificationModel notification;
+  final List<OrderModel> activeOrders;
+  final Function(String)? onMarkAsCollected;
+
+  bool get _isDeliveredOrder =>
+      notification.event == OrderPreparationState.delivered.toName;
+
+  bool get _isInActiveOrders {
+    if (!_isDeliveredOrder || notification.data == null) return false;
+
+    final orderId = notification.data['orderId'] as String?;
+    if (orderId == null) return false;
+
+    return activeOrders.any((order) => order.id == orderId);
+  }
+
+  String? get _orderId => notification.data?['orderId'] as String?;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          onTap: () {
-            context.goNamed(AppRouteNames.orderHistory);
-          },
-          child: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: AppColors.greyShade5,
-              shape: BoxShape.circle,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {
+                context.goNamed(AppRouteNames.orderHistory);
+              },
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: AppColors.greyShade5,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    color: _getIconColor(),
+                    notification.event ==
+                                OrderPreparationState.delivered.toName ||
+                            notification.event ==
+                                OrderPreparationState.pickedByCustomer.toName
+                        ? AssetPaths.checkMarkIcon
+                        : AssetPaths.notificationIcon,
+                  ),
+                ),
+              ),
             ),
-            child: Center(
-              child: SvgPicture.asset(
-                color: _getIconColor(),
-                notification.event == OrderPreparationState.delivered.toName ||
-                        notification.event ==
-                            OrderPreparationState.pickedByCustomer.toName
-                    ? AssetPaths.checkMarkIcon
-                    : AssetPaths.notificationIcon,
+            const SizedBox(width: 16),
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    notification.title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    notification.body,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    DateFormatter.getTimeAgo(notification.createdAt),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        if (_isDeliveredOrder && _isInActiveOrders && _orderId != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 12, left: 64),
+            child: GestureDetector(
+              onTap: () {
+                if (onMarkAsCollected != null) {
+                  onMarkAsCollected!(_orderId!);
+                }
+              },
+              child: BlocBuilder<NotificationCubit, NotificationState>(
+                builder: (context, state) {
+                  return Container(
+                    height: 24,
+                    width: 102,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: AppColors.activeTabColor,
+                      borderRadius: BorderRadius.circular(8),
+                      
+                    ),
+                    child:
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        state.collectionStatus.isLoading ? LoadingWidget(): 
+                     const Text(
+                      'Yes, Picked',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                      ],
+                    ),
+                    
+                  );
+                },
               ),
             ),
           ),
-        ),
-        const SizedBox(width: 16),
-        // Content
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                notification.title,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                notification.body,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                DateFormatter.getTimeAgo(notification.createdAt),
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }
@@ -89,8 +161,6 @@ class NotificationItem extends StatelessWidget {
         return Icons.notifications;
     }
   }
-
- 
 
   Color _getIconColor() {
     switch (notification.event) {

@@ -25,7 +25,7 @@ class NotificationCubit extends Cubit<NotificationState> {
       }
 
       final response = await repository.fetchNotifications(
-        page: refresh ? 1 : state.currentPage,
+        page: refresh ? 1 : state.currentPage + 1,
       );
 
       if (response.isSuccess && response.data != null) {
@@ -87,5 +87,39 @@ class NotificationCubit extends Cubit<NotificationState> {
         ),
       ));
     }
+  }
+
+
+  Future<void> markAsCollected(String orderId) async {
+    try {
+      emit(state.copyWith(collectionStatus: const DataState.loading()));
+
+      final response = await repository.markAsCollected(orderId);
+
+      if (response.isSuccess) {
+        emit(state.copyWith(
+          collectionStatus: const DataState.loaded(),
+        ));
+        
+        // Refresh notifications after marking as collected
+        fetchNotifications(refresh: true);
+      } else {
+        emit(state.copyWith(
+          collectionStatus: DataState.failure(
+            error: response.message ?? 'Failed to mark order as collected',
+          ),
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        collectionStatus: DataState.failure(
+          error: 'Failed to mark order as collected: $e',
+        ),
+      ));
+    }
+  }
+
+  Future<void> resetcollectionStatus()  async{
+     emit(state.copyWith(collectionStatus: const DataState.initial()));
   }
 }

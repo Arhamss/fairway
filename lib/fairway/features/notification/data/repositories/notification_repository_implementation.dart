@@ -115,8 +115,31 @@ class NotificationRepositoryImplementation  implements NotificationRepository{
     }
   }
 
-  
- 
-  
-  
+  @override
+  Future<RepositoryResponse<void>> markAsCollected(String orderId) async {
+    try {
+      final response = await _apiService.put(
+        '${Endpoints.orderStatus}/$orderId',
+        {'orderId': orderId},
+      );
+
+      if (response.statusCode == 200) {
+        return RepositoryResponse(
+          isSuccess: true,
+          message: 'Notification marked as collected',
+        );
+      } else {
+        return RepositoryResponse(
+          isSuccess: false,
+          message: 'Failed to mark notification as collected',
+        );
+      }
+    } catch (e) {
+      AppLogger.error('Error marking notification as collected: $e');
+      return RepositoryResponse(
+        isSuccess: false,
+        message: 'Error marking notification as collected: $e',
+      );
+    }
+  }
 }

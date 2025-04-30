@@ -44,6 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadHomeData();
+  }
+
   ScrollController controller = ScrollController();
 
   Future<void> _loadHomeData() async {
