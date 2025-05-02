@@ -15,6 +15,7 @@ import 'package:fairway/fairway/features/onboarding_flow/presentation/view/sign_
 import 'package:fairway/fairway/features/order/presentation/view/order_history_screen.dart';
 import 'package:fairway/fairway/features/profile/presentation/view/delete_account_screen.dart';
 import 'package:fairway/fairway/features/profile/presentation/view/profile_screen.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/view/filtered_restaurants_screen.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/view/search_screen.dart';
 import 'package:fairway/fairway/features/subscription/presentation/view/subscription_screen.dart';
 import 'package:flutter/cupertino.dart';

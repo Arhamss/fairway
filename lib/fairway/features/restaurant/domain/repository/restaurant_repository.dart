@@ -3,6 +3,7 @@ import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/recent_searches_model.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_response_model.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/search_suggestions_model.dart';
+import 'package:fairway/fairway/models/category_model.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
 abstract class RestaurantRepository {
@@ -34,4 +35,14 @@ abstract class RestaurantRepository {
   Future<RepositoryResponse<RecentSearchesModel>> getRecentSearches();
 
   Future<RepositoryResponse<void>> clearRecentSearch();
+
+  Future<RepositoryResponse<List<CategoryModel>>> getCategories();
+
+  Future<RepositoryResponse<RestaurantResponseModel>> getFilteredRestaurants(
+   {
+    int? page,
+    int? limit,
+    SortByOption? sortBy,
+    String? categoryId, 
+  });
 }

@@ -16,6 +16,7 @@ import 'package:fairway/fairway/features/order/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/order/presentation/view/order_confirmation_screen.dart';
 import 'package:fairway/fairway/features/order/presentation/view/order_details_sheet.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/subscription/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/subscription/presentation/view/subscription_bottom_sheet';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
@@ -44,11 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loadHomeData();
-  }
+
 
   ScrollController controller = ScrollController();
 
@@ -64,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await context
         .read<SubscriptionCubit>()
         .getSubscriptionStatus(user.data!.id);
+    await context.read<RestaurantCubit>().loadCategories();
     if (!hasCurrentLocation) {
       context.goNamed(AppRouteNames.selectLocation);
     }

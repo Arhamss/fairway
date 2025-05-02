@@ -21,7 +21,7 @@ class RestaurantModel extends Equatable {
       name: json['name'] as String,
       website: json['website'] as String,
       images: json['images'] as String,
-      airport: [Airport.fromJson(json['airport'] as Map<String, dynamic>)],
+      airport: Airport.fromJson(json['airport'] as Map<String, dynamic>),
       categories: (json['categories'] as List<dynamic>)
           .map((cat) => CategoryModel.fromJson(cat as Map<String, dynamic>))
           .toList(),
@@ -34,7 +34,7 @@ class RestaurantModel extends Equatable {
   final String name;
   final String website;
   final String images;
-  final List<Airport> airport;
+  final Airport airport;
   final List<CategoryModel> categories;
   final bool recommended;
   final int popularity;

@@ -9,6 +9,9 @@ import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dar
 import 'package:fairway/fairway/models/saved_locations/saved_location_model.dart';
 import 'package:fairway/fairway/models/user_model/user_model.dart';
 import 'package:fairway/utils/widgets/core_widgets/button.dart';
+import 'package:fairway/utils/widgets/core_widgets/fairway_text_button.dart';
+import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
+import 'package:fairway/utils/widgets/core_widgets/retry_widget.dart';
 import 'package:fairway/utils/widgets/core_widgets/text_field.dart';
 
 class HomeHeader extends StatefulWidget {
@@ -204,7 +207,7 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                                 tabTitles: const [
                                   'Restaurants',
                                   'Sort by',
-                                  'Price',
+                                  // 'Price',
                                 ],
                                 isHomeHeader: true,
                                 selectedIndex: state.selectedTabIndex,
@@ -217,25 +220,75 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                             ),
                             const SizedBox(height: 32),
                             if (state.selectedTabIndex == 0) ...[
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 16),
-                                    Row(
-                                      children: categories.map((category) {
-                                        return Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 16),
-                                          child: CategoryItem(
-                                            label: category['label']!,
-                                            iconPath: category['icon']!,
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ],
-                                ),
+                              BlocBuilder<RestaurantCubit, RestaurantState>(
+                                builder: (context, state) {
+                                  if (state.categories.isLoading &&
+                                      state.categories.data == null) {
+                                    return const Center(
+                                      child: LoadingWidget(),
+                                    );
+                                  }
+
+                                  if (state.categories.isFailure) {
+                                    return RetryWidget(
+                                      message: state.categories.errorMessage ??
+                                          'Failed to load categories',
+                                      onRetry: () {
+                                        context
+                                            .read<RestaurantCubit>()
+                                            .loadCategories();
+                                      },
+                                    );
+                                  } else if (state.categories.data != null) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                      ),
+                                      child: GridView.builder(
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          crossAxisSpacing: 16,
+                                          mainAxisSpacing: 16,
+                                        ),
+                                        itemCount:
+                                            state.categories.data!.length,
+                                        itemBuilder: (context, index) {
+                                          final category =
+                                              state.categories.data![index];
+                                          return CategoryItem(
+                                            isSelected:
+                                                state.selectedCategoryIndex ==
+                                                    index,
+                                            label: category.name,
+                                            iconPath: category.picture,
+                                            onTap: () {
+                                              context
+                                                  .read<RestaurantCubit>()
+                                                  .setSelectedCategoryIndex(
+                                                    index,
+                                                  );
+                                              context
+                                                  .read<RestaurantCubit>()
+                                                  .setSelectedCategoryId(
+                                                    category.id,
+                                                  );
+                                              AppLogger.info(
+                                                'Selected category: ${category.id}',
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  }
+
+                                  return const LoadingWidget();
+                                },
                               ),
                             ],
                             if (state.selectedTabIndex == 1) ...[
@@ -246,74 +299,114 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                                       final isSelected =
                                           state.selectedSortOption == option;
 
-                                      return GestureDetector(
-                                        onTap: () {
-                                          context
-                                              .read<RestaurantCubit>()
-                                              .setSelectedSortOption(option);
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 16,
-                                            left: 16,
-                                            bottom: 8,
-                                          ),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 16,
-                                              vertical: 12,
+                                      if (option == SortByOption.unselected) {
+                                        return const SizedBox.shrink();
+                                      } else {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            context
+                                                .read<RestaurantCubit>()
+                                                .setSelectedSortOption(option);
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              right: 16,
+                                              left: 16,
+                                              bottom: 8,
                                             ),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.greyShade5,
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                SvgPicture.asset(
-                                                  option.asset,
-                                                ),
-                                                const SizedBox(width: 16),
-                                                Expanded(
-                                                  child: Text(
-                                                    option.label,
-                                                    style: context.b2.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors.textDark,
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 16,
+                                                vertical: 12,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.greyShade5,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    option.asset,
+                                                  ),
+                                                  const SizedBox(width: 16),
+                                                  Expanded(
+                                                    child: Text(
+                                                      option.label,
+                                                      style:
+                                                          context.b2.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            AppColors.textDark,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                if (isSelected)
-                                                  SvgPicture.asset(
-                                                    AssetPaths.selectedIcon,
-                                                  ),
-                                              ],
+                                                  if (isSelected)
+                                                    SvgPicture.asset(
+                                                      AssetPaths.selectedIcon,
+                                                    ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      );
+                                        );
+                                      }
                                     }).toList(),
                                   );
                                 },
                               ),
                             ],
                             const SizedBox(height: 24),
-                            FairwayButton(
-                              outsidePadding: const EdgeInsets.symmetric(
-                                horizontal: 32,
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              borderRadius: 16,
-                              text: 'Complete',
-                              textColor: AppColors.white,
-                              fontWeight: FontWeight.bold,
-                              onPressed: () {
-                                context
-                                    .read<HomeCubit>()
-                                    .setFilterExpanded(false);
+                            BlocBuilder<RestaurantCubit, RestaurantState>(
+                              builder: (context, state) {
+                                return Column(
+                                  children: [
+                                    FairwayButton(
+                                      outsidePadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal: 32,
+                                      ),
+                                      borderRadius: 16,
+                                      text: 'Complete',
+                                      textColor: AppColors.white,
+                                      fontWeight: FontWeight.bold,
+                                      onPressed: () async {
+                                        context.goNamed(
+                                          AppRouteNames.filteredRestaurants,
+                                        );
+                                        context
+                                            .read<HomeCubit>()
+                                            .setFilterExpanded(false);
+                                      },
+                                      isLoading:
+                                          state.filteredRestaurants.isLoading,
+                                    ),
+                                    FairwayTextButton(
+                                      text: 'Clear all',
+                                      textStyle: context.b2.copyWith(
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14,
+                                      ),
+                                      onPressed: () {
+                                        context
+                                            .read<RestaurantCubit>()
+                                            .updateSelectedCategory(
+                                              -1,
+                                              '',
+                                            );
+                                        context
+                                            .read<RestaurantCubit>()
+                                            .updateSortOption(
+                                              SortByOption.unselected,
+                                            );
+                                      },
+                                    ),
+                                  ],
+                                );
                               },
-                              isLoading: false,
                             ),
                             const SizedBox(height: 16),
                             Container(

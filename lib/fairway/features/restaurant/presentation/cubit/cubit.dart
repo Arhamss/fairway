@@ -327,6 +327,91 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     }
   }
 
+  Future<void> getFilteredRestaurants({
+    int page = 1,
+    int limit = AppConstants.paginationPageLimit,
+    SortByOption? sortBy,
+    String? categoryId,
+    bool showLoading = true,
+  }) async {
+    if (showLoading && page == 1) {
+      emit(
+        state.copyWith(
+          filteredRestaurants: const DataState.loading(),
+          filteredRestaurantsCurrentPage: 1,
+        ),
+      );
+    } else if (page > 1) {
+      emit(
+        state.copyWith(
+          filteredRestaurants:
+              DataState.pageLoading(data: state.filteredRestaurants.data),
+        ),
+      );
+    }
+
+    final response = await repository.getFilteredRestaurants(
+      page: page,
+      limit: limit,
+      sortBy: sortBy,
+      categoryId: categoryId,
+    );
+
+    if (response.isSuccess && response.data != null) {
+      final newRestaurants = response.data!;
+
+      final previousList = state.filteredRestaurants.isLoaded ||
+              state.filteredRestaurants.isPageLoading
+          ? state.filteredRestaurants.data?.restaurants ?? []
+          : <RestaurantModel>[];
+
+      final combined = page == 1
+          ? newRestaurants.restaurants
+          : [...previousList, ...newRestaurants.restaurants];
+
+      final updatedResponse = newRestaurants.copyWith(restaurants: combined);
+
+      emit(
+        state.copyWith(
+          filteredRestaurants: DataState.loaded(data: updatedResponse),
+          filteredRestaurantsCurrentPage: page,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          filteredRestaurants: DataState.failure(
+            error: response.message ?? 'Failed to load filtered restaurants',
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> loadCategories() async {
+    emit(
+      state.copyWith(
+        categories: const DataState.loading(),
+      ),
+    );
+
+    final response = await repository.getCategories();
+
+    if (response.isSuccess && response.data != null) {
+      emit(
+        state.copyWith(
+          categories: DataState.loaded(data: response.data),
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          categories: DataState.failure(error: response.message),
+        ),
+      );
+    }
+  }
+
   // Future<void> loadMoreRestaurants() async {
   //   if (state.isLoadingMoreNearby || !state.hasMoreNearbyRestaurants) {
   //     return;
@@ -563,7 +648,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     emit(
       state.copyWith(
         recentSearchesData: const DataState.initial(),
-        
       ),
     );
 
@@ -601,6 +685,41 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   void setSelectedFilter(RestaurantTag filter) {
     emit(
       state.copyWith(selectedFilter: filter),
+    );
+  }
+
+  void setSelectedCategoryIndex(int index) {
+    emit(
+      state.copyWith(selectedCategoryIndex: index),
+    );
+  }
+
+  void setSelectedCategoryId(String id) {
+    emit(
+      state.copyWith(selectedCategoryId: id),
+    );
+  }
+
+  void resetSelectedCategory() {
+    emit(
+      state.copyWith(),
+    );
+  }
+
+  void updateSelectedCategory(int index, String id) {
+    emit(
+      state.copyWith(
+        selectedCategoryIndex: index,
+        selectedCategoryId: id,
+      ),
+    );
+  }
+
+  void updateSortOption(SortByOption option) {
+    emit(
+      state.copyWith(
+        selectedSortOption: option,
+      ),
     );
   }
 }

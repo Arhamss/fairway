@@ -1,9 +1,9 @@
 import 'package:fairway/export.dart';
-import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/restaurant_card.dart';
 import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/restaurant_card_shimmer.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_model.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/restaurant/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/widget/restaurant_card/restaurant_card.dart';
 import 'package:fairway/utils/widgets/core_widgets/paginated_list_view.dart';
 import 'package:fairway/utils/widgets/core_widgets/retry_widget.dart';
 

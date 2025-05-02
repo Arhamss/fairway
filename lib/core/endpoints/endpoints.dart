@@ -44,13 +44,14 @@ class Endpoints {
   static const String updateNotificationPreference =
       'customers/notification-preference';
   static const String orderTypes = 'customers/order-type';
-  static const String fcmToken = 'common/fcm-token';
+  static const String fcmToken = 'customers/fcm-token';
 
   /// Order Endpoints
   static const String bookOrder = 'orders';
   static const String orderDetails = 'orders';
   static const String orderHistory = 'orders/my-orders';
   static const String orderStatus = 'orders//customer/status';
+  static const String categories = 'orders/categories';
 
   
 
