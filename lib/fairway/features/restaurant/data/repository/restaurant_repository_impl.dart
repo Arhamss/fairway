@@ -4,10 +4,12 @@ import 'package:fairway/core/di/injector.dart';
 import 'package:fairway/core/endpoints/endpoints.dart';
 import 'package:fairway/core/enums/restaurant_filter.dart';
 import 'package:fairway/core/enums/sort_options_enum.dart';
+import 'package:fairway/fairway/features/restaurant/data/model/category_reponse_model.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/recent_searches_model.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_response_model.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/search_suggestions_model.dart';
 import 'package:fairway/fairway/features/restaurant/domain/repository/restaurant_repository.dart';
+import 'package:fairway/fairway/models/category_model.dart';
 import 'package:fairway/utils/helpers/logger_helper.dart';
 import 'package:fairway/utils/helpers/repository_response.dart';
 
@@ -33,7 +35,7 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
 
       if (page != null) queryParams['page'] = page.toString();
       if (limit != null) queryParams['limit'] = limit.toString();
-      if (sortBy != null) queryParams['sortBy'] = sortBy.backendValue;
+      if (sortBy != null ) queryParams['sortBy'] = sortBy.backendValue;
       if (filter != null) queryParams['filter'] = filter.toEnumName();
       queryParams['bestPartner'] = 'false';
 
@@ -222,6 +224,76 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
       return RepositoryResponse(
         isSuccess: false,
         message: 'Failed to clear recent searches: $e',
+      );
+    }
+  }
+
+
+
+  @override
+  Future<RepositoryResponse<List<CategoryModel>>> getCategories() async {
+    try {
+      final response = await _apiService.get(Endpoints.categories);
+
+      final result = CategoryReponseModel.parseResponse(response);
+
+      if (result.isSuccess && result.response?.data != null) {
+        return RepositoryResponse(
+          isSuccess: true,
+          data: result.response!.data!.categories,
+        );
+      } else {
+        return RepositoryResponse(
+          isSuccess: false,
+          message: result.error ?? 'Failed to get categories',
+        );
+      }
+    } catch (e) {
+      return RepositoryResponse(
+        isSuccess: false,
+        message: 'Failed to get categories: $e',
+      );
+    }
+  }
+
+  @override
+  Future<RepositoryResponse<RestaurantResponseModel>>
+      getFilteredRestaurants({
+    int? page,
+    int? limit,
+    SortByOption? sortBy,
+    String? categoryId,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{};
+
+      if (page != null) queryParams['page'] = page.toString();
+      if (limit != null) queryParams['limit'] = limit.toString();
+      if (sortBy != null && sortBy.name != SortByOption.unselected.name) queryParams['sortBy'] = sortBy.backendValue;
+      if (categoryId != null && categoryId.isNotEmpty) queryParams['categoryId'] = categoryId;
+
+      final response = await _apiService.get(
+        Endpoints.searchRestaurants,
+        queryParams: queryParams,
+      );
+
+      final result = RestaurantResponseModel.parseResponse(response);
+
+      if (result.isSuccess && result.response?.data != null) {
+        return RepositoryResponse(
+          isSuccess: true,
+          data: result.response!.data,
+        );
+      } else {
+        return RepositoryResponse(
+          isSuccess: false,
+          message: result.error ?? 'Failed to fetch filtered restaurants',
+        );
+      }
+    } catch (e) {
+      return RepositoryResponse(
+        isSuccess: false,
+        message: 'Failed to fetch filtered restaurants: $e',
       );
     }
   }

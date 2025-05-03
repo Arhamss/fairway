@@ -1,4 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fairway/fairway/features/restaurant/data/model/restaurant_response_model.dart';
+import 'package:fairway/fairway/models/api_response/api_response_model.dart';
+import 'package:fairway/fairway/models/api_response/base_api_response.dart';
 
 class CategoryModel extends Equatable {
   const CategoryModel({
@@ -14,6 +18,8 @@ class CategoryModel extends Equatable {
       picture: json['picture'] as String? ?? '',
     );
   }
+
+ 
 
   final String id;
   final String name;

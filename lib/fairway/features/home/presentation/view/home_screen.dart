@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:fairway/core/notifications/firebase_notifications.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/state.dart';
@@ -8,10 +11,12 @@ import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_wi
 import 'package:fairway/fairway/features/home/presentation/widgets/restaurant_widgets/home_restaurant_list.dart';
 import 'package:fairway/fairway/features/location/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/location/presentation/cubit/state.dart';
+import 'package:fairway/fairway/features/notification/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/order/presentation/cubit/state.dart';
 import 'package:fairway/fairway/features/order/presentation/view/order_confirmation_screen.dart';
 import 'package:fairway/fairway/features/order/presentation/view/order_details_sheet.dart';
+import 'package:fairway/fairway/features/restaurant/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/subscription/presentation/cubit/cubit.dart';
 import 'package:fairway/fairway/features/subscription/presentation/view/subscription_bottom_sheet';
 import 'package:fairway/utils/widgets/core_widgets/loading_widget.dart';
@@ -25,12 +30,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  StreamSubscription? _notificationSubscription;
 
   @override
   void initState() {
     super.initState();
     _loadHomeData();
+    _setupNotificationListener();
   }
+
+  @override
+  void dispose() {
+    _notificationSubscription?.cancel();
+    super.dispose();
+  }
+
+
 
   ScrollController controller = ScrollController();
 
@@ -46,9 +61,19 @@ class _HomeScreenState extends State<HomeScreen> {
     await context
         .read<SubscriptionCubit>()
         .getSubscriptionStatus(user.data!.id);
+    await context.read<RestaurantCubit>().loadCategories();
     if (!hasCurrentLocation) {
       context.goNamed(AppRouteNames.selectLocation);
     }
+  }
+
+  void _setupNotificationListener() {
+    _notificationSubscription = FirebaseNotificationService()
+        .navigationStream
+        .listen((notificationData) {
+      if (!mounted) return;
+      context.pushNamed(AppRouteNames.notificationScreen);
+    });
   }
 
   @override

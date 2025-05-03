@@ -103,6 +103,11 @@ class AppRouter {
             builder: (context, state) => const SearchScreen(),
           ),
           GoRoute(
+            path: AppRoutes.filteredRestaurants,
+            name: AppRouteNames.filteredRestaurants,
+            builder: (context, state) => const FilteredRestaurantsScreen(),
+          ),
+          GoRoute(
             path: AppRoutes.profileScreen,
             name: AppRouteNames.profileScreen,
             builder: (context, state) => const ProfileScreen(),

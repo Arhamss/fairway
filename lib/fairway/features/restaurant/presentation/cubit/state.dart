@@ -5,6 +5,7 @@ import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/recent_searches_model.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/restaurant_response_model.dart';
 import 'package:fairway/fairway/features/restaurant/data/model/search_suggestions_model.dart';
+import 'package:fairway/fairway/models/category_model.dart';
 import 'package:fairway/utils/helpers/data_state.dart';
 
 class RestaurantState extends Equatable {
@@ -14,15 +15,20 @@ class RestaurantState extends Equatable {
     this.discountRestaurants = const DataState.initial(),
     this.expressRestaurants = const DataState.initial(),
     this.drinksRestaurants = const DataState.initial(),
+    this.filteredRestaurants = const DataState.initial(),
     this.searchSuggestions = const DataState.initial(),
     this.recentSearchesData = const DataState.initial(),
+    this.categories = const DataState.initial(),
     this.selectedFilter = RestaurantTag.nearby,
-    this.selectedSortOption = SortByOption.mostPopular,
+    this.selectedSortOption = SortByOption.unselected,
     this.nearbyCurrentPage = 1,
     this.discountCurrentPage = 1,
     this.expressCurrentPage = 1,
     this.drinksCurrentPage = 1,
+    this.filteredRestaurantsCurrentPage = 1,
     this.bestPartnersCurrentPage = 1,
+    this.selectedCategoryIndex = -1,
+    this.selectedCategoryId = '',
     this.isLoadingMoreBestPartners = false,
   });
 
@@ -31,8 +37,12 @@ class RestaurantState extends Equatable {
   final DataState<RestaurantResponseModel> discountRestaurants;
   final DataState<RestaurantResponseModel> expressRestaurants;
   final DataState<RestaurantResponseModel> drinksRestaurants;
+  final DataState<RestaurantResponseModel> filteredRestaurants;
   final DataState<SearchSuggestionsModel> searchSuggestions;
   final DataState<RecentSearchesModel> recentSearchesData;
+  final DataState<List<CategoryModel>> categories;
+
+
   final RestaurantTag selectedFilter;
   final SortByOption selectedSortOption;
   final int nearbyCurrentPage;
@@ -40,6 +50,9 @@ class RestaurantState extends Equatable {
   final int expressCurrentPage;
   final int drinksCurrentPage;
   final int bestPartnersCurrentPage;
+  final int filteredRestaurantsCurrentPage;
+  final int selectedCategoryIndex;
+  final String selectedCategoryId;
 
   final bool isLoadingMoreBestPartners;
 
@@ -53,6 +66,8 @@ class RestaurantState extends Equatable {
     DataState<RestaurantResponseModel>? drinksRestaurants,
     DataState<SearchSuggestionsModel>? searchSuggestions,
     DataState<RecentSearchesModel>? recentSearchesData,
+    DataState<RestaurantResponseModel>? filteredRestaurants,
+    DataState<List<CategoryModel>>? categories,
     RestaurantTag? selectedFilter,
     SortByOption? selectedSortOption,
     int? nearbyCurrentPage,
@@ -60,6 +75,9 @@ class RestaurantState extends Equatable {
     int? expressCurrentPage,
     int? drinksCurrentPage,
     int? bestPartnersCurrentPage,
+    int? filteredRestaurantsCurrentPage,
+    int? selectedCategoryIndex,
+    String? selectedCategoryId,
     bool? isLoadingMoreBestPartners,
   }) {
     return RestaurantState(
@@ -67,10 +85,12 @@ class RestaurantState extends Equatable {
       discountRestaurants: discountRestaurants ?? this.discountRestaurants,
       expressRestaurants: expressRestaurants ?? this.expressRestaurants,
       drinksRestaurants: drinksRestaurants ?? this.drinksRestaurants,
+      filteredRestaurants: filteredRestaurants ?? this.filteredRestaurants,
       bestPartnerRestaurants:
           bestPartnerRestaurants ?? this.bestPartnerRestaurants,
       searchSuggestions: searchSuggestions ?? this.searchSuggestions,
       recentSearchesData: recentSearchesData ?? this.recentSearchesData,
+      categories: categories??this.categories,
       selectedFilter: selectedFilter ?? this.selectedFilter,
       selectedSortOption: selectedSortOption ?? this.selectedSortOption,
       nearbyCurrentPage: nearbyCurrentPage ?? this.nearbyCurrentPage,
@@ -80,6 +100,10 @@ class RestaurantState extends Equatable {
           isLoadingMoreBestPartners ?? this.isLoadingMoreBestPartners,
       discountCurrentPage: discountCurrentPage ?? this.discountCurrentPage,
       expressCurrentPage: expressCurrentPage ?? this.expressCurrentPage,
+      filteredRestaurantsCurrentPage:
+          filteredRestaurantsCurrentPage ?? this.filteredRestaurantsCurrentPage,
+      selectedCategoryIndex: selectedCategoryIndex ?? this.selectedCategoryIndex,
+      selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
       drinksCurrentPage: drinksCurrentPage ?? this.drinksCurrentPage,
     );
   }
@@ -91,16 +115,21 @@ class RestaurantState extends Equatable {
         discountRestaurants,
         expressRestaurants,
         drinksRestaurants,
+        filteredRestaurants,
         nearbyCurrentPage,
         discountCurrentPage,
         expressCurrentPage,
         drinksCurrentPage,
         searchSuggestions,
         recentSearchesData,
+        categories,
         selectedFilter,
         selectedSortOption,
         nearbyCurrentPage,
         bestPartnersCurrentPage,
+        filteredRestaurantsCurrentPage,
+        selectedCategoryIndex,
+        selectedCategoryId,
         isLoadingMoreBestPartners,
       ];
 }
