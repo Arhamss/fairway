@@ -12,6 +12,7 @@ class HomeState extends Equatable {
   final DataState<UserModel> userProfile;
   final bool isFilterExpanded;
   final int selectedTabIndex;
+  
 
   HomeState copyWith({
     DataState<UserModel>? userProfile,

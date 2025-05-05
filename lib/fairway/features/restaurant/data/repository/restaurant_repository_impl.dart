@@ -262,15 +262,16 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
     int? page,
     int? limit,
     SortByOption? sortBy,
-    String? categoryId,
+    List<String>? categoryIds,
   }) async {
     try {
       final queryParams = <String, dynamic>{};
 
       if (page != null) queryParams['page'] = page.toString();
       if (limit != null) queryParams['limit'] = limit.toString();
-      if (sortBy != null && sortBy.name != SortByOption.unselected.name) queryParams['sortBy'] = sortBy.backendValue;
-      if (categoryId != null && categoryId.isNotEmpty) queryParams['categoryId'] = categoryId;
+      if (sortBy != null && sortBy.toName == SortByOption.recommended.toName) queryParams['recommended'] = 'true';
+      if (sortBy != null && sortBy.toName == SortByOption.mostPopular.toName) queryParams['mostPopular'] = 'true';
+      if (categoryIds != null && categoryIds.isNotEmpty) queryParams['categoryIds'] = categoryIds.join(',');
 
       final response = await _apiService.get(
         Endpoints.searchRestaurants,
