@@ -28,7 +28,8 @@ class _FilteredRestaurantsScreenState extends State<FilteredRestaurantsScreen> {
 
   Future<void> _loadData() async {
     await context.read<RestaurantCubit>().getFilteredRestaurants(
-          categoryId: context.read<RestaurantCubit>().state.selectedCategoryId,
+          categoryIds:
+              context.read<RestaurantCubit>().state.selectedCategoryIds,
           sortBy: context.read<RestaurantCubit>().state.selectedSortOption,
         );
   }
@@ -67,12 +68,17 @@ class _FilteredRestaurantsScreenState extends State<FilteredRestaurantsScreen> {
   List<String> _getActiveFilters(RestaurantState state) {
     final filters = <String>[];
 
-    if (state.selectedCategoryIndex != -1 &&
-        state.categories.data != null &&
-        state.selectedCategoryIndex < state.categories.data!.length) {
-      filters.add(state.categories.data![state.selectedCategoryIndex].name);
+    // Get names for all selected category IDs
+    if (state.selectedCategoryIds.isNotEmpty && state.categories.data != null) {
+      for (final categoryId in state.selectedCategoryIds) {
+        final category = state.categories.data!.firstWhere(
+          (cat) => cat.id == categoryId,
+        );
+        filters.add(category.name);
+      }
     }
 
+    // Add sort option if selected
     if (state.selectedSortOption != SortByOption.unselected) {
       filters.add(state.selectedSortOption.label);
     }
@@ -84,24 +90,23 @@ class _FilteredRestaurantsScreenState extends State<FilteredRestaurantsScreen> {
     final cubit = context.read<RestaurantCubit>();
     final state = cubit.state;
 
-    if (state.categories.data != null) {
-      final categoryIndex = state.categories.data!
-          .indexWhere((category) => category.name == filter);
-
-      if (categoryIndex != -1) {
-        cubit.updateSelectedCategory(-1, '');
-        cubit.getFilteredRestaurants(
-          sortBy: state.selectedSortOption,
-        );
-        return;
-      }
-    }
-
     if (filter == state.selectedSortOption.label) {
       cubit.updateSortOption(SortByOption.unselected);
       cubit.getFilteredRestaurants(
-        categoryId: state.selectedCategoryId,
+        categoryIds: state.selectedCategoryIds,
       );
+    } else if (state.categories.data != null &&
+        state.selectedCategoryIds.isNotEmpty) {
+      final category = state.categories.data!.firstWhere(
+        (category) => category.name == filter,
+      );
+
+      // Found matching category, remove its ID
+      cubit.removeSelectedCategoryId(category.id);
+      cubit.getFilteredRestaurants(
+        sortBy: state.selectedSortOption,
+      );
+      return;
     }
   }
 
@@ -115,7 +120,6 @@ class _FilteredRestaurantsScreenState extends State<FilteredRestaurantsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Filter tabs section - always visible
             if (activeFilters.isNotEmpty) ...[
               const SizedBox(height: 16),
               FairwayFilterTabsList(
@@ -171,7 +175,7 @@ class _FilteredRestaurantsScreenState extends State<FilteredRestaurantsScreen> {
       ),
       onLoadMore: () => context.read<RestaurantCubit>().getFilteredRestaurants(
             page: state.filteredRestaurantsCurrentPage + 1,
-            categoryId: state.selectedCategoryId,
+            categoryIds: state.selectedCategoryIds,
             sortBy: state.selectedSortOption,
           ),
       hasMore: state.filteredRestaurants.data!.totalPages >

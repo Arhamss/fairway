@@ -81,17 +81,15 @@ class FairwayFilterTabsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: padding,
-      child: Row(
+    return Padding(
+      padding: padding ?? EdgeInsets.zero,
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
         children: filters.map((filter) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: FairwayFilterTab(
-              label: filter,
-              onRemove: () => onRemoveFilter(filter),
-            ),
+          return FairwayFilterTab(
+            label: filter,
+            onRemove: () => onRemoveFilter(filter),
           );
         }).toList(),
       ),

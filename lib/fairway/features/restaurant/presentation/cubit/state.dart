@@ -28,8 +28,9 @@ class RestaurantState extends Equatable {
     this.filteredRestaurantsCurrentPage = 1,
     this.bestPartnersCurrentPage = 1,
     this.selectedCategoryIndex = -1,
-    this.selectedCategoryId = '',
+    this.selectedCategoryIds = const [],
     this.isLoadingMoreBestPartners = false,
+    this.showAllCategories = false,
   });
 
   final DataState<RestaurantResponseModel> bestPartnerRestaurants;
@@ -42,7 +43,6 @@ class RestaurantState extends Equatable {
   final DataState<RecentSearchesModel> recentSearchesData;
   final DataState<List<CategoryModel>> categories;
 
-
   final RestaurantTag selectedFilter;
   final SortByOption selectedSortOption;
   final int nearbyCurrentPage;
@@ -52,11 +52,13 @@ class RestaurantState extends Equatable {
   final int bestPartnersCurrentPage;
   final int filteredRestaurantsCurrentPage;
   final int selectedCategoryIndex;
-  final String selectedCategoryId;
+  final List<String> selectedCategoryIds; // Updated type to List<String>
 
   final bool isLoadingMoreBestPartners;
 
   bool get isIdle => searchSuggestions.isInitial && nearbyRestaurants.isInitial;
+
+  final bool showAllCategories;
 
   RestaurantState copyWith({
     DataState<RestaurantResponseModel>? bestPartnerRestaurants,
@@ -77,8 +79,9 @@ class RestaurantState extends Equatable {
     int? bestPartnersCurrentPage,
     int? filteredRestaurantsCurrentPage,
     int? selectedCategoryIndex,
-    String? selectedCategoryId,
+    List<String>? selectedCategoryIds, // Updated parameter to List<String>
     bool? isLoadingMoreBestPartners,
+    bool? showAllCategories,
   }) {
     return RestaurantState(
       nearbyRestaurants: nearbyRestaurants ?? this.nearbyRestaurants,
@@ -90,7 +93,7 @@ class RestaurantState extends Equatable {
           bestPartnerRestaurants ?? this.bestPartnerRestaurants,
       searchSuggestions: searchSuggestions ?? this.searchSuggestions,
       recentSearchesData: recentSearchesData ?? this.recentSearchesData,
-      categories: categories??this.categories,
+      categories: categories ?? this.categories,
       selectedFilter: selectedFilter ?? this.selectedFilter,
       selectedSortOption: selectedSortOption ?? this.selectedSortOption,
       nearbyCurrentPage: nearbyCurrentPage ?? this.nearbyCurrentPage,
@@ -102,9 +105,11 @@ class RestaurantState extends Equatable {
       expressCurrentPage: expressCurrentPage ?? this.expressCurrentPage,
       filteredRestaurantsCurrentPage:
           filteredRestaurantsCurrentPage ?? this.filteredRestaurantsCurrentPage,
-      selectedCategoryIndex: selectedCategoryIndex ?? this.selectedCategoryIndex,
-      selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
+      selectedCategoryIndex:
+          selectedCategoryIndex ?? this.selectedCategoryIndex,
+      selectedCategoryIds: selectedCategoryIds ?? this.selectedCategoryIds,
       drinksCurrentPage: drinksCurrentPage ?? this.drinksCurrentPage,
+      showAllCategories: showAllCategories ?? this.showAllCategories,
     );
   }
 
@@ -129,7 +134,8 @@ class RestaurantState extends Equatable {
         bestPartnersCurrentPage,
         filteredRestaurantsCurrentPage,
         selectedCategoryIndex,
-        selectedCategoryId,
+        selectedCategoryIds,
         isLoadingMoreBestPartners,
+        showAllCategories,
       ];
 }

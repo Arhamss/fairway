@@ -1,3 +1,4 @@
+import 'dart:math' show min;
 import 'package:fairway/core/enums/sort_options_enum.dart';
 import 'package:fairway/export.dart';
 import 'package:fairway/fairway/features/home/presentation/cubit/cubit.dart';
@@ -29,6 +30,11 @@ class HomeHeader extends StatefulWidget {
 }
 
 class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
@@ -244,45 +250,73 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 16,
                                       ),
-                                      child: GridView.builder(
-                                        padding: EdgeInsets.zero,
-                                        shrinkWrap: true,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 16,
-                                          mainAxisSpacing: 16,
-                                        ),
-                                        itemCount:
-                                            state.categories.data!.length,
-                                        itemBuilder: (context, index) {
-                                          final category =
-                                              state.categories.data![index];
-                                          return CategoryItem(
-                                            isSelected:
-                                                state.selectedCategoryIndex ==
-                                                    index,
-                                            label: category.name,
-                                            iconPath: category.picture,
-                                            onTap: () {
-                                              context
-                                                  .read<RestaurantCubit>()
-                                                  .setSelectedCategoryIndex(
-                                                    index,
-                                                  );
-                                              context
-                                                  .read<RestaurantCubit>()
-                                                  .setSelectedCategoryId(
-                                                    category.id,
-                                                  );
-                                              AppLogger.info(
-                                                'Selected category: ${category.id}',
+                                      child: Column(
+                                        children: [
+                                          GridView.builder(
+                                            padding: EdgeInsets.zero,
+                                            shrinkWrap: true,
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3,
+                                              crossAxisSpacing: 16,
+                                              mainAxisSpacing: 16,
+                                            ),
+                                            itemCount: state.showAllCategories
+                                                ? state.categories.data!.length
+                                                : min(
+                                                    6,
+                                                    state.categories.data!
+                                                        .length,
+                                                  ),
+                                            itemBuilder: (context, index) {
+                                              final category =
+                                                  state.categories.data![index];
+                                              return CategoryItem(
+                                                isSelected: state
+                                                    .selectedCategoryIds
+                                                    .contains(category.id),
+                                                label: category.name,
+                                                iconPath: category.picture,
+                                                onTap: () {
+                                                  // Toggle category selection
+                                                  final cubit = context
+                                                      .read<RestaurantCubit>();
+                                                  if (state.selectedCategoryIds
+                                                      .contains(category.id)) {
+                                                    cubit
+                                                        .removeSelectedCategoryId(
+                                                      category.id,
+                                                    );
+                                                  } else {
+                                                    cubit.addSelectedCategoryId(
+                                                      category.id,
+                                                    );
+                                                  }
+                                                },
                                               );
                                             },
-                                          );
-                                        },
+                                          ),
+                                          if (state.categories.data!.length >
+                                              6) ...[
+                                            const SizedBox(height: 16),
+                                            FairwayTextButton(
+                                              text: state.showAllCategories
+                                                  ? 'Show Less'
+                                                  : 'Show More',
+                                              textStyle: context.b2.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.black,
+                                              ),
+                                              onPressed: () => context
+                                                  .read<RestaurantCubit>()
+                                                  .showAllCategories(
+                                                    !state.showAllCategories,
+                                                  ),
+                                            ),
+                                          ],
+                                        ],
                                       ),
                                     );
                                   }
@@ -393,10 +427,7 @@ class _HomeHeaderState extends State<HomeHeader> with TickerProviderStateMixin {
                                       onPressed: () {
                                         context
                                             .read<RestaurantCubit>()
-                                            .updateSelectedCategory(
-                                              -1,
-                                              '',
-                                            );
+                                            .resetSelectedCategory();
                                         context
                                             .read<RestaurantCubit>()
                                             .updateSortOption(

@@ -331,7 +331,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     int page = 1,
     int limit = AppConstants.paginationPageLimit,
     SortByOption? sortBy,
-    String? categoryId,
+    List<String>? categoryIds,
     bool showLoading = true,
   }) async {
     if (showLoading && page == 1) {
@@ -354,7 +354,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       page: page,
       limit: limit,
       sortBy: sortBy,
-      categoryId: categoryId,
+      categoryIds: state.selectedCategoryIds,
     );
 
     if (response.isSuccess && response.data != null) {
@@ -696,13 +696,16 @@ class RestaurantCubit extends Cubit<RestaurantState> {
 
   void setSelectedCategoryId(String id) {
     emit(
-      state.copyWith(selectedCategoryId: id),
+      state.copyWith(selectedCategoryIds: [...state.selectedCategoryIds, id]),
     );
   }
 
   void resetSelectedCategory() {
     emit(
-      state.copyWith(),
+      state.copyWith(
+        selectedCategoryIndex: -1,
+        selectedCategoryIds: [],
+      ),
     );
   }
 
@@ -710,7 +713,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     emit(
       state.copyWith(
         selectedCategoryIndex: index,
-        selectedCategoryId: id,
+        selectedCategoryIds: [...state.selectedCategoryIds, id],
       ),
     );
   }
@@ -719,6 +722,34 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     emit(
       state.copyWith(
         selectedSortOption: option,
+      ),
+    );
+  }
+
+  void addSelectedCategoryId(String id) {
+    // Only add if not already in the list
+    if (!state.selectedCategoryIds.contains(id)) {
+      emit(
+        state.copyWith(
+          selectedCategoryIds: [...state.selectedCategoryIds, id],
+        ),
+      );
+    }
+  }
+
+  void removeSelectedCategoryId(String id) {
+    emit(
+      state.copyWith(
+        selectedCategoryIds:
+            state.selectedCategoryIds.where((catId) => catId != id).toList(),
+      ),
+    );
+  }
+
+  void showAllCategories(bool isShow) {
+    emit(
+      state.copyWith(
+        showAllCategories: isShow,
       ),
     );
   }

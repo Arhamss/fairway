@@ -43,6 +43,6 @@ abstract class RestaurantRepository {
     int? page,
     int? limit,
     SortByOption? sortBy,
-    String? categoryId, 
+    List<String>? categoryIds, 
   });
 }

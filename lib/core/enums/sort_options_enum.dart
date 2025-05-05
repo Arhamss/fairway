@@ -19,6 +19,17 @@ extension SortByOptionExtension on SortByOption {
     }
   }
 
+  String get toName {
+    switch (this) {
+      case SortByOption.unselected:
+        return ' ';
+      case SortByOption.recommended:
+        return 'recommended';
+      case SortByOption.mostPopular:
+        return 'mostPopular';
+    }
+  }
+
   String get asset {
     switch (this) {
       case SortByOption.unselected:
